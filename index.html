@@ -1,297 +1,323 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta
-    name="description"
-    content="FDH — Fortnite racing leagues, live events, schedules and rankings."
-  />
-  <title>FDH</title>
-  <link rel="icon" type="image/png" href="assets/fdh-logo.png">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="FDH — Fortnite racing leagues, live events, schedules and rankings."
+    />
+    <title>FDH</title>
+    <link rel="icon" type="image/png" href="images/fdh-logo.png" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
-    rel="stylesheet"
-  >
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
-  <link rel="stylesheet" href="styles.css" />
-</head>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-<body class="homepage-body">
-  <div class="scroll-progress" id="scrollProgress"></div>
+  <body class="homepage-body">
+    <div class="scroll-progress" id="scrollProgress"></div>
 
-  <div class="orb orb-one"></div>
-  <div class="orb orb-two"></div>
-  <div class="orb orb-three"></div>
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
+    <div class="orb orb-three"></div>
 
-  <header class="site-header">
-    <a href="#home" class="brand">
-      <span class="brand-logo"><img src="assets/fdh-logo.png" alt="FDH logo"></span>
+    <header class="site-header">
+      <a href="#home" class="brand">
+        <span class="brand-logo"
+          ><img src="images/fdh-logo.png" alt="FDH logo"
+        /></span>
 
-      <span>
-        <strong>FDH</strong>
-        <small>Fortnite Driving Hub</small>
-      </span>
-    </a>
+        <span>
+          <strong>FDH</strong>
+          <small>Fortnite Driving Hub</small>
+        </span>
+      </a>
 
-    <button
-      id="mobileMenuButton"
-      class="menu-button"
-      type="button"
-      aria-label="Open navigation"
-    >
-      ☰
-    </button>
+      <button
+        id="mobileMenuButton"
+        class="menu-button"
+        type="button"
+        aria-label="Open navigation"
+      >
+        ☰
+      </button>
 
-    <nav id="mainNavigation">
-      <a href="#home">Home</a>
-      <a href="#live">Live</a>
-      <a href="#schedule">Schedule</a>
-      <a href="#rankings">Rankings</a>
-      <a href="#leagues">Leagues</a>
-      <a href="admin.html" class="nav-admin">Admin</a>
-    </nav>
-  </header>
+      <nav id="mainNavigation">
+        <a href="#home">Home</a>
+        <a href="#live">Live</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#rankings">Rankings</a>
+        <a href="#leagues">Leagues</a>
+        <a href="admin.html" class="nav-admin">Admin</a>
+      </nav>
+    </header>
 
-  <main>
-    <div id="announcementBanner" class="community-announcement hidden"></div>
+    <main>
+      <div id="announcementBanner" class="community-announcement hidden"></div>
 
-    <section class="homepage-hero section scroll-scene" id="home">
-      <div class="homepage-hero-copy">
-        <span class="eyebrow">FORTNITE RACING, REDEFINED</span>
+      <section class="homepage-hero section scroll-scene" id="home">
+        <div class="homepage-hero-copy">
+          <span class="eyebrow">FORTNITE RACING, REDEFINED</span>
 
-        <h1>
-          Every league.<br>
-          <span>One home.</span>
-        </h1>
+          <h1>
+            Every league.<br />
+            <span>One home.</span>
+          </h1>
 
-        <p>
-          Discover leagues, follow upcoming sessions, watch races live, and explore the complete FDH community.
-        </p>
+          <p>
+            Discover leagues, follow upcoming sessions, watch races live, and
+            explore the complete FDH community.
+          </p>
 
-        <div class="hero-actions">
-          <a href="#live" class="button primary">See What’s Live</a>
-          <a href="#leagues" class="button secondary">Browse Leagues</a>
+          <div class="hero-actions">
+            <a href="#live" class="button primary">See What’s Live</a>
+            <a href="#leagues" class="button secondary">Browse Leagues</a>
+          </div>
+
+          <div class="homepage-stat-strip">
+            <article>
+              <strong id="leagueCount">0</strong>
+              <span>Leagues</span>
+            </article>
+
+            <article>
+              <strong id="upcomingCount">0</strong>
+              <span>Upcoming</span>
+            </article>
+
+            <article>
+              <strong id="liveCount">0</strong>
+              <span>Live Now</span>
+            </article>
+
+            <article>
+              <strong id="rankedCount">0</strong>
+              <span>Ranked</span>
+            </article>
+          </div>
+
+          <p id="connectionStatus" class="connection-status">
+            Connecting to Supabase…
+          </p>
         </div>
 
-        <div class="homepage-stat-strip">
-          <article>
-            <strong id="leagueCount">0</strong>
-            <span>Leagues</span>
-          </article>
+        <div id="heroSpotlight" class="hero-spotlight glass">
+          <div class="empty-state">Loading featured league…</div>
+        </div>
+      </section>
 
-          <article>
-            <strong id="upcomingCount">0</strong>
-            <span>Upcoming</span>
-          </article>
+      <section
+        class="homepage-next-race section compact-home-section scroll-scene"
+      >
+        <div id="nextRaceFeature" class="next-race-feature glass">
+          <div class="empty-state">Loading next race…</div>
+        </div>
+      </section>
 
-          <article>
-            <strong id="liveCount">0</strong>
-            <span>Live Now</span>
-          </article>
-
-          <article>
-            <strong id="rankedCount">0</strong>
-            <span>Ranked</span>
-          </article>
+      <section
+        id="communitySpotlights"
+        class="section community-spotlight-section scroll-scene hidden"
+      >
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">COMMUNITY HIGHLIGHTS</span>
+            <h2>This Week on FDH</h2>
+          </div>
         </div>
 
-        <p id="connectionStatus" class="connection-status">
-          Connecting to Supabase…
-        </p>
-      </div>
-
-      <div id="heroSpotlight" class="hero-spotlight glass">
-        <div class="empty-state">Loading featured league…</div>
-      </div>
-    </section>
-
-    <section class="homepage-next-race section compact-home-section scroll-scene">
-      <div id="nextRaceFeature" class="next-race-feature glass">
-        <div class="empty-state">Loading next race…</div>
-      </div>
-    </section>
-
-
-    <section id="communitySpotlights" class="section community-spotlight-section scroll-scene hidden">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">COMMUNITY HIGHLIGHTS</span>
-          <h2>This Week on FDH</h2>
+        <div class="community-spotlight-grid">
+          <article
+            id="leagueOfWeekCard"
+            class="community-feature-card glass"
+          ></article>
+          <article
+            id="raceOfWeekCard"
+            class="community-feature-card glass"
+          ></article>
         </div>
-      </div>
+      </section>
 
-      <div class="community-spotlight-grid">
-        <article id="leagueOfWeekCard" class="community-feature-card glass"></article>
-        <article id="raceOfWeekCard" class="community-feature-card glass"></article>
-      </div>
-    </section>
-
-    <section id="featuredStreamSection" class="section stream-section scroll-scene hidden">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">FEATURED BROADCAST</span>
-          <h2>Community Livestream</h2>
-        </div>
-      </div>
-
-      <div id="featuredStreamCard" class="featured-stream-card glass"></div>
-    </section>
-
-    <section id="trending" class="section scroll-scene hidden">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">TRENDING NOW</span>
-          <h2>Trending Leagues</h2>
-        </div>
-      </div>
-
-      <div id="trendingLeagueGrid" class="community-league-grid"></div>
-    </section>
-
-    <section id="recent" class="section scroll-scene hidden">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">NEW TO THE PLATFORM</span>
-          <h2>Recently Added</h2>
-        </div>
-      </div>
-
-      <div id="recentLeagueGrid" class="recent-league-strip"></div>
-    </section>
-
-    <section id="live" class="section scroll-scene">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">ON TRACK NOW</span>
-          <h2>Live Racing</h2>
+      <section
+        id="featuredStreamSection"
+        class="section stream-section scroll-scene hidden"
+      >
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">FEATURED BROADCAST</span>
+            <h2>Community Livestream</h2>
+          </div>
         </div>
 
-        <span class="section-note">Streams move here automatically</span>
-      </div>
+        <div id="featuredStreamCard" class="featured-stream-card glass"></div>
+      </section>
 
-      <div id="liveGrid" class="homepage-live-grid"></div>
-
-      <div id="liveEmpty" class="empty-state hidden">
-        No races are live right now.
-      </div>
-    </section>
-
-    <section id="featured" class="section scroll-scene">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">COMMUNITY SPOTLIGHT</span>
-          <h2>Featured Leagues</h2>
+      <section id="trending" class="section scroll-scene hidden">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">TRENDING NOW</span>
+            <h2>Trending Leagues</h2>
+          </div>
         </div>
 
-        <div class="carousel-controls">
-          <button id="featuredPrevious" type="button" aria-label="Previous featured leagues">←</button>
-          <button id="featuredNext" type="button" aria-label="Next featured leagues">→</button>
-        </div>
-      </div>
+        <div id="trendingLeagueGrid" class="community-league-grid"></div>
+      </section>
 
-      <div id="featuredCarousel" class="featured-carousel"></div>
-
-      <div id="featuredEmpty" class="empty-state hidden">
-        No featured leagues have been selected yet.
-      </div>
-    </section>
-
-    <section id="schedule" class="section scroll-scene">
-      <div class="section-heading split">
-        <div>
-          <span class="eyebrow">UPCOMING SESSIONS</span>
-          <h2>Race Schedule</h2>
+      <section id="recent" class="section scroll-scene hidden">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">NEW TO THE PLATFORM</span>
+            <h2>Recently Added</h2>
+          </div>
         </div>
 
-        <div class="schedule-toolbar">
+        <div id="recentLeagueGrid" class="recent-league-strip"></div>
+      </section>
+
+      <section id="live" class="section scroll-scene">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">ON TRACK NOW</span>
+            <h2>Live Racing</h2>
+          </div>
+
+          <span class="section-note">Streams move here automatically</span>
+        </div>
+
+        <div id="liveGrid" class="homepage-live-grid"></div>
+
+        <div id="liveEmpty" class="empty-state hidden">
+          No races are live right now.
+        </div>
+      </section>
+
+      <section id="featured" class="section scroll-scene">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">COMMUNITY SPOTLIGHT</span>
+            <h2>Featured Leagues</h2>
+          </div>
+
+          <div class="carousel-controls">
+            <button
+              id="featuredPrevious"
+              type="button"
+              aria-label="Previous featured leagues"
+            >
+              ←
+            </button>
+            <button
+              id="featuredNext"
+              type="button"
+              aria-label="Next featured leagues"
+            >
+              →
+            </button>
+          </div>
+        </div>
+
+        <div id="featuredCarousel" class="featured-carousel"></div>
+
+        <div id="featuredEmpty" class="empty-state hidden">
+          No featured leagues have been selected yet.
+        </div>
+      </section>
+
+      <section id="schedule" class="section scroll-scene">
+        <div class="section-heading split">
+          <div>
+            <span class="eyebrow">UPCOMING SESSIONS</span>
+            <h2>Race Schedule</h2>
+          </div>
+
+          <div class="schedule-toolbar">
+            <input
+              id="scheduleSearch"
+              type="search"
+              placeholder="Search schedule…"
+            />
+
+            <select id="scheduleLeagueFilter">
+              <option value="all">All leagues</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="scheduleList" class="homepage-schedule-list"></div>
+
+        <div id="scheduleEmpty" class="empty-state hidden">
+          No upcoming races have been added.
+        </div>
+      </section>
+
+      <section id="rankings" class="section scroll-scene">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">COMMUNITY ORDER</span>
+            <h2>Top 10 League Rankings</h2>
+          </div>
+
+          <a class="button secondary" href="rankings.html">
+            View Full Rankings
+          </a>
+        </div>
+
+        <div class="ranking-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Pos.</th>
+                <th>League</th>
+                <th>Tier</th>
+              </tr>
+            </thead>
+
+            <tbody id="rankingBody"></tbody>
+          </table>
+        </div>
+
+        <div id="rankingEmpty" class="empty-state hidden">
+          No league rankings have been added.
+        </div>
+      </section>
+
+      <section id="leagues" class="section scroll-scene">
+        <div class="section-heading split">
+          <div>
+            <span class="eyebrow">COMMUNITY DIRECTORY</span>
+            <h2>All Leagues</h2>
+          </div>
+
           <input
-            id="scheduleSearch"
+            id="leagueSearch"
             type="search"
-            placeholder="Search schedule…"
-          >
-
-          <select id="scheduleLeagueFilter">
-            <option value="all">All leagues</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="scheduleList" class="homepage-schedule-list"></div>
-
-      <div id="scheduleEmpty" class="empty-state hidden">
-        No upcoming races have been added.
-      </div>
-    </section>
-
-    <section id="rankings" class="section scroll-scene">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">COMMUNITY ORDER</span>
-          <h2>Top 10 League Rankings</h2>
+            placeholder="Search leagues…"
+          />
         </div>
 
-        <a class="button secondary" href="rankings.html">
-          View Full Rankings
-        </a>
+        <div id="leagueGrid" class="card-grid"></div>
+
+        <div id="leagueEmpty" class="empty-state hidden">No leagues found.</div>
+      </section>
+    </main>
+
+    <footer>
+      <div>
+        <strong>FDH</strong>
+        <span>The home of Fortnite racing leagues.</span>
       </div>
 
-      <div class="ranking-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Pos.</th>
-              <th>League</th>
-              <th>Tier</th>
-            </tr>
-          </thead>
+      <a href="#home">Back to top ↑</a>
+    </footer>
 
-          <tbody id="rankingBody"></tbody>
-        </table>
-      </div>
-
-      <div id="rankingEmpty" class="empty-state hidden">
-        No league rankings have been added.
-      </div>
-    </section>
-
-    <section id="leagues" class="section scroll-scene">
-      <div class="section-heading split">
-        <div>
-          <span class="eyebrow">COMMUNITY DIRECTORY</span>
-          <h2>All Leagues</h2>
-        </div>
-
-        <input
-          id="leagueSearch"
-          type="search"
-          placeholder="Search leagues…"
-        >
-      </div>
-
-      <div id="leagueGrid" class="card-grid"></div>
-
-      <div id="leagueEmpty" class="empty-state hidden">
-        No leagues found.
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div>
-      <strong>FDH</strong>
-      <span>The home of Fortnite racing leagues.</span>
-    </div>
-
-    <a href="#home">Back to top ↑</a>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
-  <script src="config.js"></script>
-  <script src="app.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
