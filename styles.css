@@ -5536,3 +5536,194 @@ footer {
     display: none;
   }
 }
+/* =========================================================
+   FDH v13.1.1 — PREMIUM HERO
+   ========================================================= */
+
+.homepage-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 88vh;
+}
+
+.homepage-hero::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  width: 620px;
+  height: 620px;
+  top: -160px;
+  right: -170px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(227, 28, 37, 0.24),
+    rgba(137, 5, 12, 0.08) 45%,
+    transparent 70%
+  );
+  filter: blur(10px);
+  animation: heroGlowDrift 10s ease-in-out infinite alternate;
+}
+
+.homepage-hero::after {
+  content: "";
+  position: absolute;
+  inset: 8% -10% auto;
+  z-index: -3;
+  height: 74%;
+  opacity: 0.13;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: linear-gradient(to bottom, #000, transparent 88%);
+  transform: perspective(800px) rotateX(62deg) translateY(-90px);
+  transform-origin: top;
+}
+
+@keyframes heroGlowDrift {
+  from {
+    transform: translate3d(0, 0, 0) scale(0.95);
+  }
+
+  to {
+    transform: translate3d(-55px, 45px, 0) scale(1.08);
+  }
+}
+
+.homepage-hero-copy {
+  position: relative;
+}
+
+.homepage-hero-copy::before {
+  content: "";
+  position: absolute;
+  top: -32px;
+  left: -26px;
+  width: 110px;
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ff353d, transparent);
+  box-shadow: 0 0 22px rgba(227, 28, 37, 0.4);
+}
+
+.homepage-hero-copy h1 {
+  max-width: 850px;
+  text-wrap: balance;
+  text-shadow: 0 18px 55px rgba(0, 0, 0, 0.32);
+}
+
+.homepage-hero-copy h1 span {
+  color: #ef252d;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  text-shadow: 0 0 40px rgba(227, 28, 37, 0.2);
+}
+
+.homepage-hero-copy > p {
+  max-width: 660px;
+  color: #a7a7ad;
+  font-size: 1.02rem;
+  line-height: 1.8;
+}
+
+.hero-actions .button {
+  min-height: 50px;
+  padding-right: 22px;
+  padding-left: 22px;
+}
+
+.hero-actions .button.primary {
+  box-shadow:
+    0 16px 38px rgba(227, 28, 37, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.hero-actions .button.primary:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    0 22px 48px rgba(227, 28, 37, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.hero-actions .button.secondary:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 71, 78, 0.28);
+  background: rgba(227, 28, 37, 0.08);
+}
+
+.homepage-stat-strip article {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    145deg,
+    rgba(25, 25, 28, 0.94),
+    rgba(12, 12, 14, 0.82)
+  );
+}
+
+.homepage-stat-strip article::after {
+  content: "";
+  position: absolute;
+  right: -35px;
+  bottom: -48px;
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background: #e31c25;
+  opacity: 0.12;
+  filter: blur(20px);
+}
+
+.homepage-stat-strip article:hover {
+  transform: translateY(-7px);
+  border-color: rgba(255, 59, 66, 0.18);
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.3),
+    0 0 24px rgba(227, 28, 37, 0.08);
+}
+
+.hero-spotlight {
+  position: relative;
+  box-shadow:
+    0 38px 90px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.hero-spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.08),
+    transparent 28%,
+    transparent 70%,
+    rgba(227, 28, 37, 0.08)
+  );
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  .homepage-hero {
+    min-height: auto;
+  }
+
+  .homepage-hero::before {
+    width: 420px;
+    height: 420px;
+    top: 40px;
+    right: -230px;
+  }
+
+  .homepage-hero::after {
+    display: none;
+  }
+
+  .homepage-hero-copy::before {
+    left: 0;
+  }
+}
