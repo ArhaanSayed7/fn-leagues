@@ -317,7 +317,7 @@ window.editRace = function (id) {
   $("raceEventName").value = race.event_name || "";
   $("raceCategory").value = race.category || "";
   $("raceCircuit").value = race.circuit || "";
-  $("raceTimezone").value = race.timezone || "GMT+4";
+  $("raceTimezone").value = normalizeSavedZone(race.timezone);
   $("raceDate").value = race.race_date || "";
   $("raceTime").value = String(race.race_time || "").slice(0, 5);
   $("raceEventUrl").value = race.event_url || "";
@@ -378,7 +378,7 @@ async function saveRace(event) {
       circuit: $("raceCircuit").value.trim() || null,
       race_date: $("raceDate").value,
       race_time: $("raceTime").value,
-      timezone: $("raceTimezone").value.trim() || "GMT+4",
+      timezone: $("raceTimezone").value || "Asia/Dubai",
       event_url: $("raceEventUrl").value.trim() || null,
       stream_url: $("raceStreamUrl").value.trim() || null,
       is_live: $("raceIsLive").checked
@@ -440,7 +440,7 @@ function clearLeagueForm(clearMessage = true) {
 function clearRaceForm(clearMessage = true) {
   $("raceForm").reset();
   $("raceId").value = "";
-  $("raceTimezone").value = "GMT+4";
+  $("raceTimezone").value = "Asia/Dubai";
   $("raceFormTitle").textContent = "Add Race";
 
   if (clearMessage) {
@@ -496,4 +496,16 @@ function escapeJs(value) {
     .replaceAll("\\", "\\\\")
     .replaceAll("'", "\\'")
     .replaceAll("\n", " ");
+}
+
+
+function normalizeSavedZone(value) {
+  const aliases = {
+    "GMT+4": "Asia/Dubai",
+    "UTC+4": "Asia/Dubai",
+    "GST": "Asia/Dubai",
+    "GMT": "Europe/London"
+  };
+
+  return aliases[value] || value || "Asia/Dubai";
 }

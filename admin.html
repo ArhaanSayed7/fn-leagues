@@ -139,7 +139,21 @@
                 <label>Category<input id="raceCategory" placeholder="Formula Racing"></label>
 
                 <label>Circuit<input id="raceCircuit" placeholder="Monaco"></label>
-                <label>Timezone<input id="raceTimezone" value="GMT+4" placeholder="GMT+4"></label>
+                <label>
+                  League timezone
+                  <select id="raceTimezone">
+                    <option value="Asia/Dubai">Dubai — Asia/Dubai</option>
+                    <option value="Europe/London">United Kingdom — Europe/London</option>
+                    <option value="Europe/Paris">Central Europe — Europe/Paris</option>
+                    <option value="America/Toronto">Toronto — America/Toronto</option>
+                    <option value="America/New_York">New York — America/New_York</option>
+                    <option value="America/Chicago">Chicago — America/Chicago</option>
+                    <option value="America/Los_Angeles">Los Angeles — America/Los_Angeles</option>
+                    <option value="Asia/Tokyo">Tokyo — Asia/Tokyo</option>
+                    <option value="Australia/Sydney">Sydney — Australia/Sydney</option>
+                    <option value="UTC">UTC</option>
+                  </select>
+                </label>
 
                 <label>Date<input id="raceDate" type="date" required></label>
                 <label>Time<input id="raceTime" type="time" required></label>
@@ -172,6 +186,7 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
   <script src="config.js"></script>
   <script src="admin.js"></script>
 </body>

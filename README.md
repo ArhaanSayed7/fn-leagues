@@ -1,66 +1,51 @@
-# FN Leagues 2.0 — Phase 3
+# FN Leagues — Timezone & Animation Upgrade
 
-Phase 3 adds full race management.
+This upgrade adds:
 
-## New features
+- Automatic conversion to each visitor's local timezone
+- Original league time shown underneath
+- IANA timezone selection in the admin dashboard
+- Daylight-saving-aware conversion
+- Animated counters
+- Scroll reveal animations
+- Floating background gradients
+- Card hover motion
+- Button shimmer effects
+- Pulsing live indicators
+- Animated league-page logo
+- Reduced-motion accessibility support
 
-- Add races
-- Edit races
-- Delete races
-- Assign a race to an existing league
-- Add date, time and timezone
-- Add event links
-- Add stream links
-- Mark a race as live
-- Turn live status on or off from the race list
-- Public homepage automatically shows live and upcoming races
-- Dedicated league pages automatically show linked races
+## Timezone setup
 
-## Important
+When adding or editing a race, choose the league timezone from the dropdown.
 
-Keep your existing working `config.js`.
+Examples:
 
-This ZIP does not require any new SQL if your earlier `races` table already contains:
+- Dubai: Asia/Dubai
+- United Kingdom: Europe/London
+- Toronto: America/Toronto
+- New York: America/New_York
+- Sydney: Australia/Sydney
 
-- `league_id`
-- `league_name`
-- `event_name`
-- `category`
-- `circuit`
-- `race_date`
-- `race_time`
-- `timezone`
-- `event_url`
-- `is_live`
-- `stream_url`
-
-Those fields were added during the earlier setup.
+The public website automatically converts the race to the viewer's browser timezone.
 
 ## Upload to GitHub
 
 Upload these files:
 
+- index.html
+- app.js
 - admin.html
 - admin.js
+- league.html
+- league.js
 - styles.css
 - README.md
 
-The other Phase 2 public files can remain as they are.
+Keep your existing `config.js`.
 
-You may also upload all website files from this folder except:
+After committing, Cloudflare deploys automatically.
 
-- config.example.js
-- storage-policies.sql
+## Existing GMT+4 races
 
-Do not overwrite your existing `config.js`.
-
-## After deployment
-
-1. Wait for Cloudflare to show a green deployment.
-2. Open:
-   `https://fn-leagues.pages.dev/admin.html`
-3. Sign in.
-4. Click **Races**.
-5. Add your first race.
-
-The league must already exist before you can assign a race to it.
+Old races saved as `GMT+4` are automatically treated as `Asia/Dubai`, so they will continue to work.

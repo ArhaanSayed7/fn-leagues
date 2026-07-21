@@ -3,6 +3,7 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_PUBLISHABLE_KEY
 );
 
+const DateTime = luxon.DateTime;
 let leagues = [];
 
 document.addEventListener("DOMContentLoaded", loadPublicSite);
@@ -34,7 +35,10 @@ async function loadPublicSite() {
     renderRankings(rankings);
     renderLeagues(leagues);
 
-    document.getElementById("connectionStatus").textContent = "Connected to Supabase";
+    document.getElementById("connectionStatus").textContent =
+      `Times shown in ${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
+
+    initializeAnimations();
   } catch (error) {
     console.error(error);
     document.getElementById("connectionStatus").textContent =
@@ -56,13 +60,13 @@ function throwIfError(error) {
 }
 
 function renderStats(allLeagues, races) {
-  const now = new Date();
-  const upcoming = races.filter((race) => getRaceDate(race) >= now);
+  const now = DateTime.now();
+  const upcoming = races.filter((race) => getRaceDateTime(race) >= now);
   const live = races.filter((race) => race.is_live === true);
 
-  document.getElementById("leagueCount").textContent = allLeagues.length;
-  document.getElementById("upcomingCount").textContent = upcoming.length;
-  document.getElementById("liveCount").textContent = live.length;
+  animateNumber(document.getElementById("leagueCount"), allLeagues.length);
+  animateNumber(document.getElementById("upcomingCount"), upcoming.length);
+  animateNumber(document.getElementById("liveCount"), live.length);
 }
 
 function renderLiveRaces(races) {
@@ -73,39 +77,59 @@ function renderLiveRaces(races) {
   empty.classList.toggle("hidden", live.length > 0);
 
   grid.innerHTML = live.map((race) => `
-    <article class="content-card live-card">
-      <span class="live-pill">LIVE</span>
+    <article class="content-card live-card reveal-card">
+      <span class="live-pill"><span class="live-dot"></span>LIVE</span>
       <h3>${escapeHtml(race.league_name)}</h3>
-      <p>${escapeHtml(race.event_name || "Live race")}${race.circuit ? ` · ${escapeHtml(race.circuit)}` : ""}</p>
+      <p>
+        ${escapeHtml(race.event_name || "Live race")}
+        ${race.circuit ? ` · ${escapeHtml(race.circuit)}` : ""}
+      </p>
+      <div class="local-time-line">
+        ${formatViewerDateTime(race)}
+      </div>
       ${race.stream_url ? `<a class="button primary" href="${safeUrl(race.stream_url)}" target="_blank" rel="noopener">Watch Live</a>` : ""}
     </article>
   `).join("");
 }
 
 function renderSchedule(races) {
-  const now = new Date();
+  const now = DateTime.now();
+
   const upcoming = races
-    .filter((race) => getRaceDate(race) >= now)
-    .sort((a, b) => getRaceDate(a) - getRaceDate(b));
+    .filter((race) => getRaceDateTime(race) >= now)
+    .sort((a, b) => getRaceDateTime(a).toMillis() - getRaceDateTime(b).toMillis());
 
   const list = document.getElementById("scheduleList");
   const empty = document.getElementById("scheduleEmpty");
 
   empty.classList.toggle("hidden", upcoming.length > 0);
 
-  list.innerHTML = upcoming.map((race) => `
-    <article class="schedule-card">
-      <div>
-        <strong>${formatDate(race.race_date)}</strong>
-        <span>${formatTime(race.race_time)} ${escapeHtml(race.timezone || "")}</span>
-      </div>
-      <div>
-        <h3>${escapeHtml(race.league_name)}</h3>
-        <p>${escapeHtml(race.event_name || "Race event")}${race.circuit ? ` · ${escapeHtml(race.circuit)}` : ""}</p>
-      </div>
-      ${race.event_url ? `<a class="button secondary" href="${safeUrl(race.event_url)}" target="_blank" rel="noopener">Open</a>` : ""}
-    </article>
-  `).join("");
+  list.innerHTML = upcoming.map((race) => {
+    const local = getRaceDateTime(race).toLocal();
+    const originalZone = race.timezone || "UTC";
+
+    return `
+      <article class="schedule-card reveal-card">
+        <div>
+          <strong>${local.toFormat("ccc, d LLL yyyy")}</strong>
+          <span>${local.toFormat("h:mm a")} · Your local time</span>
+        </div>
+
+        <div>
+          <h3>${escapeHtml(race.league_name)}</h3>
+          <p>
+            ${escapeHtml(race.event_name || "Race event")}
+            ${race.circuit ? ` · ${escapeHtml(race.circuit)}` : ""}
+          </p>
+          <small class="original-time">
+            League time: ${formatOriginalDateTime(race)} (${escapeHtml(originalZone)})
+          </small>
+        </div>
+
+        ${race.event_url ? `<a class="button secondary" href="${safeUrl(race.event_url)}" target="_blank" rel="noopener">Open</a>` : ""}
+      </article>
+    `;
+  }).join("");
 }
 
 function renderRankings(rankings) {
@@ -116,8 +140,8 @@ function renderRankings(rankings) {
   empty.classList.toggle("hidden", rankings.length > 0);
   wrap.classList.toggle("hidden", rankings.length === 0);
 
-  body.innerHTML = rankings.map((ranking) => `
-    <tr>
+  body.innerHTML = rankings.map((ranking, index) => `
+    <tr class="ranking-row reveal-row" style="--row-delay:${index * 55}ms">
       <td><strong>#${ranking.position}</strong></td>
       <td>${escapeHtml(ranking.leagues?.name || "Unknown league")}</td>
       <td>${ranking.points}</td>
@@ -135,7 +159,7 @@ function renderLeagues(items) {
   empty.classList.toggle("hidden", items.length > 0);
 
   grid.innerHTML = items.map((league) => `
-    <article class="content-card">
+    <article class="content-card league-card reveal-card">
       <div class="logo-frame">
         ${
           league.logo_url
@@ -143,19 +167,24 @@ function renderLeagues(items) {
             : `<span>${escapeHtml(league.abbreviation || league.name.slice(0, 3).toUpperCase())}</span>`
         }
       </div>
+
       <span class="eyebrow">${escapeHtml(league.category || "RACING LEAGUE")}</span>
       <h3>${escapeHtml(league.name)}</h3>
       <p>${escapeHtml(league.description || "Fortnite racing league community.")}</p>
+
       <div class="card-actions">
         <a class="button secondary" href="league.html?id=${league.id}">View League</a>
         ${league.discord_url ? `<a class="button primary" href="${safeUrl(league.discord_url)}" target="_blank" rel="noopener">Discord</a>` : ""}
       </div>
     </article>
   `).join("");
+
+  initializeAnimations();
 }
 
 document.getElementById("leagueSearch").addEventListener("input", (event) => {
   const query = event.target.value.toLowerCase().trim();
+
   renderLeagues(
     leagues.filter((league) =>
       [league.name, league.category, league.description]
@@ -166,26 +195,73 @@ document.getElementById("leagueSearch").addEventListener("input", (event) => {
   );
 });
 
-function getRaceDate(race) {
+function getRaceDateTime(race) {
+  const zone = normalizeZone(race.timezone);
   const time = String(race.race_time || "00:00").slice(0, 5);
-  return new Date(`${race.race_date}T${time}:00`);
+  const value = DateTime.fromISO(`${race.race_date}T${time}`, { zone });
+
+  return value.isValid
+    ? value
+    : DateTime.fromISO(`${race.race_date}T${time}`, { zone: "UTC" });
 }
 
-function formatDate(value) {
-  return new Intl.DateTimeFormat("en", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    year: "numeric"
-  }).format(new Date(`${value}T12:00:00`));
+function normalizeZone(value) {
+  const raw = String(value || "").trim();
+
+  const aliases = {
+    "GMT+4": "Asia/Dubai",
+    "UTC+4": "Asia/Dubai",
+    "GST": "Asia/Dubai",
+    "GMT": "Europe/London",
+    "UTC": "UTC"
+  };
+
+  return aliases[raw] || raw || "UTC";
 }
 
-function formatTime(value) {
-  const [hours, minutes] = String(value).split(":").map(Number);
-  return new Intl.DateTimeFormat("en", {
-    hour: "numeric",
-    minute: "2-digit"
-  }).format(new Date(2000, 0, 1, hours, minutes));
+function formatViewerDateTime(race) {
+  return getRaceDateTime(race).toLocal().toFormat("ccc, d LLL · h:mm a");
+}
+
+function formatOriginalDateTime(race) {
+  return getRaceDateTime(race).toFormat("ccc, d LLL · h:mm a");
+}
+
+function animateNumber(element, target) {
+  const duration = 700;
+  const start = performance.now();
+
+  function frame(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    element.textContent = Math.round(target * eased);
+
+    if (progress < 1) requestAnimationFrame(frame);
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function initializeAnimations() {
+  const items = document.querySelectorAll(
+    ".reveal-card:not(.is-visible), .section-heading:not(.is-visible), .reveal-row:not(.is-visible)"
+  );
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.12 }
+  );
+
+  items.forEach((item, index) => {
+    item.style.setProperty("--reveal-delay", `${Math.min(index * 45, 300)}ms`);
+    observer.observe(item);
+  });
 }
 
 function safeUrl(value) {

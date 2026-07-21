@@ -315,3 +315,218 @@ footer strong { color: var(--text); margin-right: 12px; font-family: Outfit,sans
     flex-wrap: wrap;
   }
 }
+
+
+/* AUTOMATIC TIMEZONE + MOTION UPGRADE */
+body {
+  animation: pageFade .55s ease both;
+}
+
+@keyframes pageFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.orb-one {
+  animation: orbDriftOne 13s ease-in-out infinite alternate;
+}
+
+.orb-two {
+  animation: orbDriftTwo 16s ease-in-out infinite alternate;
+}
+
+.orb-three {
+  animation: orbDriftThree 19s ease-in-out infinite alternate;
+}
+
+@keyframes orbDriftOne {
+  to { transform: translate(-45px, 35px) scale(1.08); }
+}
+
+@keyframes orbDriftTwo {
+  to { transform: translate(60px, -35px) scale(.94); }
+}
+
+@keyframes orbDriftThree {
+  to { transform: translate(-30px, -45px) scale(1.1); }
+}
+
+.hero > div:first-child {
+  animation: heroCopyIn .75s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.hero-panel {
+  animation: heroPanelIn .85s .08s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes heroCopyIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes heroPanelIn {
+  from { opacity: 0; transform: translateY(30px) scale(.97); }
+  to { opacity: 1; transform: none; }
+}
+
+.content-card,
+.schedule-card,
+.detail-panel,
+.ranking-wrap,
+.stat-grid article {
+  transition:
+    transform .28s cubic-bezier(.2,.8,.2,1),
+    box-shadow .28s ease,
+    border-color .28s ease;
+}
+
+.content-card:hover,
+.schedule-card:hover,
+.detail-panel:hover,
+.stat-grid article:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 65px rgba(125,95,150,.16);
+  border-color: rgba(205,186,255,.72);
+}
+
+.button {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    filter .2s ease;
+}
+
+.button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-115%);
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.38), transparent 70%);
+  transition: transform .55s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  filter: saturate(1.08);
+}
+
+.button:hover::after {
+  transform: translateX(115%);
+}
+
+.logo-frame img,
+.league-page-logo img {
+  transition: transform .35s cubic-bezier(.2,.8,.2,1);
+}
+
+.content-card:hover .logo-frame img {
+  transform: scale(1.08) rotate(-2deg);
+}
+
+.reveal-card,
+.section-heading,
+.reveal-row {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity .58s ease var(--reveal-delay, 0ms),
+    transform .58s cubic-bezier(.2,.8,.2,1) var(--reveal-delay, 0ms);
+}
+
+.reveal-card.is-visible,
+.section-heading.is-visible,
+.reveal-row.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal-row {
+  transition-delay: var(--row-delay, 0ms);
+}
+
+.live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 rgba(255,255,255,.5);
+  animation: livePulse 1.5s ease-out infinite;
+}
+
+@keyframes livePulse {
+  0% { box-shadow: 0 0 0 0 rgba(255,255,255,.55); }
+  70% { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+}
+
+.local-time-line,
+.viewer-zone-note {
+  margin: 8px 0 16px;
+  color: var(--accent);
+  font-size: .78rem;
+  font-weight: 750;
+}
+
+.original-time {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: .72rem;
+}
+
+.hero-reveal {
+  opacity: 0;
+  transform: translateY(20px) scale(.985);
+  transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1);
+}
+
+.hero-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.logo-float {
+  animation: logoFloat 4.8s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-8px) rotate(-1deg); }
+}
+
+.admin-sidebar {
+  animation: sidebarIn .55s ease both;
+}
+
+.admin-main {
+  animation: adminMainIn .65s .05s ease both;
+}
+
+@keyframes sidebarIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes adminMainIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
