@@ -1328,7 +1328,35 @@ function initializeScrollExperience() {
     sceneObserver.observe(scene);
   });
 }
+function initializeHeaderMotion() {
+  const header = document.querySelector(".site-header");
 
+  if (!header) {
+    return;
+  }
+
+  let ticking = false;
+
+  function updateHeader() {
+    header.classList.toggle("is-scrolled", window.scrollY > 30);
+    ticking = false;
+  }
+
+  function requestHeaderUpdate() {
+    if (ticking) {
+      return;
+    }
+
+    ticking = true;
+    requestAnimationFrame(updateHeader);
+  }
+
+  window.addEventListener("scroll", requestHeaderUpdate, {
+    passive: true,
+  });
+
+  updateHeader();
+}
 function safeUrl(value) {
   try {
     const url = new URL(value);
