@@ -37,7 +37,9 @@ async function initializeHomepage() {
 
         supabaseClient
           .from("league_rankings")
-          .select("*, leagues(name, abbreviation, logo_url, banner_url)")
+          .select(
+            "id, league_id, position, previous_position, tier, leagues(name, abbreviation, logo_url, banner_url)",
+          )
           .order("position", { ascending: true }),
 
         supabaseClient

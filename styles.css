@@ -5964,3 +5964,600 @@ footer {
   transform: scale(0);
   animation: buttonRipple 0.55s ease-out forwards;
 }
+/* =========================================================
+   FDH v13.2 — RANKING MOVEMENT
+   ========================================================= */
+
+.ranking-movement-cell,
+.ranking-movement-heading {
+  width: 120px;
+  text-align: center;
+}
+
+.ranking-movement {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 68px;
+  padding: 7px 11px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.ranking-movement.movement-up {
+  color: #72e39a;
+  border-color: rgba(56, 196, 108, 0.28);
+  background: rgba(34, 151, 79, 0.14);
+}
+
+.ranking-movement.movement-down {
+  color: #ff7379;
+  border-color: rgba(235, 48, 57, 0.3);
+  background: rgba(191, 25, 33, 0.15);
+}
+
+.ranking-movement.movement-same {
+  color: #aaaab2;
+  border-color: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.ranking-movement.movement-new {
+  color: #ffffff;
+  border-color: rgba(255, 48, 57, 0.36);
+  background: linear-gradient(135deg, #e31c25, #8f080e);
+  box-shadow: 0 0 18px rgba(227, 28, 37, 0.14);
+}
+
+@media (max-width: 700px) {
+  .ranking-movement-heading {
+    font-size: 0;
+  }
+
+  .ranking-movement-heading::after {
+    content: "Move";
+    font-size: 0.7rem;
+  }
+
+  .ranking-movement-cell,
+  .ranking-movement-heading {
+    width: 76px;
+  }
+
+  .ranking-movement {
+    min-width: 54px;
+    padding: 6px 8px;
+  }
+}
+/* =========================================================
+   FDH — DARK RANKINGS SUMMARY CARDS
+   ========================================================= */
+
+.rankings-page-stats article {
+  position: relative;
+  overflow: hidden;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(
+      circle at 85% 15%,
+      rgba(227, 28, 37, 0.13),
+      transparent 38%
+    ),
+    linear-gradient(145deg, rgba(28, 28, 31, 0.96), rgba(11, 11, 13, 0.98));
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.rankings-page-stats article:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 54, 62, 0.24);
+  box-shadow:
+    0 26px 58px rgba(0, 0, 0, 0.4),
+    0 0 24px rgba(227, 28, 37, 0.1);
+}
+
+.rankings-page-stats strong {
+  color: #ffffff;
+}
+
+.rankings-page-stats span {
+  color: #898991;
+}
+.rankings-controls input,
+.rankings-controls select,
+#rankingSearch,
+#tierFilter {
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(145deg, #1a1a1d, #0d0d0f) !important;
+}
+
+.rankings-controls input::placeholder,
+#rankingSearch::placeholder {
+  color: #74747c !important;
+}
+
+.rankings-controls input:focus,
+.rankings-controls select:focus,
+#rankingSearch:focus,
+#tierFilter:focus {
+  outline: none;
+  border-color: rgba(255, 48, 57, 0.45) !important;
+  box-shadow: 0 0 0 3px rgba(227, 28, 37, 0.1);
+}
+
+.rankings-controls select option,
+#tierFilter option {
+  color: #ffffff;
+  background: #151517;
+}
+/* =========================================================
+   FDH — GLOBAL DARK UI CONSISTENCY PATCH
+   ========================================================= */
+
+html {
+  color-scheme: dark;
+}
+
+/* Inputs, selects and textareas */
+
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  color: #f4f4f6 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(
+    145deg,
+    rgba(26, 26, 29, 0.98),
+    rgba(11, 11, 13, 0.98)
+  ) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 8px 22px rgba(0, 0, 0, 0.16);
+  caret-color: #ff3038;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #77777f !important;
+  opacity: 1;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none !important;
+  border-color: rgba(255, 49, 58, 0.45) !important;
+  box-shadow:
+    0 0 0 3px rgba(227, 28, 37, 0.1),
+    0 12px 30px rgba(0, 0, 0, 0.24) !important;
+}
+
+select option {
+  color: #ffffff;
+  background: #151517;
+}
+
+/* Safari autofill */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0 1000px #151517 inset !important;
+}
+
+/* Search and filter containers */
+
+.search-box,
+.search-panel,
+.filter-panel,
+.admin-search,
+.admin-filter-panel,
+.rankings-controls,
+.schedule-controls {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: linear-gradient(
+    145deg,
+    rgba(24, 24, 27, 0.96),
+    rgba(11, 11, 13, 0.98)
+  ) !important;
+}
+
+/* Empty states and placeholders */
+
+.empty-state,
+.empty-card,
+.loading-card,
+.no-results,
+.no-races,
+.no-leagues,
+.schedule-empty,
+.schedule-empty-state,
+.homepage-empty-state,
+.homepage-schedule-empty,
+.placeholder-card,
+.admin-empty,
+.admin-empty-state,
+.gallery-empty,
+.race-empty {
+  color: #8c8c94 !important;
+  border: 1px solid rgba(255, 255, 255, 0.075) !important;
+  background:
+    radial-gradient(
+      circle at 85% 15%,
+      rgba(227, 28, 37, 0.07),
+      transparent 35%
+    ),
+    linear-gradient(145deg, rgba(21, 21, 24, 0.96), rgba(9, 9, 11, 0.98)) !important;
+}
+
+/* Upload/drop areas */
+
+.upload-zone,
+.drop-zone,
+.file-drop,
+.asset-drop,
+.gallery-upload-zone,
+.race-artwork-drop,
+.logo-upload,
+.banner-upload,
+.image-upload {
+  color: #d9d9dd !important;
+  border: 1px dashed rgba(255, 68, 76, 0.28) !important;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(227, 28, 37, 0.1), transparent 38%),
+    linear-gradient(145deg, rgba(25, 25, 28, 0.96), rgba(12, 12, 14, 0.98)) !important;
+}
+
+.upload-zone:hover,
+.drop-zone:hover,
+.file-drop:hover,
+.asset-drop:hover,
+.gallery-upload-zone:hover,
+.race-artwork-drop:hover {
+  border-color: rgba(255, 66, 74, 0.5) !important;
+  background:
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(227, 28, 37, 0.16),
+      transparent 40%
+    ),
+    linear-gradient(145deg, rgba(31, 24, 27, 0.98), rgba(14, 12, 14, 0.98)) !important;
+}
+
+/* Native file controls */
+
+input[type="file"] {
+  color: #a9a9b0 !important;
+}
+
+input[type="file"]::file-selector-button {
+  margin-right: 12px;
+  padding: 9px 13px;
+  color: #ffffff;
+  border: 1px solid rgba(255, 55, 63, 0.26);
+  border-radius: 9px;
+  background: linear-gradient(135deg, #d91821, #8e080e);
+  cursor: pointer;
+}
+
+/* Admin cards that are still pale */
+
+.admin-panel,
+.admin-card,
+.admin-form-card,
+.admin-list-card,
+.admin-preview-card,
+.admin-content-card {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: linear-gradient(
+    145deg,
+    rgba(20, 20, 23, 0.97),
+    rgba(9, 9, 11, 0.98)
+  ) !important;
+}
+
+/* Secondary buttons */
+
+.button.secondary,
+button.secondary,
+.admin-filter-button,
+.carousel-controls button,
+.ranking-arrow {
+  color: #eeeef1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.11) !important;
+  background: linear-gradient(
+    145deg,
+    rgba(28, 28, 31, 0.98),
+    rgba(12, 12, 14, 0.98)
+  ) !important;
+}
+
+.button.secondary:hover,
+button.secondary:hover,
+.admin-filter-button:hover,
+.carousel-controls button:hover,
+.ranking-arrow:hover {
+  border-color: rgba(255, 52, 60, 0.32) !important;
+  background: linear-gradient(
+    145deg,
+    rgba(65, 17, 21, 0.98),
+    rgba(22, 10, 12, 0.98)
+  ) !important;
+}
+/* League page cards */
+
+.league-stat-card,
+.league-info-item,
+.league-detail,
+.staff-member,
+.staff-card,
+.owner-card,
+.meta-card,
+.stat-card {
+  background: linear-gradient(
+    145deg,
+    rgba(24, 24, 27, 0.96),
+    rgba(11, 11, 13, 0.98)
+  ) !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+/* FDH — DARK LEAGUE PROFILE INFO CARDS */
+
+.league-showcase-meta article,
+.league-identity-grid article,
+.league-identity-grid > div,
+.league-staff-list li,
+.league-staff-list article {
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  background:
+    radial-gradient(circle at 85% 15%, rgba(227, 28, 37, 0.1), transparent 38%),
+    linear-gradient(145deg, rgba(25, 25, 28, 0.96), rgba(10, 10, 12, 0.98)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 12px 30px rgba(0, 0, 0, 0.22);
+}
+
+.league-showcase-meta article span,
+.league-identity-grid article span,
+.league-identity-grid > div span,
+.league-staff-list li span,
+.league-staff-list article span {
+  color: #888891 !important;
+}
+
+.league-showcase-meta article strong,
+.league-identity-grid article strong,
+.league-identity-grid > div strong,
+.league-staff-list li strong,
+.league-staff-list article strong {
+  color: #ffffff !important;
+}
+/* =========================================================
+   FDH — FINAL DARK CARD OVERRIDES
+   ========================================================= */
+
+/* Homepage + rankings table rows */
+
+.ranking-row .ranking-league-cell,
+.ranking-row .ranking-position-cell,
+.ranking-row .ranking-tier-cell,
+#fullRankingBody .ranking-league-cell,
+#fullRankingBody .ranking-position-cell,
+#fullRankingBody .ranking-tier-cell,
+#homepageRankingBody .ranking-league-cell,
+#homepageRankingBody .ranking-position-cell,
+#homepageRankingBody .ranking-tier-cell {
+  background: linear-gradient(
+    145deg,
+    rgba(25, 25, 28, 0.98),
+    rgba(10, 10, 12, 0.99)
+  ) !important;
+}
+
+.ranking-row .ranking-league-cell {
+  box-shadow:
+    inset 1px 0 0 rgba(255, 255, 255, 0.025),
+    inset -1px 0 0 rgba(255, 255, 255, 0.025);
+}
+
+.ranking-row {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: transparent !important;
+}
+
+.ranking-row:hover .ranking-league-cell,
+.ranking-row:hover .ranking-position-cell,
+.ranking-row:hover .ranking-tier-cell {
+  background: linear-gradient(
+    145deg,
+    rgba(38, 20, 23, 0.98),
+    rgba(14, 11, 13, 0.99)
+  ) !important;
+}
+
+/* Preserve subtle position accents */
+
+.ranking-row:nth-child(1) .ranking-position-cell {
+  color: #d7b23f !important;
+}
+
+.ranking-row:nth-child(2) .ranking-position-cell {
+  color: #aeb7c4 !important;
+}
+
+.ranking-row:nth-child(3) .ranking-position-cell {
+  color: #c87b52 !important;
+}
+
+/* League profile detail blocks */
+
+.league-identity-grid article,
+.league-identity-grid > div,
+.league-showcase-meta article,
+.league-staff-list > *,
+.league-staff-list li,
+.league-staff-list article {
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: linear-gradient(
+    145deg,
+    rgba(25, 25, 28, 0.98),
+    rgba(10, 10, 12, 0.99)
+  ) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 10px 26px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Some staff rows may be generated as plain divs */
+
+.league-staff-list > div,
+.league-staff-list .staff-member,
+.league-staff-list .league-staff-member {
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: linear-gradient(
+    145deg,
+    rgba(25, 25, 28, 0.98),
+    rgba(10, 10, 12, 0.99)
+  ) !important;
+}
+
+/* Secondary text inside profile cards */
+
+.league-identity-grid span,
+.league-showcase-meta span,
+.league-staff-list span {
+  color: #8f8f97 !important;
+}
+
+.league-identity-grid strong,
+.league-showcase-meta strong,
+.league-staff-list strong {
+  color: #ffffff !important;
+}
+/* =========================================================
+   FDH — HARD DARK OVERRIDES FOR PROFILE + RANKINGS
+   ========================================================= */
+
+/* League profile information boxes */
+
+.league-identity-grid article,
+.league-identity-grid > div,
+.league-showcase-meta article {
+  position: relative;
+  overflow: hidden;
+  background: #111113 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.league-identity-grid article::before,
+.league-identity-grid article::after,
+.league-identity-grid > div::before,
+.league-identity-grid > div::after,
+.league-showcase-meta article::before,
+.league-showcase-meta article::after {
+  opacity: 0 !important;
+  background: transparent !important;
+}
+
+/* Homepage and full-ranking centre cells */
+
+.ranking-league-cell {
+  background: #111113 !important;
+  background-image: none !important;
+}
+
+.ranking-league-cell::before,
+.ranking-league-cell::after,
+.ranking-league-overlay {
+  opacity: 0 !important;
+  background: transparent !important;
+}
+
+.ranking-row .ranking-position-cell,
+.ranking-row .ranking-tier-cell,
+.ranking-row .ranking-movement-cell {
+  background: #0d0d0f !important;
+  background-image: none !important;
+}
+
+/* Keep all row text readable */
+
+.ranking-league-content,
+.ranking-league-content strong {
+  color: #ffffff !important;
+}
+
+.ranking-league-content small {
+  color: #85858d !important;
+}
+/* Final fix — league profile info tiles */
+
+.league-identity-grid > article,
+.league-identity-grid > div,
+.league-identity-grid .identity-item,
+.league-identity-grid .league-meta-item {
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #111113 !important;
+  background-image: none !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 10px 24px rgba(0, 0, 0, 0.2) !important;
+}
+
+.league-identity-grid > article::before,
+.league-identity-grid > article::after,
+.league-identity-grid > div::before,
+.league-identity-grid > div::after {
+  opacity: 0 !important;
+  background: transparent !important;
+}
+
+.league-identity-grid span,
+.league-identity-grid small {
+  color: #8d8d95 !important;
+}
+
+.league-identity-grid strong {
+  color: #ffffff !important;
+}
+/* Final exact fix — league About tiles */
+
+.league-about-details > div {
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #111113 !important;
+  background-image: none !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 10px 24px rgba(0, 0, 0, 0.2) !important;
+}
+
+.league-about-details > div::before,
+.league-about-details > div::after {
+  content: none !important;
+  display: none !important;
+}
+
+.league-about-details > div span {
+  color: #888891 !important;
+}
+
+.league-about-details > div strong {
+  color: #ffffff !important;
+}
