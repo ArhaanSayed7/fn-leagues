@@ -1,63 +1,61 @@
-# FN Leagues 2.0 — Phase 5
+# FN Leagues 2.0 — Phase 6
 
-Phase 5 changes the league ranking system to tiers.
+Phase 6 upgrades the dedicated public league pages.
 
-## Ranking fields
+## New league-page features
 
-Each ranking now contains only:
+- Larger league banner and logo
+- Featured-league badge
+- Position and tier summary
+- Upcoming-race and live-race totals
+- Dedicated live-race section
+- Next-event countdown
+- Upcoming-event timeline
+- Automatic viewer-timezone conversion
+- Original league time underneath
+- Optional Instagram, YouTube and Twitch links
+- Improved mobile layout
+- Richer page animations
 
-- Position
-- League
-- Tier
+## Required Supabase update
 
-Available tiers:
+Open:
 
-- S Tier
-- A Tier
-- B Tier
-- C Tier
+`phase-6-league-socials.sql`
 
-The old points, wins, podiums and rating fields are removed.
+Then:
 
-## Public ranking design
+1. Open Supabase.
+2. Open SQL Editor.
+3. Create a new query.
+4. Paste the complete SQL file.
+5. Click Run.
 
-The public table now shows:
+This adds optional social-link fields to the leagues table.
 
-- Position
-- League logo
-- League name
-- League banner behind the league identity
-- Tier badge
-
-Each tier has its own visual style.
-
-## Required Supabase migration
-
-Before uploading the website update:
-
-1. Open `phase-5-ranking-migration.sql`.
-2. Copy all of it.
-3. Open Supabase → SQL Editor.
-4. Create a new query.
-5. Paste the SQL.
-6. Click Run.
-
-This adds the tier field and removes the old ranking fields.
-
-## Upload to GitHub
+## Update GitHub
 
 Upload:
 
-- index.html
-- app.js
+- league.html
+- league.js
 - admin.html
 - admin.js
-- league.js
 - styles.css
 - README.md
 
 Keep your existing `config.js`.
 
-You do not need to upload the SQL file to the website.
+You do not need to upload the SQL file to GitHub.
 
-After committing, Cloudflare deploys automatically.
+## Adding social links
+
+Open the admin dashboard and edit a league.
+
+You will now see fields for:
+
+- Instagram
+- YouTube
+- Twitch
+
+Leave any field empty if that league does not use the platform.

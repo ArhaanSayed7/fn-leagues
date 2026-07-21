@@ -1,28 +1,49 @@
 <!DOCTYPE html>
-  <div class="scroll-progress" id="scrollProgress"></div>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FN Leagues community profile">
   <title>League | FN Leagues</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="orb orb-one"></div><div class="orb orb-two"></div>
+  <div class="scroll-progress" id="scrollProgress"></div>
+  <div class="orb orb-one"></div>
+  <div class="orb orb-two"></div>
+  <div class="orb orb-three"></div>
+
   <header class="site-header">
     <a href="index.html" class="brand">
       <span class="brand-badge">FN</span>
-      <span><strong>FN Leagues</strong><small>Fortnite Racing Hub</small></span>
+      <span>
+        <strong>FN Leagues</strong>
+        <small>Fortnite Racing Hub</small>
+      </span>
     </a>
-    <nav><a href="index.html">Home</a><a href="admin.html" class="nav-admin">Admin</a></nav>
+
+    <nav>
+      <a href="index.html#live">Live</a>
+      <a href="index.html#schedule">Schedule</a>
+      <a href="index.html#rankings">Rankings</a>
+      <a href="index.html#leagues">Leagues</a>
+      <a href="admin.html" class="nav-admin">Admin</a>
+    </nav>
   </header>
 
   <main id="leaguePage" class="league-page section">
     <div class="empty-state">Loading league…</div>
   </main>
+
+  <footer>
+    <strong>FN Leagues</strong>
+    <span>Built for the Fortnite racing community.</span>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>

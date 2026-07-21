@@ -232,6 +232,9 @@ window.editLeague = function (id) {
   $("leagueCategory").value = league.category || "";
   $("leagueDiscord").value = league.discord_url || "";
   $("leagueWebsite").value = league.website_url || "";
+  $("leagueInstagram").value = league.instagram_url || "";
+  $("leagueYoutube").value = league.youtube_url || "";
+  $("leagueTwitch").value = league.twitch_url || "";
   $("leagueDescription").value = league.description || "";
   $("leagueFeatured").checked = league.featured === true;
 
@@ -290,6 +293,9 @@ async function saveLeague(event) {
       description: $("leagueDescription").value.trim() || null,
       discord_url: $("leagueDiscord").value.trim() || null,
       website_url: $("leagueWebsite").value.trim() || null,
+      instagram_url: $("leagueInstagram").value.trim() || null,
+      youtube_url: $("leagueYoutube").value.trim() || null,
+      twitch_url: $("leagueTwitch").value.trim() || null,
       featured: $("leagueFeatured").checked,
       logo_url: logoUrl,
       banner_url: bannerUrl
