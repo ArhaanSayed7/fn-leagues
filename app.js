@@ -147,8 +147,8 @@ function renderLeagues(items) {
       <h3>${escapeHtml(league.name)}</h3>
       <p>${escapeHtml(league.description || "Fortnite racing league community.")}</p>
       <div class="card-actions">
+        <a class="button secondary" href="league.html?id=${league.id}">View League</a>
         ${league.discord_url ? `<a class="button primary" href="${safeUrl(league.discord_url)}" target="_blank" rel="noopener">Discord</a>` : ""}
-        ${league.website_url ? `<a class="button secondary" href="${safeUrl(league.website_url)}" target="_blank" rel="noopener">Website</a>` : ""}
       </div>
     </article>
   `).join("");

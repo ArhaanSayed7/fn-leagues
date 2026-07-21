@@ -1,93 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>FN Leagues Admin</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body class="admin-body">
-  <div class="orb orb-one"></div>
-  <div class="orb orb-two"></div>
-
+  <div class="orb orb-one"></div><div class="orb orb-two"></div>
   <main class="admin-shell">
     <section id="loginView" class="login-card glass">
-      <a href="index.html" class="brand admin-brand">
-        <span class="brand-badge">FN</span>
-        <span>
-          <strong>FN Leagues</strong>
-          <small>Admin Dashboard</small>
-        </span>
-      </a>
-
-      <div class="login-copy">
-        <span class="eyebrow">PRIVATE ACCESS</span>
-        <h1>Welcome back.</h1>
-        <p>Sign in with the admin account you created in Supabase.</p>
-      </div>
-
+      <a href="index.html" class="brand admin-brand"><span class="brand-badge">FN</span><span><strong>FN Leagues</strong><small>Admin Dashboard</small></span></a>
+      <div class="login-copy"><span class="eyebrow">PRIVATE ACCESS</span><h1>Welcome back.</h1><p>Sign in with your Supabase admin account.</p></div>
       <form id="loginForm" class="admin-form">
-        <label>
-          Email
-          <input id="email" type="email" required autocomplete="email" placeholder="you@example.com" />
-        </label>
-        <label>
-          Password
-          <input id="password" type="password" required autocomplete="current-password" placeholder="Your password" />
-        </label>
-        <button type="submit" class="button primary full">Sign In</button>
+        <label>Email<input id="email" type="email" required autocomplete="email"></label>
+        <label>Password<input id="password" type="password" required autocomplete="current-password"></label>
+        <button class="button primary full">Sign In</button>
       </form>
-
       <p id="loginMessage" class="form-message"></p>
     </section>
 
     <section id="dashboardView" class="dashboard hidden">
       <aside class="admin-sidebar glass">
-        <a href="index.html" class="brand">
-          <span class="brand-badge">FN</span>
-          <span>
-            <strong>FN Leagues</strong>
-            <small>Admin Dashboard</small>
-          </span>
-        </a>
-
+        <a href="index.html" class="brand"><span class="brand-badge">FN</span><span><strong>FN Leagues</strong><small>Admin Dashboard</small></span></a>
         <nav class="admin-nav">
-          <button class="active">Overview</button>
-          <button disabled>Leagues <span>Phase 2</span></button>
+          <button data-tab="overview" class="active">Overview</button>
+          <button data-tab="leagues">Leagues</button>
           <button disabled>Races <span>Phase 3</span></button>
           <button disabled>Rankings <span>Phase 4</span></button>
         </nav>
-
         <button id="logoutButton" class="button secondary full">Sign Out</button>
       </aside>
 
       <div class="admin-main">
         <div class="admin-topbar">
-          <div>
-            <span class="eyebrow">ADMIN OVERVIEW</span>
-            <h2>Dashboard</h2>
-          </div>
+          <div><span class="eyebrow">CONTENT MANAGEMENT</span><h2 id="adminTitle">Dashboard</h2></div>
           <span id="adminEmail" class="admin-email"></span>
         </div>
 
-        <div class="dashboard-stats">
-          <article class="glass"><strong id="adminLeagueCount">—</strong><span>Leagues</span></article>
-          <article class="glass"><strong id="adminRaceCount">—</strong><span>Total races</span></article>
-          <article class="glass"><strong id="adminLiveCount">—</strong><span>Live races</span></article>
-          <article class="glass"><strong id="adminRankingCount">—</strong><span>Ranked leagues</span></article>
-        </div>
+        <section id="overviewTab" class="admin-tab">
+          <div class="dashboard-stats">
+            <article class="glass"><strong id="adminLeagueCount">—</strong><span>Leagues</span></article>
+            <article class="glass"><strong id="adminRaceCount">—</strong><span>Total races</span></article>
+            <article class="glass"><strong id="adminLiveCount">—</strong><span>Live races</span></article>
+            <article class="glass"><strong id="adminRankingCount">—</strong><span>Ranked leagues</span></article>
+          </div>
+          <section class="glass dashboard-panel">
+            <span class="eyebrow">PHASE 2</span><h3>League management is ready.</h3>
+            <p>Open the Leagues section to add, edit, feature, upload artwork for, or remove leagues.</p>
+          </section>
+        </section>
 
-        <section class="glass dashboard-panel">
-          <span class="eyebrow">PHASE 1 COMPLETE</span>
-          <h3>Your website is connected.</h3>
-          <p>
-            This dashboard is now authenticated through Supabase. The next phase
-            adds forms for creating, editing and deleting leagues, including logo
-            and banner uploads.
-          </p>
+        <section id="leaguesTab" class="admin-tab hidden">
+          <div class="management-layout">
+            <form id="leagueForm" class="glass management-form">
+              <input id="leagueId" type="hidden">
+              <div class="form-heading">
+                <div><span class="eyebrow">LEAGUE EDITOR</span><h3 id="formTitle">Add League</h3></div>
+                <button id="clearFormButton" type="button" class="button secondary">Clear</button>
+              </div>
+
+              <div class="form-grid">
+                <label>League name<input id="leagueName" required maxlength="100"></label>
+                <label>Abbreviation<input id="leagueAbbreviation" maxlength="10"></label>
+                <label>Category<input id="leagueCategory" placeholder="Formula Racing"></label>
+                <label>Discord URL<input id="leagueDiscord" type="url" placeholder="https://discord.gg/..."></label>
+                <label class="full-span">Website URL<input id="leagueWebsite" type="url" placeholder="https://..."></label>
+                <label class="full-span">Description<textarea id="leagueDescription" rows="4"></textarea></label>
+                <label>Logo image<input id="leagueLogo" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+                <label>Banner image<input id="leagueBanner" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+                <label class="checkbox-label full-span"><input id="leagueFeatured" type="checkbox"> Show as a featured league</label>
+              </div>
+
+              <div id="assetPreview" class="asset-preview"></div>
+              <button class="button primary full" type="submit">Save League</button>
+              <p id="leagueMessage" class="form-message"></p>
+            </form>
+
+            <div class="glass management-list">
+              <div class="form-heading"><div><span class="eyebrow">CURRENT CONTENT</span><h3>Leagues</h3></div></div>
+              <div id="adminLeagueList"></div>
+              <div id="adminLeagueEmpty" class="empty-state hidden">No leagues have been added.</div>
+            </div>
+          </div>
         </section>
       </div>
     </section>

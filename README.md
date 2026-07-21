@@ -1,95 +1,77 @@
-# FN Leagues 2.0 — Phase 1
+# FN Leagues 2.0 — Phase 2
 
-Phase 1 includes:
+Phase 2 adds:
 
-- Supabase connection
-- Public homepage
-- Public league directory
-- Upcoming schedule
-- Live races
-- League ranking table
-- Admin login
-- Authenticated dashboard
-- Pink and purple responsive design
+- Add, edit and delete leagues from the admin dashboard
+- Upload league logos and banners
+- Featured league toggle
+- Dedicated public league pages
+- Existing public schedule, live races and rankings
+- Your existing Supabase login
 
-## 1. Add your Supabase values
+## Important: preserve config.js
 
-Open `config.js`.
+This ZIP deliberately does not include `config.js`.
 
-Replace:
+Keep the working `config.js` already in your GitHub repository. Do not delete it.
 
-```js
-const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL_HERE";
-const SUPABASE_PUBLISHABLE_KEY = "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
-```
+## Before uploading Phase 2
 
-Project URL:
+### 1. Confirm the Storage bucket exists
 
-Use your Data API URL without `/rest/v1/`.
+In Supabase, create a public bucket named:
 
-Example:
+`league-assets`
 
-```text
-https://abcdefghijkl.supabase.co
-```
+### 2. Add Storage policies
 
-Publishable key:
-
-Use the key beginning with:
-
-```text
-sb_publishable_
-```
-
-Never use the secret key.
-
-## 2. Create your admin account
+Open `storage-policies.sql` from this download.
 
 In Supabase:
 
-1. Open Authentication.
-2. Open Users.
-3. Click Add user.
-4. Enter your email and password.
-5. Enable Auto confirm user if offered.
+1. Open SQL Editor.
+2. Create a new query.
+3. Paste the contents of `storage-policies.sql`.
+4. Click Run.
 
-## 3. Upload to GitHub
+## Upload to GitHub
 
-Upload all files in this folder to the root of your FN Leagues repository:
+Upload these files to the root of the repository:
 
 - index.html
 - admin.html
-- styles.css
-- config.js
 - app.js
 - admin.js
+- styles.css
+- league.html
+- league.js
 - README.md
 
-Matching files will be replaced automatically.
+Do not upload `config.example.js` over your working `config.js`.
 
-## 4. Cloudflare
+You do not need to upload `storage-policies.sql` to the website; it is only an instruction file for Supabase.
 
-Cloudflare automatically deploys after the GitHub commit.
+After committing, Cloudflare deploys automatically.
 
-Public website:
+## Using the dashboard
 
-```text
-https://fn-leagues.pages.dev
-```
+Open:
 
-Admin page:
+`https://fn-leagues.pages.dev/admin.html`
 
-```text
-https://fn-leagues.pages.dev/admin.html
-```
+Select **Leagues** in the sidebar.
 
-## Important
+You can:
 
-The database may be empty at first. The public site will display empty-state messages until content is added.
+- Add a league
+- Edit an existing league
+- Delete a league
+- Upload a logo
+- Upload a banner
+- Mark it as featured
 
-Phase 2 will add:
+The public league page uses:
 
-- Add/edit/delete league forms
-- Logo uploads
-- Banner uploads
-- Dedicated league pages
+`league.html?id=LEAGUE_ID`
+
+The website creates these links automatically.
