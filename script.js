@@ -1,16 +1,9 @@
-/*
-=============================================================
-FN LEAGUES WEBSITE LOGIC
-You normally do not need to edit this file.
-Edit data.js instead.
-=============================================================
-*/
-
 let activeFilter = "all";
+let countdownTimer;
 
 const scheduleList = document.getElementById("scheduleList");
 const leagueGrid = document.getElementById("leagueGrid");
-const todayEvents = document.getElementById("todayEvents");
+const nextRaceContainer = document.getElementById("nextRace");
 const scheduleEmpty = document.getElementById("scheduleEmpty");
 const leagueEmpty = document.getElementById("leagueEmpty");
 const leagueSearch = document.getElementById("leagueSearch");
@@ -22,6 +15,9 @@ const visibleRaces = RACES.filter(
   (race) => race.league.trim() !== "" && race.date.trim() !== "" && race.time.trim() !== ""
 );
 
+document.getElementById("leagueCount").textContent = visibleLeagues.length;
+document.getElementById("raceCount").textContent = getUpcomingRaces().length;
+
 document.getElementById("todayDate").textContent =
   new Intl.DateTimeFormat("en", {
     weekday: "short",
@@ -29,44 +25,74 @@ document.getElementById("todayDate").textContent =
     month: "short"
   }).format(new Date());
 
-renderToday();
+renderNextRace();
 renderSchedule();
 renderLeagues();
 
-function renderToday() {
-  const today = getLocalDateString(new Date());
+function getUpcomingRaces() {
+  const now = new Date();
 
-  const todaysRaces = [...visibleRaces]
-    .filter((race) => race.date === today)
-    .sort((a, b) => a.time.localeCompare(b.time));
+  return [...visibleRaces]
+    .filter((race) => getRaceDate(race) >= now)
+    .sort((a, b) => getRaceDate(a) - getRaceDate(b));
+}
 
-  if (todaysRaces.length === 0) {
-    todayEvents.innerHTML = `
+function renderNextRace() {
+  const nextRace = getUpcomingRaces()[0];
+
+  if (!nextRace) {
+    nextRaceContainer.innerHTML = `
       <div class="empty-state">
-        No races are scheduled today.
+        No upcoming races have been added yet.
       </div>
     `;
     return;
   }
 
-  todayEvents.innerHTML = todaysRaces
-    .map((race) => `
-      <article class="today-event">
-        <div class="today-event-time">${formatTime(race.time)}</div>
+  nextRaceContainer.innerHTML = `
+    <article class="next-race-card">
+      <span class="eyebrow">${escapeHtml(nextRace.category || "UPCOMING EVENT")}</span>
+      <h3>${escapeHtml(nextRace.league)}</h3>
+      <p>
+        ${escapeHtml(nextRace.event || "Race Event")}
+        ${nextRace.circuit ? ` · ${escapeHtml(nextRace.circuit)}` : ""}
+      </p>
 
-        <div>
-          <h3>${escapeHtml(race.league)}</h3>
-          <p>${escapeHtml(race.event || "Race Event")}${race.circuit ? ` · ${escapeHtml(race.circuit)}` : ""}</p>
-        </div>
+      <div class="countdown">
+        <div class="countdown-item"><strong id="days">0</strong><span>Days</span></div>
+        <div class="countdown-item"><strong id="hours">0</strong><span>Hours</span></div>
+        <div class="countdown-item"><strong id="minutes">0</strong><span>Minutes</span></div>
+        <div class="countdown-item"><strong id="seconds">0</strong><span>Seconds</span></div>
+      </div>
 
-        ${
-          race.link
-            ? `<a class="small-link" href="${safeUrl(race.link)}" target="_blank" rel="noopener noreferrer">↗</a>`
-            : ""
-        }
-      </article>
-    `)
-    .join("");
+      ${
+        nextRace.link
+          ? `<a class="button primary" href="${safeUrl(nextRace.link)}" target="_blank" rel="noopener noreferrer">Open Event</a>`
+          : ""
+      }
+    </article>
+  `;
+
+  updateCountdown(nextRace);
+  countdownTimer = setInterval(() => updateCountdown(nextRace), 1000);
+}
+
+function updateCountdown(race) {
+  const distance = getRaceDate(race) - new Date();
+
+  if (distance <= 0) {
+    clearInterval(countdownTimer);
+    document.getElementById("days").textContent = "0";
+    document.getElementById("hours").textContent = "0";
+    document.getElementById("minutes").textContent = "0";
+    document.getElementById("seconds").textContent = "0";
+    return;
+  }
+
+  document.getElementById("days").textContent = Math.floor(distance / 86400000);
+  document.getElementById("hours").textContent = Math.floor((distance % 86400000) / 3600000);
+  document.getElementById("minutes").textContent = Math.floor((distance % 3600000) / 60000);
+  document.getElementById("seconds").textContent = Math.floor((distance % 60000) / 1000);
 }
 
 function renderSchedule() {
@@ -130,9 +156,7 @@ function renderLeagues(searchText = "") {
         <span class="league-category">${escapeHtml(league.category || "Racing League")}</span>
         <h3>${escapeHtml(league.name)}</h3>
 
-        <p>
-          ${escapeHtml(league.description || "Fortnite racing league community.")}
-        </p>
+        <p>${escapeHtml(league.description || "Fortnite racing league community.")}</p>
 
         <div class="league-links">
           ${
@@ -151,19 +175,15 @@ function getFilteredRaces() {
 
   return [...visibleRaces]
     .filter((race) => {
-      if (activeFilter === "today") {
-        return race.date === today;
-      }
-
-      if (activeFilter === "week") {
-        return isWithinNextSevenDays(race.date);
-      }
-
+      if (activeFilter === "today") return race.date === today;
+      if (activeFilter === "week") return isWithinNextSevenDays(race.date);
       return true;
     })
-    .sort((a, b) =>
-      `${a.date}T${a.time}`.localeCompare(`${b.date}T${b.time}`)
-    );
+    .sort((a, b) => getRaceDate(a) - getRaceDate(b));
+}
+
+function getRaceDate(race) {
+  return new Date(`${race.date}T${race.time}:00`);
 }
 
 function isWithinNextSevenDays(dateString) {
@@ -187,7 +207,6 @@ function formatDate(dateString) {
       day: "numeric",
       month: "short"
     }).format(date),
-
     year: date.getFullYear()
   };
 }

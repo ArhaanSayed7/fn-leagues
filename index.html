@@ -38,31 +38,42 @@
   <main>
     <section class="hero section" id="home">
       <div class="hero-copy">
-        <span class="eyebrow">FORTNITE RACING, IN ONE PLACE</span>
+        <span class="eyebrow">FORTNITE RACING, ORGANIZED</span>
 
         <h1>
-          Every league.<br>
-          <span>One beautiful hub.</span>
+          Find your next<br>
+          <span>race community.</span>
         </h1>
 
         <p>
-          Check which Fortnite racing leagues are active today, view upcoming
-          events, and find every Discord community from one clean website.
+          Browse Fortnite racing leagues, see what is racing today,
+          and access every Discord community from one polished hub.
         </p>
 
         <div class="hero-actions">
           <a class="button primary" href="#schedule">View Schedule</a>
           <a class="button secondary" href="#leagues">Browse Leagues</a>
         </div>
+
+        <div class="hero-stats">
+          <div class="stat-card">
+            <strong id="leagueCount">0</strong>
+            <span>Listed leagues</span>
+          </div>
+          <div class="stat-card">
+            <strong id="raceCount">0</strong>
+            <span>Upcoming races</span>
+          </div>
+        </div>
       </div>
 
-      <div class="glass-card today-panel">
+      <div class="glass-card next-race-panel">
         <div class="panel-heading">
-          <span>Racing Today</span>
+          <span>Next Race</span>
           <span id="todayDate"></span>
         </div>
 
-        <div id="todayEvents"></div>
+        <div id="nextRace"></div>
       </div>
     </section>
 
@@ -117,7 +128,6 @@
     <a href="#home">Back to top ↑</a>
   </footer>
 
-  <!-- Edit website content inside data.js -->
   <script src="data.js"></script>
   <script src="script.js"></script>
 </body>

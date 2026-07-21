@@ -1,25 +1,18 @@
-/* =========================================================
-   FN LEAGUES
-   Soft pink and purple theme
-   Most content should be edited in data.js
-   ========================================================= */
-
 * {
   box-sizing: border-box;
 }
 
 :root {
-  --background: #fff9fd;
-  --background-secondary: #f7f2ff;
-  --panel: rgba(255, 255, 255, 0.68);
-  --panel-strong: rgba(255, 255, 255, 0.88);
+  --background: #fffafd;
+  --background-secondary: #f6f1ff;
+  --panel: rgba(255, 255, 255, 0.7);
   --text: #2d2638;
-  --muted: #7e748c;
-  --line: rgba(113, 82, 145, 0.13);
-  --pink: #f4b9db;
-  --pink-strong: #e997c9;
-  --purple: #cbb7ff;
-  --purple-strong: #a98ae8;
+  --muted: #7d738a;
+  --line: rgba(109, 81, 139, 0.13);
+  --pink: #f2b9dc;
+  --purple: #cab7ff;
+  --blue: #c8ddff;
+  --purple-strong: #9c7ddd;
   --gradient: linear-gradient(135deg, #f7c5e4 0%, #d8c6ff 55%, #c4d9ff 100%);
   --max-width: 1180px;
 }
@@ -33,8 +26,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   color: var(--text);
-  background:
-    linear-gradient(180deg, var(--background) 0%, var(--background-secondary) 100%);
+  background: linear-gradient(180deg, var(--background), var(--background-secondary));
   font-family: "Inter", Arial, sans-serif;
 }
 
@@ -52,33 +44,33 @@ input {
   position: fixed;
   z-index: -1;
   border-radius: 50%;
-  filter: blur(22px);
-  opacity: 0.55;
+  filter: blur(30px);
+  opacity: 0.52;
   pointer-events: none;
 }
 
 .orb-one {
-  width: 340px;
-  height: 340px;
+  width: 390px;
+  height: 390px;
   top: 90px;
-  right: -80px;
-  background: #f7c0df;
+  right: -100px;
+  background: var(--pink);
 }
 
 .orb-two {
-  width: 420px;
-  height: 420px;
-  top: 520px;
-  left: -130px;
-  background: #d8c8ff;
+  width: 460px;
+  height: 460px;
+  top: 570px;
+  left: -150px;
+  background: var(--purple);
 }
 
 .orb-three {
-  width: 300px;
-  height: 300px;
-  right: 12%;
-  bottom: 60px;
-  background: #c9ddff;
+  width: 330px;
+  height: 330px;
+  right: 10%;
+  bottom: 40px;
+  background: var(--blue);
 }
 
 .site-header {
@@ -91,7 +83,7 @@ input {
   gap: 24px;
   padding: 16px max(24px, calc((100vw - var(--max-width)) / 2));
   border-bottom: 1px solid var(--line);
-  background: rgba(255, 249, 253, 0.72);
+  background: rgba(255, 250, 253, 0.72);
   backdrop-filter: blur(20px);
 }
 
@@ -106,7 +98,7 @@ input {
   place-items: center;
   width: 46px;
   height: 46px;
-  color: #ffffff;
+  color: #fff;
   background: var(--gradient);
   border-radius: 15px 6px 15px 6px;
   box-shadow: 0 10px 30px rgba(202, 167, 235, 0.28);
@@ -122,7 +114,6 @@ input {
 .brand strong {
   font-family: "Outfit", sans-serif;
   font-size: 1.02rem;
-  letter-spacing: 0.01em;
 }
 
 .brand small {
@@ -146,7 +137,7 @@ nav a {
 
 nav a:hover {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.62);
+  background: rgba(255,255,255,0.62);
 }
 
 .menu-button {
@@ -232,27 +223,56 @@ h1 span {
 }
 
 .button.primary {
-  color: #ffffff;
+  color: #fff;
   border-color: transparent;
   background: var(--gradient);
   box-shadow: 0 12px 30px rgba(190, 155, 232, 0.25);
 }
 
 .button.secondary {
-  background: rgba(255, 255, 255, 0.68);
+  background: rgba(255,255,255,0.68);
   backdrop-filter: blur(14px);
 }
 
-.glass-card {
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  background: var(--panel);
-  backdrop-filter: blur(22px);
-  box-shadow:
-    0 24px 70px rgba(135, 105, 158, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+.hero-stats {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
 }
 
-.today-panel {
+.stat-card {
+  min-width: 145px;
+  padding: 16px;
+  border: 1px solid rgba(255,255,255,0.74);
+  border-radius: 18px;
+  background: rgba(255,255,255,0.58);
+  backdrop-filter: blur(16px);
+}
+
+.stat-card strong,
+.stat-card span {
+  display: block;
+}
+
+.stat-card strong {
+  font-family: "Outfit", sans-serif;
+  font-size: 1.55rem;
+}
+
+.stat-card span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.glass-card {
+  border: 1px solid rgba(255,255,255,0.72);
+  background: var(--panel);
+  backdrop-filter: blur(22px);
+  box-shadow: 0 24px 70px rgba(135,105,158,0.14);
+}
+
+.next-race-panel {
   padding: 24px;
   border-radius: 28px;
 }
@@ -268,43 +288,52 @@ h1 span {
   text-transform: uppercase;
 }
 
-.today-event {
-  display: grid;
-  grid-template-columns: 82px 1fr auto;
-  align-items: center;
-  gap: 14px;
-  padding: 16px;
-  margin-top: 12px;
-  border: 1px solid rgba(122, 95, 148, 0.11);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.62);
+.next-race-card {
+  padding: 22px;
+  border: 1px solid rgba(122,95,148,0.11);
+  border-radius: 20px;
+  background: rgba(255,255,255,0.66);
 }
 
-.today-event-time {
-  color: var(--purple-strong);
-  font-family: "Outfit", sans-serif;
-  font-weight: 800;
+.next-race-card h3 {
+  margin-bottom: 6px;
+  font-size: 1.3rem;
 }
 
-.today-event h3 {
-  margin-bottom: 5px;
-  font-size: 1rem;
-}
-
-.today-event p {
-  margin: 0;
+.next-race-card p {
+  margin-bottom: 18px;
   color: var(--muted);
-  font-size: 0.82rem;
 }
 
-.small-link {
+.countdown {
   display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  color: #ffffff;
-  border-radius: 12px;
-  background: var(--gradient);
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.countdown-item {
+  padding: 12px 8px;
+  border-radius: 14px;
+  background: rgba(216,198,255,0.28);
+  text-align: center;
+}
+
+.countdown-item strong,
+.countdown-item span {
+  display: block;
+}
+
+.countdown-item strong {
+  font-family: "Outfit", sans-serif;
+  font-size: 1.15rem;
+}
+
+.countdown-item span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.67rem;
+  text-transform: uppercase;
 }
 
 .section-heading {
@@ -328,8 +357,7 @@ h2 {
   padding: 5px;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.58);
-  backdrop-filter: blur(14px);
+  background: rgba(255,255,255,0.58);
 }
 
 .filter-button {
@@ -343,7 +371,7 @@ h2 {
 }
 
 .filter-button.active {
-  color: #ffffff;
+  color: #fff;
   background: var(--gradient);
 }
 
@@ -358,11 +386,11 @@ h2 {
   align-items: center;
   gap: 24px;
   padding: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255,255,255,0.72);
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.68);
+  background: rgba(255,255,255,0.68);
   backdrop-filter: blur(18px);
-  box-shadow: 0 16px 40px rgba(135, 105, 158, 0.09);
+  box-shadow: 0 16px 40px rgba(135,105,158,0.09);
 }
 
 .schedule-date {
@@ -405,9 +433,9 @@ h2 {
 .category-chip {
   padding: 7px 10px;
   color: var(--purple-strong);
-  border: 1px solid rgba(169, 138, 232, 0.18);
+  border: 1px solid rgba(169,138,232,0.18);
   border-radius: 999px;
-  background: rgba(218, 202, 255, 0.3);
+  background: rgba(218,202,255,0.3);
   font-size: 0.74rem;
   font-weight: 800;
 }
@@ -419,13 +447,12 @@ h2 {
   border: 1px solid var(--line);
   border-radius: 14px;
   outline: none;
-  background: rgba(255, 255, 255, 0.68);
-  backdrop-filter: blur(14px);
+  background: rgba(255,255,255,0.68);
 }
 
 .search-box:focus {
-  border-color: rgba(169, 138, 232, 0.45);
-  box-shadow: 0 0 0 4px rgba(203, 183, 255, 0.16);
+  border-color: rgba(169,138,232,0.45);
+  box-shadow: 0 0 0 4px rgba(203,183,255,0.16);
 }
 
 .league-grid {
@@ -439,17 +466,17 @@ h2 {
   min-height: 280px;
   flex-direction: column;
   padding: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255,255,255,0.75);
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.67);
+  background: rgba(255,255,255,0.67);
   backdrop-filter: blur(20px);
-  box-shadow: 0 18px 45px rgba(135, 105, 158, 0.1);
+  box-shadow: 0 18px 45px rgba(135,105,158,0.1);
   transition: 0.22s ease;
 }
 
 .league-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 24px 55px rgba(135, 105, 158, 0.16);
+  box-shadow: 0 24px 55px rgba(135,105,158,0.16);
 }
 
 .league-logo {
@@ -458,7 +485,7 @@ h2 {
   width: 62px;
   height: 62px;
   margin-bottom: 24px;
-  color: #ffffff;
+  color: #fff;
   background: var(--gradient);
   border-radius: 18px 7px 18px 7px;
   font-family: "Outfit", sans-serif;
@@ -488,21 +515,19 @@ h2 {
 
 .league-links {
   display: flex;
-  flex-wrap: wrap;
   gap: 9px;
 }
 
 .league-links .button {
   flex: 1;
-  min-width: 100px;
 }
 
 .empty-state {
   padding: 38px;
   color: var(--muted);
-  border: 1px dashed rgba(122, 95, 148, 0.2);
+  border: 1px dashed rgba(122,95,148,0.2);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.46);
+  background: rgba(255,255,255,0.46);
   text-align: center;
 }
 
@@ -567,8 +592,7 @@ footer strong {
     padding: 12px;
     border: 1px solid var(--line);
     border-radius: 16px;
-    background: rgba(255, 249, 253, 0.94);
-    backdrop-filter: blur(18px);
+    background: rgba(255,249,253,0.94);
   }
 
   nav.open {
@@ -577,6 +601,10 @@ footer strong {
 
   h1 {
     font-size: clamp(3rem, 17vw, 5rem);
+  }
+
+  .hero-stats {
+    flex-direction: column;
   }
 
   .section-heading {
@@ -606,11 +634,6 @@ footer strong {
 
   .league-grid {
     grid-template-columns: 1fr;
-  }
-
-  .today-event {
-    grid-template-columns: 70px 1fr auto;
-    gap: 10px;
   }
 
   footer {

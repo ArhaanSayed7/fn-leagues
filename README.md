@@ -1,40 +1,27 @@
-# FN Leagues
+# FN Leagues V3
 
-A soft pink and purple Fortnite racing league schedule and directory website.
+This version includes:
 
-## The only file you normally edit
+- Soft pink and purple gradient theme
+- 30 empty league slots
+- 20 empty race slots
+- League search
+- Schedule filters
+- Automatic league and race counts
+- Countdown to the next race
+- Mobile-friendly layout
 
-Open:
+## Only edit data.js
+
+You normally only need to change:
 
 `data.js`
 
-That file contains:
-
-- Empty league names
-- Empty Discord links
-- Empty schedule entries
-
-The website automatically hides completely empty league and race blocks.
-
----
+Empty league and race slots are hidden automatically.
 
 ## Add a league
 
-Open `data.js`.
-
-Find:
-
-```js
-{
-  name: "",
-  abbreviation: "",
-  category: "",
-  description: "",
-  discord: ""
-}
-```
-
-Fill it in like this:
+Fill in one of the 30 league slots:
 
 ```js
 {
@@ -46,26 +33,9 @@ Fill it in like this:
 }
 ```
 
----
-
 ## Add a race
 
-Find an empty race block:
-
-```js
-{
-  league: "",
-  date: "",
-  time: "",
-  timezone: "GMT+4",
-  event: "",
-  category: "",
-  circuit: "",
-  link: ""
-}
-```
-
-Fill it in:
+Fill in one of the race slots:
 
 ```js
 {
@@ -80,33 +50,15 @@ Fill it in:
 }
 ```
 
-Date format:
+Date format: `YYYY-MM-DD`
 
-`YYYY-MM-DD`
+Time format: `20:00` means 8:00 PM.
 
-Time format:
+## Uploading to GitHub
 
-`20:00` means 8:00 PM.
-
----
-
-## Upload to GitHub
-
-1. Open your `league-grid` repository.
-2. Click **uploading an existing file**.
-3. Unzip this download.
-4. Drag all five files into GitHub.
-5. Scroll down.
+1. Unzip this download.
+2. Open your GitHub repository.
+3. Click **Add file** and then **Upload files**.
+4. Drag in all five files.
+5. Choose to replace the older versions.
 6. Click **Commit changes**.
-
-If GitHub asks whether to replace older files, replace them.
-
----
-
-## Files included
-
-- `index.html`
-- `styles.css`
-- `data.js`
-- `script.js`
-- `README.md`
