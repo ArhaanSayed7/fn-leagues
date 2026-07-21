@@ -1,37 +1,44 @@
-# FN Leagues 2.0 — Phase 7
+# FN Leagues 2.0 — Phase 9
 
-Phase 7 adds complete league session history and a countdown for every upcoming race.
+Phase 9 redesigns the public homepage.
 
-## New features
+## New homepage features
 
-- Every league page keeps a complete archive of past sessions
-- History is automatically generated from race dates
-- Newest completed sessions appear first
-- Every upcoming race has its own countdown
-- Countdowns update every second
-- The next-event countdown now includes seconds
-- The league summary shows how many sessions have been held
-- Past sessions retain event and replay/stream links
+- Stronger esports-style hero section
+- Featured league spotlight
+- Featured league banner, logo and tier
+- Horizontal featured-leagues carousel
+- Improved live-race cards
+- Next-race feature with live countdown
+- Animated league, race and ranking statistics
+- Searchable schedule
+- Filter schedule by league
+- Countdown displayed on schedule entries
+- Better mobile navigation
+- More polished visual hierarchy
+- Stronger motion, depth and hover effects
 
-## How history works
+## Database changes
 
-A race moves into Session History automatically when:
+No new Supabase SQL is required.
 
-- Its scheduled date and time have passed
-- It is not currently marked live
+This phase uses existing:
 
-No manual archive button is needed.
+- Featured league setting
+- League banners and logos
+- Race schedule
+- Live race status
+- League rankings
 
 ## Update GitHub
 
 Upload:
 
-- league.js
+- index.html
+- app.js
 - styles.css
 - README.md
 
-You may also upload `league.html`; it is included for convenience.
-
 Keep your existing `config.js`.
 
-No Supabase SQL update is required.
+Cloudflare will deploy automatically after the commit.
