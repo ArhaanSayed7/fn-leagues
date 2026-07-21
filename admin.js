@@ -522,7 +522,7 @@ function normalizeSavedZone(value) {
 async function loadRankings() {
   const { data, error } = await client
     .from("league_rankings")
-    .select("*, leagues(name, abbreviation, logo_url)")
+    .select("*, leagues(name, abbreviation, logo_url, banner_url)")
     .order("position", { ascending: true });
 
   if (error) {
@@ -562,8 +562,9 @@ function renderRankingList() {
       <div class="admin-list-copy">
         <strong>${escapeHtml(ranking.leagues?.name || "Unknown league")}</strong>
         <span>
-          ${ranking.points} pts · ${ranking.wins} wins · ${ranking.podiums} podiums
-          ${ranking.rating !== null ? ` · Rating ${ranking.rating}` : ""}
+          <span class="tier-badge tier-${String(ranking.tier || "C").toLowerCase()}">
+            ${escapeHtml(String(ranking.tier || "C").toUpperCase())} Tier
+          </span>
         </span>
       </div>
 
@@ -584,10 +585,7 @@ window.editRanking = function (id) {
   $("rankingId").value = ranking.id;
   $("rankingLeague").value = ranking.league_id;
   $("rankingPosition").value = ranking.position;
-  $("rankingPoints").value = ranking.points;
-  $("rankingWins").value = ranking.wins;
-  $("rankingPodiums").value = ranking.podiums;
-  $("rankingRating").value = ranking.rating ?? "";
+  $("rankingTier").value = ranking.tier || "C";
   $("rankingFormTitle").textContent = "Edit Ranking";
 
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -625,12 +623,7 @@ async function saveRanking(event) {
     const payload = {
       league_id: leagueId,
       position: Number($("rankingPosition").value),
-      points: Number($("rankingPoints").value || 0),
-      wins: Number($("rankingWins").value || 0),
-      podiums: Number($("rankingPodiums").value || 0),
-      rating: $("rankingRating").value === ""
-        ? null
-        : Number($("rankingRating").value),
+      tier: $("rankingTier").value,
       updated_at: new Date().toISOString()
     };
 
@@ -654,9 +647,7 @@ async function saveRanking(event) {
 function clearRankingForm(clearMessage = true) {
   $("rankingForm").reset();
   $("rankingId").value = "";
-  $("rankingPoints").value = "0";
-  $("rankingWins").value = "0";
-  $("rankingPodiums").value = "0";
+  $("rankingTier").value = "S";
   $("rankingFormTitle").textContent = "Add Ranking";
 
   if (clearMessage) {

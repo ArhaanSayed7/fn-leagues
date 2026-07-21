@@ -63,11 +63,10 @@ async function loadLeague() {
             ? `
               <div class="large-position">#${ranking.position}</div>
 
-              <div class="mini-stats">
-                <span><strong>${ranking.points}</strong> Points</span>
-                <span><strong>${ranking.wins}</strong> Wins</span>
-                <span><strong>${ranking.podiums}</strong> Podiums</span>
-                <span><strong>${ranking.rating ?? "—"}</strong> Rating</span>
+              <div class="league-tier-display">
+                <span class="tier-badge tier-${String(ranking.tier || "C").toLowerCase()}">
+                  ${esc(String(ranking.tier || "C").toUpperCase())} Tier
+                </span>
               </div>
             `
             : `<p class="muted">This league has not been ranked yet.</p>`

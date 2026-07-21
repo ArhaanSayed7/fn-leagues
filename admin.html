@@ -137,13 +137,20 @@
                   </select>
                 </label>
 
-                <label>Position<input id="rankingPosition" type="number" min="1" required></label>
-                <label>Points<input id="rankingPoints" type="number" min="0" step="0.01" value="0"></label>
+                <label>
+                  Position
+                  <input id="rankingPosition" type="number" min="1" required>
+                </label>
 
-                <label>Wins<input id="rankingWins" type="number" min="0" value="0"></label>
-                <label>Podiums<input id="rankingPodiums" type="number" min="0" value="0"></label>
-
-                <label class="full-span">Rating<input id="rankingRating" type="number" min="0" step="0.1" placeholder="Optional"></label>
+                <label>
+                  Tier
+                  <select id="rankingTier" required>
+                    <option value="S">S Tier</option>
+                    <option value="A">A Tier</option>
+                    <option value="B">B Tier</option>
+                    <option value="C">C Tier</option>
+                  </select>
+                </label>
               </div>
 
               <button class="button primary full" type="submit">Save Ranking</button>

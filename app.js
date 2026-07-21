@@ -17,7 +17,7 @@ async function loadPublicSite() {
       supabaseClient.from("races").select("*").order("race_date", { ascending: true }),
       supabaseClient
         .from("league_rankings")
-        .select("*, leagues(name, abbreviation, logo_url)")
+        .select("*, leagues(name, abbreviation, logo_url, banner_url)")
         .order("position", { ascending: true })
     ]);
 
@@ -140,16 +140,46 @@ function renderRankings(rankings) {
   empty.classList.toggle("hidden", rankings.length > 0);
   wrap.classList.toggle("hidden", rankings.length === 0);
 
-  body.innerHTML = rankings.map((ranking, index) => `
-    <tr class="ranking-row reveal-row" style="--row-delay:${index * 55}ms">
-      <td><strong>#${ranking.position}</strong></td>
-      <td>${escapeHtml(ranking.leagues?.name || "Unknown league")}</td>
-      <td>${ranking.points}</td>
-      <td>${ranking.wins}</td>
-      <td>${ranking.podiums}</td>
-      <td>${ranking.rating ?? "—"}</td>
-    </tr>
-  `).join("");
+  body.innerHTML = rankings.map((ranking, index) => {
+    const league = ranking.leagues || {};
+    const fallback = league.abbreviation || String(league.name || "LG").slice(0, 3).toUpperCase();
+    const bannerStyle = league.banner_url
+      ? `style="--ranking-banner:url('${escapeHtml(league.banner_url)}')"`
+      : "";
+
+    return `
+      <tr class="ranking-row reveal-row tier-${String(ranking.tier || "C").toLowerCase()}" style="--row-delay:${index * 55}ms">
+        <td class="ranking-position-cell">
+          <strong>#${ranking.position}</strong>
+        </td>
+
+        <td class="ranking-league-cell" ${bannerStyle}>
+          <div class="ranking-league-overlay"></div>
+
+          <div class="ranking-league-content">
+            <div class="ranking-league-logo">
+              ${
+                league.logo_url
+                  ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name || "League")} logo">`
+                  : `<span>${escapeHtml(fallback)}</span>`
+              }
+            </div>
+
+            <div>
+              <strong>${escapeHtml(league.name || "Unknown league")}</strong>
+              <small>${escapeHtml(league.abbreviation || "")}</small>
+            </div>
+          </div>
+        </td>
+
+        <td class="ranking-tier-cell">
+          <span class="tier-badge tier-${String(ranking.tier || "C").toLowerCase()}">
+            ${escapeHtml(String(ranking.tier || "C").toUpperCase())} Tier
+          </span>
+        </td>
+      </tr>
+    `;
+  }).join("");
 }
 
 function renderLeagues(items) {
