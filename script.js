@@ -3,9 +3,11 @@ let countdownTimer;
 
 const scheduleList = document.getElementById("scheduleList");
 const leagueGrid = document.getElementById("leagueGrid");
+const featuredGrid = document.getElementById("featuredGrid");
 const nextRaceContainer = document.getElementById("nextRace");
 const scheduleEmpty = document.getElementById("scheduleEmpty");
 const leagueEmpty = document.getElementById("leagueEmpty");
+const featuredEmpty = document.getElementById("featuredEmpty");
 const leagueSearch = document.getElementById("leagueSearch");
 const menuButton = document.getElementById("menuButton");
 const mainNav = document.getElementById("mainNav");
@@ -26,6 +28,7 @@ document.getElementById("todayDate").textContent =
   }).format(new Date());
 
 renderNextRace();
+renderFeatured();
 renderSchedule();
 renderLeagues();
 
@@ -82,10 +85,7 @@ function updateCountdown(race) {
 
   if (distance <= 0) {
     clearInterval(countdownTimer);
-    document.getElementById("days").textContent = "0";
-    document.getElementById("hours").textContent = "0";
-    document.getElementById("minutes").textContent = "0";
-    document.getElementById("seconds").textContent = "0";
+    renderNextRace();
     return;
   }
 
@@ -93,6 +93,31 @@ function updateCountdown(race) {
   document.getElementById("hours").textContent = Math.floor((distance % 86400000) / 3600000);
   document.getElementById("minutes").textContent = Math.floor((distance % 3600000) / 60000);
   document.getElementById("seconds").textContent = Math.floor((distance % 60000) / 1000);
+}
+
+function renderFeatured() {
+  const featuredLeagues = visibleLeagues.filter((league) => league.featured === true);
+
+  featuredEmpty.classList.toggle("hidden", featuredLeagues.length > 0);
+
+  featuredGrid.innerHTML = featuredLeagues
+    .map((league) => `
+      <article class="featured-card">
+        <div class="featured-content">
+          ${renderFeaturedLogo(league)}
+          <span class="league-category">${escapeHtml(league.category || "Racing League")}</span>
+          <h3>${escapeHtml(league.name)}</h3>
+          <p>${escapeHtml(league.description || "Fortnite racing league community.")}</p>
+
+          ${
+            league.discord
+              ? `<a class="button primary" href="${safeUrl(league.discord)}" target="_blank" rel="noopener noreferrer">Join Discord</a>`
+              : ""
+          }
+        </div>
+      </article>
+    `)
+    .join("");
 }
 
 function renderSchedule() {
@@ -149,9 +174,7 @@ function renderLeagues(searchText = "") {
   leagueGrid.innerHTML = filteredLeagues
     .map((league) => `
       <article class="league-card">
-        <div class="league-logo">
-          ${escapeHtml(league.abbreviation || league.name.slice(0, 3).toUpperCase())}
-        </div>
+        ${renderLeagueLogo(league)}
 
         <span class="league-category">${escapeHtml(league.category || "Racing League")}</span>
         <h3>${escapeHtml(league.name)}</h3>
@@ -168,6 +191,42 @@ function renderLeagues(searchText = "") {
       </article>
     `)
     .join("");
+}
+
+function renderLeagueLogo(league) {
+  if (league.logo && league.logo.trim() !== "") {
+    return `
+      <div class="league-logo has-image">
+        <img
+          src="${escapeHtml(league.logo)}"
+          alt="${escapeHtml(league.name)} logo"
+          onerror="this.parentElement.classList.remove('has-image'); this.parentElement.innerHTML='${escapeHtml(getFallbackAbbreviation(league))}'"
+        />
+      </div>
+    `;
+  }
+
+  return `<div class="league-logo">${escapeHtml(getFallbackAbbreviation(league))}</div>`;
+}
+
+function renderFeaturedLogo(league) {
+  if (league.logo && league.logo.trim() !== "") {
+    return `
+      <div class="featured-logo">
+        <img
+          src="${escapeHtml(league.logo)}"
+          alt="${escapeHtml(league.name)} logo"
+          onerror="this.parentElement.innerHTML='<span>${escapeHtml(getFallbackAbbreviation(league))}</span>'"
+        />
+      </div>
+    `;
+  }
+
+  return `<div class="featured-logo"><span>${escapeHtml(getFallbackAbbreviation(league))}</span></div>`;
+}
+
+function getFallbackAbbreviation(league) {
+  return league.abbreviation || league.name.slice(0, 3).toUpperCase();
 }
 
 function getFilteredRaces() {

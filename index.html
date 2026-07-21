@@ -30,6 +30,7 @@
 
     <nav id="mainNav">
       <a href="#home">Home</a>
+      <a href="#featured">Featured</a>
       <a href="#schedule">Schedule</a>
       <a href="#leagues">Leagues</a>
     </nav>
@@ -46,7 +47,7 @@
         </h1>
 
         <p>
-          Browse Fortnite racing leagues, see what is racing today,
+          Discover Fortnite racing leagues, see what is racing next,
           and access every Discord community from one polished hub.
         </p>
 
@@ -60,6 +61,7 @@
             <strong id="leagueCount">0</strong>
             <span>Listed leagues</span>
           </div>
+
           <div class="stat-card">
             <strong id="raceCount">0</strong>
             <span>Upcoming races</span>
@@ -74,6 +76,20 @@
         </div>
 
         <div id="nextRace"></div>
+      </div>
+    </section>
+
+    <section class="section compact-section" id="featured">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">SPOTLIGHT</span>
+          <h2>Featured Leagues</h2>
+        </div>
+      </div>
+
+      <div id="featuredGrid" class="featured-grid"></div>
+      <div id="featuredEmpty" class="empty-state hidden">
+        Mark a league as featured inside data.js to show it here.
       </div>
     </section>
 

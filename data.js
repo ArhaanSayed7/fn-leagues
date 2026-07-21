@@ -1,7 +1,24 @@
 /*
 =============================================================
-FN LEAGUES — EDIT THIS FILE
-This is the only file you normally need to change.
+FN LEAGUES V4 — EDIT THIS FILE
+This is the only code file you normally need to change.
+=============================================================
+*/
+
+/*
+=============================================================
+HOW TO USE A CUSTOM LOGO
+
+1. Put the image inside:
+   images/leagues/
+
+2. Give it a simple filename, such as:
+   fes.png
+
+3. Set the logo line to:
+   logo: "images/leagues/fes.png",
+
+PNG images with transparent backgrounds work best.
 =============================================================
 */
 
@@ -9,7 +26,6 @@ This is the only file you normally need to change.
 =============================================================
 LEAGUE DIRECTORY — 30 EMPTY SLOTS
 
-Fill in any slot you want.
 Empty slots are hidden automatically.
 
 Example:
@@ -19,7 +35,9 @@ Example:
   abbreviation: "FES",
   category: "Formula Racing",
   description: "Weekly Fortnite formula racing league.",
-  discord: "https://discord.gg/example"
+  discord: "https://discord.gg/example",
+  logo: "images/leagues/fes.png",
+  featured: true
 }
 =============================================================
 */
@@ -27,11 +45,17 @@ Example:
 const LEAGUES = [
   // LEAGUE SLOT 1
   {
-    name: "Formula Elite Series",
-    abbreviation: "FES",
-    category: "A Tier",
-    description: "One of the fastest growing Fortnite Racing Communities",
-    discord: "https://discord.gg/bRXT8BPCtv"
+    name: "",
+    abbreviation: "",
+    category: "",
+    description: "",
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 2
@@ -40,7 +64,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 3
@@ -49,7 +79,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 4
@@ -58,7 +94,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 5
@@ -67,7 +109,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 6
@@ -76,7 +124,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 7
@@ -85,7 +139,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 8
@@ -94,7 +154,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 9
@@ -103,7 +169,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 10
@@ -112,7 +184,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 11
@@ -121,7 +199,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 12
@@ -130,7 +214,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 13
@@ -139,7 +229,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 14
@@ -148,7 +244,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 15
@@ -157,7 +259,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 16
@@ -166,7 +274,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 17
@@ -175,7 +289,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 18
@@ -184,7 +304,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 19
@@ -193,7 +319,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 20
@@ -202,7 +334,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 21
@@ -211,7 +349,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 22
@@ -220,7 +364,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 23
@@ -229,7 +379,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 24
@@ -238,7 +394,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 25
@@ -247,7 +409,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 26
@@ -256,7 +424,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 27
@@ -265,7 +439,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 28
@@ -274,7 +454,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 29
@@ -283,7 +469,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   },
 
   // LEAGUE SLOT 30
@@ -292,7 +484,13 @@ const LEAGUES = [
     abbreviation: "",
     category: "",
     description: "",
-    discord: ""
+    discord: "",
+
+    // Example: "images/leagues/fes.png"
+    logo: "",
+
+    // Change false to true to show this league in Featured Leagues
+    featured: false
   }
 ];
 

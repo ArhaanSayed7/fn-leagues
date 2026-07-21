@@ -5,7 +5,7 @@
 :root {
   --background: #fffafd;
   --background-secondary: #f6f1ff;
-  --panel: rgba(255, 255, 255, 0.7);
+  --panel: rgba(255, 255, 255, 0.72);
   --text: #2d2638;
   --muted: #7d738a;
   --line: rgba(109, 81, 139, 0.13);
@@ -83,7 +83,7 @@ input {
   gap: 24px;
   padding: 16px max(24px, calc((100vw - var(--max-width)) / 2));
   border-bottom: 1px solid var(--line);
-  background: rgba(255, 250, 253, 0.72);
+  background: rgba(255, 250, 253, 0.74);
   backdrop-filter: blur(20px);
 }
 
@@ -137,7 +137,7 @@ nav a {
 
 nav a:hover {
   color: var(--text);
-  background: rgba(255,255,255,0.62);
+  background: rgba(255,255,255,0.64);
 }
 
 .menu-button {
@@ -153,6 +153,10 @@ nav a:hover {
   width: min(var(--max-width), calc(100% - 40px));
   margin: 0 auto;
   padding: 95px 0;
+}
+
+.compact-section {
+  padding-top: 40px;
 }
 
 .hero {
@@ -230,7 +234,7 @@ h1 span {
 }
 
 .button.secondary {
-  background: rgba(255,255,255,0.68);
+  background: rgba(255,255,255,0.7);
   backdrop-filter: blur(14px);
 }
 
@@ -243,9 +247,9 @@ h1 span {
 .stat-card {
   min-width: 145px;
   padding: 16px;
-  border: 1px solid rgba(255,255,255,0.74);
+  border: 1px solid rgba(255,255,255,0.76);
   border-radius: 18px;
-  background: rgba(255,255,255,0.58);
+  background: rgba(255,255,255,0.6);
   backdrop-filter: blur(16px);
 }
 
@@ -266,7 +270,7 @@ h1 span {
 }
 
 .glass-card {
-  border: 1px solid rgba(255,255,255,0.72);
+  border: 1px solid rgba(255,255,255,0.74);
   background: var(--panel);
   backdrop-filter: blur(22px);
   box-shadow: 0 24px 70px rgba(135,105,158,0.14);
@@ -292,7 +296,7 @@ h1 span {
   padding: 22px;
   border: 1px solid rgba(122,95,148,0.11);
   border-radius: 20px;
-  background: rgba(255,255,255,0.66);
+  background: rgba(255,255,255,0.68);
 }
 
 .next-race-card h3 {
@@ -315,7 +319,7 @@ h1 span {
 .countdown-item {
   padding: 12px 8px;
   border-radius: 14px;
-  background: rgba(216,198,255,0.28);
+  background: rgba(216,198,255,0.3);
   text-align: center;
 }
 
@@ -349,6 +353,75 @@ h2 {
   font-family: "Outfit", sans-serif;
   font-size: clamp(2rem, 4vw, 3.25rem);
   letter-spacing: -0.04em;
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.featured-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 300px;
+  padding: 28px;
+  border: 1px solid rgba(255,255,255,0.78);
+  border-radius: 26px;
+  background: rgba(255,255,255,0.68);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 55px rgba(135,105,158,0.12);
+}
+
+.featured-card::after {
+  content: "";
+  position: absolute;
+  width: 230px;
+  height: 230px;
+  right: -90px;
+  bottom: -110px;
+  border-radius: 50%;
+  background: var(--gradient);
+  opacity: 0.32;
+}
+
+.featured-content {
+  position: relative;
+  z-index: 1;
+  max-width: 72%;
+}
+
+.featured-logo {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  margin-bottom: 24px;
+  padding: 12px;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.72);
+  box-shadow: 0 12px 30px rgba(135,105,158,0.12);
+}
+
+.featured-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.featured-logo span {
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+}
+
+.featured-card h3 {
+  margin-bottom: 8px;
+  font-size: 1.45rem;
+}
+
+.featured-card p {
+  color: var(--muted);
+  line-height: 1.65;
 }
 
 .filters {
@@ -386,9 +459,9 @@ h2 {
   align-items: center;
   gap: 24px;
   padding: 22px;
-  border: 1px solid rgba(255,255,255,0.72);
+  border: 1px solid rgba(255,255,255,0.74);
   border-radius: 20px;
-  background: rgba(255,255,255,0.68);
+  background: rgba(255,255,255,0.7);
   backdrop-filter: blur(18px);
   box-shadow: 0 16px 40px rgba(135,105,158,0.09);
 }
@@ -447,7 +520,7 @@ h2 {
   border: 1px solid var(--line);
   border-radius: 14px;
   outline: none;
-  background: rgba(255,255,255,0.68);
+  background: rgba(255,255,255,0.7);
 }
 
 .search-box:focus {
@@ -463,12 +536,12 @@ h2 {
 
 .league-card {
   display: flex;
-  min-height: 280px;
+  min-height: 300px;
   flex-direction: column;
   padding: 22px;
-  border: 1px solid rgba(255,255,255,0.75);
+  border: 1px solid rgba(255,255,255,0.77);
   border-radius: 22px;
-  background: rgba(255,255,255,0.67);
+  background: rgba(255,255,255,0.69);
   backdrop-filter: blur(20px);
   box-shadow: 0 18px 45px rgba(135,105,158,0.1);
   transition: 0.22s ease;
@@ -482,15 +555,27 @@ h2 {
 .league-logo {
   display: grid;
   place-items: center;
-  width: 62px;
-  height: 62px;
-  margin-bottom: 24px;
+  width: 92px;
+  height: 92px;
+  margin-bottom: 22px;
+  padding: 12px;
   color: #fff;
   background: var(--gradient);
-  border-radius: 18px 7px 18px 7px;
+  border-radius: 22px 8px 22px 8px;
   font-family: "Outfit", sans-serif;
   font-size: 0.82rem;
   font-weight: 800;
+}
+
+.league-logo.has-image {
+  background: rgba(255,255,255,0.75);
+  box-shadow: 0 10px 28px rgba(135,105,158,0.1);
+}
+
+.league-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .league-category {
@@ -527,7 +612,7 @@ h2 {
   color: var(--muted);
   border: 1px dashed rgba(122,95,148,0.2);
   border-radius: 18px;
-  background: rgba(255,255,255,0.46);
+  background: rgba(255,255,255,0.48);
   text-align: center;
 }
 
@@ -559,6 +644,7 @@ footer strong {
     padding-top: 72px;
   }
 
+  .featured-grid,
   .league-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -592,7 +678,7 @@ footer strong {
     padding: 12px;
     border: 1px solid var(--line);
     border-radius: 16px;
-    background: rgba(255,249,253,0.94);
+    background: rgba(255,249,253,0.95);
   }
 
   nav.open {
@@ -616,6 +702,15 @@ footer strong {
     width: fit-content;
   }
 
+  .featured-grid,
+  .league-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .featured-content {
+    max-width: 100%;
+  }
+
   .schedule-card {
     grid-template-columns: 1fr;
     gap: 14px;
@@ -630,10 +725,6 @@ footer strong {
   .schedule-actions {
     grid-column: auto;
     justify-content: space-between;
-  }
-
-  .league-grid {
-    grid-template-columns: 1fr;
   }
 
   footer {

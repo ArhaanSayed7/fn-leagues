@@ -1,27 +1,35 @@
-# FN Leagues V3
+# FN Leagues V4
 
 This version includes:
 
-- Soft pink and purple gradient theme
-- 30 empty league slots
-- 20 empty race slots
+- Custom league logos
+- Featured league section
+- 30 league slots
+- 20 race slots
 - League search
 - Schedule filters
-- Automatic league and race counts
-- Countdown to the next race
+- Next-race countdown
+- Automatic league and race totals
+- Soft pink and purple design
 - Mobile-friendly layout
 
-## Only edit data.js
+## Main file to edit
 
-You normally only need to change:
+Edit:
 
 `data.js`
 
-Empty league and race slots are hidden automatically.
+## Adding a custom logo
 
-## Add a league
+1. Put your logo inside:
 
-Fill in one of the 30 league slots:
+`images/leagues/`
+
+2. Use a simple filename, for example:
+
+`fes.png`
+
+3. Edit the league in `data.js`:
 
 ```js
 {
@@ -29,36 +37,57 @@ Fill in one of the 30 league slots:
   abbreviation: "FES",
   category: "Formula Racing",
   description: "Weekly Fortnite formula racing league.",
-  discord: "https://discord.gg/example"
+  discord: "https://discord.gg/example",
+  logo: "images/leagues/fes.png",
+  featured: true
 }
 ```
 
-## Add a race
+Use PNG images with transparent backgrounds where possible.
 
-Fill in one of the race slots:
+## Featured leagues
+
+Change:
 
 ```js
-{
-  league: "FES Formula 1",
-  date: "2026-07-25",
-  time: "20:00",
-  timezone: "GMT+4",
-  event: "Round 5",
-  category: "Formula Racing",
-  circuit: "Monaco",
-  link: "https://discord.gg/example"
-}
+featured: false
 ```
 
-Date format: `YYYY-MM-DD`
+to:
 
-Time format: `20:00` means 8:00 PM.
+```js
+featured: true
+```
 
-## Uploading to GitHub
+## Updating GitHub
 
-1. Unzip this download.
-2. Open your GitHub repository.
-3. Click **Add file** and then **Upload files**.
-4. Drag in all five files.
-5. Choose to replace the older versions.
+1. Open your GitHub repository.
+2. Click **Add file**.
+3. Click **Upload files**.
+4. Drag in the new V4 files.
+5. Also upload the `images` folder and its contents.
 6. Click **Commit changes**.
+
+Files with matching names will be replaced automatically.
+
+## Adding logos later
+
+1. Open the GitHub repository.
+2. Click **Add file → Upload files**.
+3. Drag the logo into the correct path.
+
+GitHub’s browser uploader may not place a file inside a folder automatically. The easiest method is to upload the full `images` folder from Finder when first installing V4.
+
+Later, you can open `images`, then `leagues`, choose **Add file → Upload files**, and upload new logos there.
+
+## Cloudflare
+
+Cloudflare is already connected to the GitHub repository.
+
+After each GitHub commit:
+
+1. Cloudflare automatically starts a new deployment.
+2. Wait roughly one minute.
+3. Refresh your `.pages.dev` website.
+
+You do not need to upload anything manually to Cloudflare.
