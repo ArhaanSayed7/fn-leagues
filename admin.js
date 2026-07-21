@@ -279,7 +279,7 @@ function renderLeagueList() {
       <div class="admin-list-logo">
         ${
           league.logo_url
-            ? `<img src="${escapeHtml(league.logo_url)}" alt="" loading="lazy" decoding="async">`
+            ? `<img src="${escapeHtml(league.logo_url)}" alt="">`
             : `<span>${escapeHtml(league.abbreviation || league.name.slice(0, 3).toUpperCase())}</span>`
         }
       </div>
@@ -425,8 +425,8 @@ window.editLeague = function (id) {
   $("formTitle").textContent = "Edit League";
 
   $("assetPreview").innerHTML = `
-    ${league.logo_url ? `<img src="${escapeHtml(league.logo_url)}" alt="Current logo" loading="lazy" decoding="async">` : ""}
-    ${league.banner_url ? `<img src="${escapeHtml(league.banner_url)}" alt="Current banner" loading="lazy" decoding="async">` : ""}
+    ${league.logo_url ? `<img src="${escapeHtml(league.logo_url)}" alt="Current logo">` : ""}
+    ${league.banner_url ? `<img src="${escapeHtml(league.banner_url)}" alt="Current banner">` : ""}
   `;
 
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -461,8 +461,8 @@ window.duplicateLeague = function (id) {
   $("formTitle").textContent = "Duplicate League";
 
   $("assetPreview").innerHTML = `
-    ${league.logo_url ? `<img src="${escapeHtml(league.logo_url)}" alt="Current logo" loading="lazy" decoding="async">` : ""}
-    ${league.banner_url ? `<img src="${escapeHtml(league.banner_url)}" alt="Current banner" loading="lazy" decoding="async">` : ""}
+    ${league.logo_url ? `<img src="${escapeHtml(league.logo_url)}" alt="Current logo">` : ""}
+    ${league.banner_url ? `<img src="${escapeHtml(league.banner_url)}" alt="Current banner">` : ""}
   `;
 
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -565,7 +565,7 @@ window.editRace = function (id) {
   $("raceEventUrl").value = race.event_url || "";
   $("raceStreamUrl").value = race.stream_url || "";
   $("raceBannerPreview").innerHTML = race.banner_url
-    ? `<img src="${escapeHtml(race.banner_url)}" alt="Current race artwork" loading="lazy" decoding="async">`
+    ? `<img src="${escapeHtml(race.banner_url)}" alt="Current race artwork">`
     : "";
   $("raceIsLive").checked = race.is_live === true;
   $("raceIsArchived").checked = race.is_archived === true;
@@ -661,7 +661,7 @@ window.duplicateRace = function (id) {
   $("raceEventUrl").value = race.event_url || "";
   $("raceStreamUrl").value = race.stream_url || "";
   $("raceBannerPreview").innerHTML = race.banner_url
-    ? `<img src="${escapeHtml(race.banner_url)}" alt="Copied race artwork" loading="lazy" decoding="async">`
+    ? `<img src="${escapeHtml(race.banner_url)}" alt="Copied race artwork">`
     : "";
   $("raceIsLive").checked = false;
   $("raceIsArchived").checked = false;
@@ -1291,7 +1291,7 @@ function renderTrendingSelector() {
       <span class="trending-option-logo">
         ${
           league.logo_url
-            ? `<img src="${escapeHtml(league.logo_url)}" alt="" loading="lazy" decoding="async">`
+            ? `<img src="${escapeHtml(league.logo_url)}" alt="">`
             : escapeHtml(league.abbreviation || league.name.slice(0, 3).toUpperCase())
         }
       </span>

@@ -200,7 +200,7 @@ function renderWeeklySpotlights() {
           <div class="community-feature-logo">
             ${
               league.logo_url
-                ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name)} logo" loading="lazy" decoding="async">`
+                ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name)} logo">`
                 : `<span>${escapeHtml(getLeagueInitials(league))}</span>`
             }
           </div>
@@ -388,7 +388,7 @@ function communityLeagueCard(league, index, label) {
       <div class="community-mini-logo">
         ${
           league.logo_url
-            ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name)} logo" loading="lazy" decoding="async">`
+            ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name)} logo">`
             : `<span>${escapeHtml(getLeagueInitials(league))}</span>`
         }
       </div>
@@ -517,7 +517,7 @@ function renderHeroSpotlight() {
         <div class="spotlight-logo">
           ${
             spotlight.logo_url
-              ? `<img src="${escapeHtml(spotlight.logo_url)}" alt="${escapeHtml(spotlight.name)} logo" loading="lazy" decoding="async">`
+              ? `<img src="${escapeHtml(spotlight.logo_url)}" alt="${escapeHtml(spotlight.name)} logo">`
               : `<span>${escapeHtml(getLeagueInitials(spotlight))}</span>`
           }
         </div>
@@ -605,7 +605,7 @@ function renderNextRaceFeature() {
         <div class="next-race-logo">
           ${
             league?.logo_url
-              ? `<img src="${escapeHtml(league.logo_url)}" alt="" loading="lazy" decoding="async">`
+              ? `<img src="${escapeHtml(league.logo_url)}" alt="">`
               : `<span>${escapeHtml(league ? getLeagueInitials(league) : "FDH")}</span>`
           }
         </div>
@@ -716,7 +716,7 @@ function renderLiveRaces() {
             <div class="homepage-live-logo">
               ${
                 league?.logo_url
-                  ? `<img src="${escapeHtml(league.logo_url)}" alt="" loading="lazy" decoding="async">`
+                  ? `<img src="${escapeHtml(league.logo_url)}" alt="">`
                   : `<span>${escapeHtml(league ? getLeagueInitials(league) : "FDH")}</span>`
               }
             </div>
@@ -797,7 +797,7 @@ function renderFeaturedCarousel() {
           <div class="featured-slide-logo">
             ${
               league.logo_url
-                ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name)} logo" loading="lazy" decoding="async">`
+                ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name)} logo">`
                 : `<span>${escapeHtml(getLeagueInitials(league))}</span>`
             }
           </div>
@@ -913,7 +913,7 @@ function renderSchedule() {
         <div class="homepage-schedule-logo">
           ${
             league?.logo_url
-              ? `<img src="${escapeHtml(league.logo_url)}" alt="" loading="lazy" decoding="async">`
+              ? `<img src="${escapeHtml(league.logo_url)}" alt="">`
               : `<span>${escapeHtml(league ? getLeagueInitials(league) : "FDH")}</span>`
           }
         </div>
@@ -1049,7 +1049,7 @@ function renderLeagues(items) {
       <div class="logo-frame">
         ${
           league.logo_url
-            ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name)} logo" loading="lazy" decoding="async">`
+            ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name)} logo">`
             : `<span>${escapeHtml(getLeagueInitials(league))}</span>`
         }
       </div>

@@ -5,28 +5,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FDH Admin</title>
-  <link rel="icon" type="image/png" href="images/logo/fdh-logo.png">
+  <link rel="icon" type="image/png" href="assets/fdh-logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body class="admin-body">
-  <div id="pageTransition" class="page-transition">
-    <div class="page-transition-logo">
-      <img src="images/logo/fdh-logo.png" alt="FDH">
-    </div>
-  </div>
-
-  <div id="cursorGlow" class="cursor-glow"></div>
-
   <div class="orb orb-one"></div>
   <div class="orb orb-two"></div>
 
   <main class="admin-shell">
     <section id="loginView" class="login-card glass">
       <a href="index.html" class="brand admin-brand">
-        <span class="brand-logo"><img src="images/logo/fdh-logo.png" alt="FDH logo"></span>
+        <span class="brand-logo"><img src="assets/fdh-logo.png" alt="FDH logo"></span>
         <span><strong>FDH</strong><small>Admin Dashboard</small></span>
       </a>
 
@@ -48,7 +40,7 @@
     <section id="dashboardView" class="dashboard hidden">
       <aside class="admin-sidebar glass">
         <a href="index.html" class="brand">
-          <span class="brand-logo"><img src="images/logo/fdh-logo.png" alt="FDH logo"></span>
+          <span class="brand-logo"><img src="assets/fdh-logo.png" alt="FDH logo"></span>
           <span><strong>FDH</strong><small>Admin Dashboard</small></span>
         </a>
 
@@ -595,7 +587,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
   <script src="config.js"></script>
-  <script src="js/admin.js"></script>
-  <script src="js/motion.js"></script>
+  <script src="admin.js"></script>
 </body>
 </html>
