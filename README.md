@@ -1,75 +1,67 @@
-# FN Leagues 2.0 — Phase 11
+# FN Leagues 2.0 — Phase 12A
 
-Phase 11 adds the Community Hub, draft publishing, and smart rankings.
+Phase 12A adds premium league identity and custom league themes.
 
-## Community Hub
+## New league identity features
 
-The homepage can now show:
+- Custom theme per league:
+  - Aurora
+  - Velocity
+  - Inferno
+  - Nebula
+  - Monochrome
+  - Neon
+- Custom accent colour
+- Verification badge:
+  - Verified
+  - Featured
+  - Official Partner
+- Owner name
+- Staff list
+- Contact button
+- Redesigned animated league hero
+- Theme-based particles, gradients and visual effects
+- Better About section
+- Better Staff section
+- Redesigned next-race card
 
-- Announcement banner
-- League of the Week
-- Race of the Week
-- Featured livestream
-- Trending leagues
-- Recently added leagues
+## Not included
 
-There are no news cards.
+This phase does not add:
 
-## Admin Community tab
-
-Admins can:
-
-- Create and style announcements
-- Add an announcement button and expiry
-- Choose League of the Week
-- Choose Race of the Week
-- Add a YouTube, Twitch or Kick stream
-- Select up to six trending leagues
-- Control recently added leagues
-- Save a private draft
-- Publish all Community Hub changes at once
-
-## Smart rankings
-
-Rankings now automatically adjust when:
-
-- Adding a ranked league
-- Moving a league up
-- Moving a league down
-- Inserting a league into an occupied position
-- Deleting a ranked league
-
-You can also:
-
-- Drag and drop rankings
-- Use up/down arrow buttons
-- Edit a tier without manually fixing every other position
+- League statistics
+- Years active
+- Founding date
+- Country
+- Past seasons
+- Season-by-season history
+- Race history section
+- Gallery system
 
 ## Required Supabase update
 
 Open:
 
-`phase-11-community-smart-rankings.sql`
+`phase-12a-league-identity.sql`
 
 Then:
 
 1. Open Supabase.
 2. Open SQL Editor.
 3. Create a new query.
-4. Paste the complete SQL file.
+4. Paste the full SQL file.
 5. Click Run.
 
 ## Update GitHub
 
 Upload:
 
-- index.html
-- app.js
 - admin.html
 - admin.js
+- league.js
 - styles.css
 - README.md
 
 Keep your existing `config.js`.
 
-Do not upload the SQL file to GitHub unless you want it stored as documentation.
+Cloudflare deploys automatically after the commit.

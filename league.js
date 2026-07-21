@@ -38,49 +38,65 @@ async function loadLeague() {
 
   const league = leagueResult.data;
   const ranking = rankingResult.data;
-  const races = (racesResult.data || []).filter((race) => race.is_archived !== true);
-  const now = DateTime.now();
+  const races = (racesResult.data || []).filter(
+    (race) => race.is_archived !== true
+  );
 
+  const now = DateTime.now();
   const liveRaces = races.filter((race) => race.is_live === true);
   const upcomingRaces = races
     .filter((race) => getRaceDateTime(race) >= now && race.is_live !== true)
     .sort((a, b) => getRaceDateTime(a).toMillis() - getRaceDateTime(b).toMillis());
 
-  const historyRaces = races
-    .filter((race) => getRaceDateTime(race) < now && race.is_live !== true)
-    .sort((a, b) => getRaceDateTime(b).toMillis() - getRaceDateTime(a).toMillis());
-
   const nextRace = upcomingRaces[0] || null;
+  const theme = getTheme(league.theme_key);
+  const accent = league.accent_color || theme.accent;
 
   document.title = `${league.name} | FN Leagues`;
 
+  document.documentElement.style.setProperty("--league-accent", accent);
+  document.documentElement.style.setProperty("--league-gradient", theme.gradient);
+  document.body.classList.add(`league-theme-${league.theme_key || "aurora"}`);
+
   page.innerHTML = `
     <section
-      class="league-profile-hero glass hero-reveal"
-      ${league.banner_url ? `style="--league-banner:url('${escapeAttribute(league.banner_url)}')"` : ""}
+      class="league-showcase-hero hero-reveal"
+      ${
+        league.banner_url
+          ? `style="--league-banner:url('${escapeHtml(league.banner_url)}')"`
+          : ""
+      }
     >
-      <div class="league-profile-shade"></div>
-      <div class="league-profile-glow"></div>
+      <div class="league-theme-wash"></div>
+      <div class="league-hero-particles"></div>
+      <div class="league-hero-grid"></div>
 
-      <div class="league-profile-main">
-        <div class="league-page-logo logo-float">
+      <div class="league-showcase-content">
+        <div class="league-showcase-logo logo-float">
           ${
             league.logo_url
-              ? `<img src="${escapeAttribute(league.logo_url)}" alt="${escapeHtml(league.name)} logo">`
+              ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name)} logo">`
               : `<span>${escapeHtml(getLeagueInitials(league))}</span>`
           }
         </div>
 
-        <div class="league-profile-copy">
-          <div class="league-profile-labels">
+        <div class="league-showcase-copy">
+          <div class="league-showcase-labels">
             <span class="eyebrow">${escapeHtml(league.category || "RACING LEAGUE")}</span>
+            ${renderLeagueBadge(league.badge_type)}
             ${league.featured ? `<span class="featured-pill">FEATURED</span>` : ""}
           </div>
 
           <h1>${escapeHtml(league.name)}</h1>
-          <p>${escapeHtml(league.description || "Fortnite racing league community.")}</p>
 
-          <div class="league-profile-actions">
+          <p>
+            ${escapeHtml(
+              league.description ||
+              "Fortnite racing league community."
+            )}
+          </p>
+
+          <div class="league-showcase-actions">
             ${
               league.discord_url
                 ? `<a class="button primary" href="${safeUrl(league.discord_url)}" target="_blank" rel="noopener">Join Discord</a>`
@@ -92,13 +108,19 @@ async function loadLeague() {
                 ? `<a class="button secondary" href="${safeUrl(league.website_url)}" target="_blank" rel="noopener">Website</a>`
                 : ""
             }
+
+            ${
+              league.contact_url
+                ? `<a class="button secondary" href="${safeUrl(league.contact_url)}" target="_blank" rel="noopener">Contact</a>`
+                : ""
+            }
           </div>
 
           ${renderSocialLinks(league)}
         </div>
       </div>
 
-      <div class="league-summary-grid">
+      <div class="league-showcase-meta">
         <article>
           <span>Ranking</span>
           <strong>${ranking ? `#${ranking.position}` : "—"}</strong>
@@ -108,59 +130,41 @@ async function loadLeague() {
           <span>Tier</span>
           ${
             ranking
-              ? `<strong class="summary-tier tier-${String(ranking.tier || "C").toLowerCase()}">${escapeHtml(String(ranking.tier || "C").toUpperCase())}</strong>`
+              ? `<strong class="summary-tier tier-${String(ranking.tier || "C").toLowerCase()}">${escapeHtml(String(ranking.tier || "C"))}</strong>`
               : `<strong>—</strong>`
           }
         </article>
 
         <article>
-          <span>Upcoming</span>
-          <strong>${upcomingRaces.length}</strong>
+          <span>Owner</span>
+          <strong>${escapeHtml(league.owner_name || "—")}</strong>
         </article>
 
         <article>
-          <span>Sessions held</span>
-          <strong>${historyRaces.length}</strong>
+          <span>Theme</span>
+          <strong>${escapeHtml(theme.label)}</strong>
         </article>
       </div>
     </section>
 
-    ${
-      liveRaces.length
-        ? `
-          <section class="league-live-section scroll-scene" id="league-live">
-            <div class="section-heading">
-              <div>
-                <span class="eyebrow">RACING NOW</span>
-                <h2>Live Events</h2>
-              </div>
-            </div>
+    <section class="league-identity-grid scroll-scene">
+      <article class="glass league-about-card reveal-card">
+        <span class="eyebrow">ABOUT THE LEAGUE</span>
+        <h2>${escapeHtml(league.name)}</h2>
 
-            <div class="league-live-grid">
-              ${liveRaces.map(renderLiveRace).join("")}
-            </div>
-          </section>
-        `
-        : ""
-    }
+        <p>
+          ${escapeHtml(
+            league.description ||
+            "No detailed league description has been added yet."
+          )}
+        </p>
 
-    <section class="league-overview-grid scroll-scene">
-      <article class="glass league-info-panel reveal-card">
-        <span class="eyebrow">LEAGUE STATUS</span>
-        <h2>${ranking ? `Ranked #${ranking.position}` : "Not ranked yet"}</h2>
+        <div class="league-about-details">
+          <div>
+            <span>Owner</span>
+            <strong>${escapeHtml(league.owner_name || "Not listed")}</strong>
+          </div>
 
-        ${
-          ranking
-            ? `
-              <div class="league-tier-showcase tier-${String(ranking.tier || "C").toLowerCase()}">
-                <span>${escapeHtml(String(ranking.tier || "C").toUpperCase())}</span>
-                <strong>Tier</strong>
-              </div>
-            `
-            : `<p class="muted">A ranking has not been assigned to this league yet.</p>`
-        }
-
-        <div class="league-information-list">
           <div>
             <span>Category</span>
             <strong>${escapeHtml(league.category || "Racing League")}</strong>
@@ -172,98 +176,70 @@ async function loadLeague() {
           </div>
 
           <div>
-            <span>Featured</span>
-            <strong>${league.featured ? "Yes" : "No"}</strong>
-          </div>
-
-          <div>
-            <span>Recorded sessions</span>
-            <strong>${historyRaces.length}</strong>
+            <span>Status</span>
+            <strong>
+              ${renderBadgeText(league.badge_type)}
+            </strong>
           </div>
         </div>
       </article>
 
-      <article class="glass next-event-panel reveal-card">
-        <span class="eyebrow">NEXT EVENT</span>
+      <article class="glass league-staff-card reveal-card">
+        <span class="eyebrow">LEAGUE TEAM</span>
+        <h2>Staff</h2>
 
         ${
-          nextRace
+          Array.isArray(league.staff_members) && league.staff_members.length
             ? `
-              <div class="next-event-date">
-                <strong>${getRaceDateTime(nextRace).toLocal().toFormat("d")}</strong>
-                <span>${getRaceDateTime(nextRace).toLocal().toFormat("LLL")}</span>
+              <div class="league-staff-list">
+                ${league.staff_members
+                  .map((name, index) => `
+                    <div class="league-staff-member">
+                      <span>${index + 1}</span>
+                      <strong>${escapeHtml(name)}</strong>
+                    </div>
+                  `)
+                  .join("")}
               </div>
-
-              <h2>${escapeHtml(nextRace.event_name || "Race event")}</h2>
-
-              <p>
-                ${nextRace.circuit ? `${escapeHtml(nextRace.circuit)} · ` : ""}
-                ${getRaceDateTime(nextRace).toLocal().toFormat("cccc, h:mm a")}
-              </p>
-
-              <div class="viewer-zone-note">
-                Shown in ${escapeHtml(Intl.DateTimeFormat().resolvedOptions().timeZone)}
-              </div>
-
-              <div
-                class="event-countdown"
-                data-race-countdown
-                data-race-date="${escapeAttribute(nextRace.race_date)}"
-                data-race-time="${escapeAttribute(String(nextRace.race_time || "00:00").slice(0, 5))}"
-                data-race-zone="${escapeAttribute(nextRace.timezone || "UTC")}"
-              >
-                <div><strong data-days>0</strong><span>Days</span></div>
-                <div><strong data-hours>0</strong><span>Hours</span></div>
-                <div><strong data-minutes>0</strong><span>Minutes</span></div>
-                <div><strong data-seconds>0</strong><span>Seconds</span></div>
-              </div>
-
-              ${
-                nextRace.event_url
-                  ? `<a class="button secondary" href="${safeUrl(nextRace.event_url)}" target="_blank" rel="noopener">Open Event</a>`
-                  : ""
-              }
             `
-            : `<div class="empty-state compact-empty">No upcoming races have been scheduled.</div>`
+            : `<div class="empty-state compact-empty">No staff members have been listed.</div>`
         }
       </article>
     </section>
 
-    <section class="league-events-section scroll-scene" id="league-events">
+    <section class="league-next-race-section scroll-scene">
       <div class="section-heading">
         <div>
-          <span class="eyebrow">UPCOMING SESSIONS</span>
-          <h2>Race Schedule</h2>
+          <span class="eyebrow">NEXT ON TRACK</span>
+          <h2>Next Race</h2>
         </div>
-
-        <span class="viewer-timezone-chip">
-          ${escapeHtml(Intl.DateTimeFormat().resolvedOptions().timeZone)}
-        </span>
       </div>
 
       ${
-        upcomingRaces.length
-          ? `<div class="league-event-timeline">${upcomingRaces.map((race, index) => renderUpcomingRace(race, index)).join("")}</div>`
-          : `<div class="empty-state">No upcoming races have been added.</div>`
+        nextRace
+          ? renderNextRace(nextRace, league)
+          : `<div class="empty-state">No upcoming race has been scheduled.</div>`
       }
     </section>
 
-    <section class="league-history-section scroll-scene" id="league-history">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">ARCHIVE</span>
-          <h2>Session History</h2>
-        </div>
+    ${
+      liveRaces.length
+        ? `
+          <section class="league-live-section scroll-scene">
+            <div class="section-heading">
+              <div>
+                <span class="eyebrow">LIVE NOW</span>
+                <h2>Live Events</h2>
+              </div>
+            </div>
 
-        <span class="history-count">${historyRaces.length} recorded</span>
-      </div>
-
-      ${
-        historyRaces.length
-          ? `<div class="league-history-list">${historyRaces.map((race, index) => renderHistoryRace(race, index)).join("")}</div>`
-          : `<div class="empty-state">No completed sessions have been recorded yet.</div>`
-      }
-    </section>
+            <div class="league-live-grid">
+              ${liveRaces.map(renderLiveRace).join("")}
+            </div>
+          </section>
+        `
+        : ""
+    }
   `;
 
   initializeCountdowns();
@@ -271,23 +247,78 @@ async function loadLeague() {
   initializeScrollExperience();
 }
 
+function getTheme(themeKey) {
+  const themes = {
+    aurora: {
+      label: "Aurora",
+      accent: "#9c7ddd",
+      gradient: "linear-gradient(135deg,#f2a8d0,#a78be8,#8fc6ff)"
+    },
+    velocity: {
+      label: "Velocity",
+      accent: "#4e8cff",
+      gradient: "linear-gradient(135deg,#2f63ff,#6cb7ff,#b2ddff)"
+    },
+    inferno: {
+      label: "Inferno",
+      accent: "#ff6a3d",
+      gradient: "linear-gradient(135deg,#ff3d3d,#ff7a32,#ffc06a)"
+    },
+    nebula: {
+      label: "Nebula",
+      accent: "#8f62ff",
+      gradient: "linear-gradient(135deg,#5a3ac8,#8f62ff,#d7a8ff)"
+    },
+    monochrome: {
+      label: "Monochrome",
+      accent: "#5f6570",
+      gradient: "linear-gradient(135deg,#252932,#6f7682,#d7d9df)"
+    },
+    neon: {
+      label: "Neon",
+      accent: "#16d4b5",
+      gradient: "linear-gradient(135deg,#00d4ff,#16d4b5,#9aff62)"
+    }
+  };
+
+  return themes[themeKey] || themes.aurora;
+}
+
+function renderLeagueBadge(type) {
+  if (!type) return "";
+
+  const badges = {
+    verified: { label: "VERIFIED", icon: "✓" },
+    featured: { label: "FEATURED", icon: "★" },
+    partner: { label: "OFFICIAL PARTNER", icon: "◆" }
+  };
+
+  const badge = badges[type];
+  if (!badge) return "";
+
+  return `
+    <span class="league-badge badge-${type}">
+      <span>${badge.icon}</span>
+      ${badge.label}
+    </span>
+  `;
+}
+
+function renderBadgeText(type) {
+  const labels = {
+    verified: "Verified",
+    featured: "Featured",
+    partner: "Official Partner"
+  };
+
+  return labels[type] || "Standard";
+}
+
 function renderSocialLinks(league) {
   const links = [
-    {
-      label: "Instagram",
-      url: league.instagram_url,
-      icon: "IG"
-    },
-    {
-      label: "YouTube",
-      url: league.youtube_url,
-      icon: "YT"
-    },
-    {
-      label: "Twitch",
-      url: league.twitch_url,
-      icon: "TW"
-    }
+    { label: "Instagram", url: league.instagram_url, icon: "IG" },
+    { label: "YouTube", url: league.youtube_url, icon: "YT" },
+    { label: "Twitch", url: league.twitch_url, icon: "TW" }
   ].filter((item) => item.url);
 
   if (!links.length) return "";
@@ -295,12 +326,72 @@ function renderSocialLinks(league) {
   return `
     <div class="league-social-links">
       ${links.map((link) => `
-        <a href="${safeUrl(link.url)}" target="_blank" rel="noopener" aria-label="${escapeHtml(link.label)}">
+        <a href="${safeUrl(link.url)}" target="_blank" rel="noopener">
           <span>${link.icon}</span>
           ${escapeHtml(link.label)}
         </a>
       `).join("")}
     </div>
+  `;
+}
+
+function renderNextRace(race, league) {
+  const local = getRaceDateTime(race).toLocal();
+
+  return `
+    <article class="league-premium-race-card glass reveal-card">
+      <div class="league-premium-race-visual">
+        ${
+          league.banner_url
+            ? `<img src="${escapeHtml(league.banner_url)}" alt="">`
+            : ""
+        }
+        <div class="league-premium-race-overlay"></div>
+      </div>
+
+      <div class="league-premium-race-content">
+        <span class="eyebrow">${escapeHtml(race.category || "RACE EVENT")}</span>
+        <h3>${escapeHtml(race.event_name || "Race Event")}</h3>
+
+        <p>
+          ${race.circuit ? `${escapeHtml(race.circuit)} · ` : ""}
+          ${local.toFormat("cccc, d LLL yyyy · h:mm a")}
+        </p>
+
+        <div
+          class="event-countdown"
+          data-race-countdown
+          data-race-date="${escapeHtml(race.race_date)}"
+          data-race-time="${escapeHtml(String(race.race_time || "00:00").slice(0, 5))}"
+          data-race-zone="${escapeHtml(race.timezone || "UTC")}"
+        >
+          <div><strong data-days>0</strong><span>Days</span></div>
+          <div><strong data-hours>0</strong><span>Hours</span></div>
+          <div><strong data-minutes>0</strong><span>Minutes</span></div>
+          <div><strong data-seconds>0</strong><span>Seconds</span></div>
+        </div>
+
+        <div class="card-actions">
+          ${
+            race.event_url
+              ? `<a class="button primary" href="${safeUrl(race.event_url)}" target="_blank" rel="noopener">Open Event</a>`
+              : ""
+          }
+
+          ${
+            league.discord_url
+              ? `<a class="button secondary" href="${safeUrl(league.discord_url)}" target="_blank" rel="noopener">Join Discord</a>`
+              : ""
+          }
+
+          ${
+            race.stream_url
+              ? `<a class="button secondary" href="${safeUrl(race.stream_url)}" target="_blank" rel="noopener">Watch Stream</a>`
+              : ""
+          }
+        </div>
+      </div>
+    </article>
   `;
 }
 
@@ -313,10 +404,7 @@ function renderLiveRace(race) {
       </div>
 
       <h3>${escapeHtml(race.event_name || "Live race")}</h3>
-
-      <p>
-        ${race.circuit ? escapeHtml(race.circuit) : "Live racing event"}
-      </p>
+      <p>${race.circuit ? escapeHtml(race.circuit) : "Live racing event"}</p>
 
       <div class="live-card-actions">
         ${
@@ -335,101 +423,8 @@ function renderLiveRace(race) {
   `;
 }
 
-function renderUpcomingRace(race, index) {
-  const local = getRaceDateTime(race).toLocal();
-
-  return `
-    <article class="league-event-row reveal-card" style="--timeline-delay:${index * 70}ms">
-      <div class="timeline-marker">
-        <span></span>
-      </div>
-
-      <div class="timeline-date">
-        <strong>${local.toFormat("d")}</strong>
-        <span>${local.toFormat("LLL")}</span>
-      </div>
-
-      <div class="timeline-content">
-        <span class="eyebrow">${escapeHtml(race.category || "RACE EVENT")}</span>
-        <h3>${escapeHtml(race.event_name || "Race event")}</h3>
-
-        <p>
-          ${race.circuit ? `${escapeHtml(race.circuit)} · ` : ""}
-          ${local.toFormat("cccc, h:mm a")}
-        </p>
-
-        <small>
-          League time: ${formatOriginalDateTime(race)}
-          (${escapeHtml(race.timezone || "UTC")})
-        </small>
-
-        <div
-          class="inline-race-countdown"
-          data-race-countdown
-          data-race-date="${escapeAttribute(race.race_date)}"
-          data-race-time="${escapeAttribute(String(race.race_time || "00:00").slice(0, 5))}"
-          data-race-zone="${escapeAttribute(race.timezone || "UTC")}"
-        >
-          <span><strong data-days>0</strong>d</span>
-          <span><strong data-hours>0</strong>h</span>
-          <span><strong data-minutes>0</strong>m</span>
-          <span><strong data-seconds>0</strong>s</span>
-        </div>
-      </div>
-
-      ${
-        race.event_url
-          ? `<a class="button secondary" href="${safeUrl(race.event_url)}" target="_blank" rel="noopener">Open</a>`
-          : ""
-      }
-    </article>
-  `;
-}
-
-function renderHistoryRace(race, index) {
-  const local = getRaceDateTime(race).toLocal();
-
-  return `
-    <article class="history-race-card reveal-card" style="--history-delay:${index * 55}ms">
-      <div class="history-race-date">
-        <strong>${local.toFormat("d")}</strong>
-        <span>${local.toFormat("LLL yyyy")}</span>
-      </div>
-
-      <div class="history-race-main">
-        <div class="history-race-labels">
-          <span class="session-complete-pill">COMPLETED</span>
-          <span>${escapeHtml(race.category || "Race Session")}</span>
-        </div>
-
-        <h3>${escapeHtml(race.event_name || "Race session")}</h3>
-
-        <p>
-          ${race.circuit ? escapeHtml(race.circuit) : "Circuit not specified"}
-          · ${local.toFormat("h:mm a")}
-        </p>
-      </div>
-
-      <div class="history-race-actions">
-        ${
-          race.event_url
-            ? `<a class="button secondary" href="${safeUrl(race.event_url)}" target="_blank" rel="noopener">Event Link</a>`
-            : ""
-        }
-
-        ${
-          race.stream_url
-            ? `<a class="button secondary" href="${safeUrl(race.stream_url)}" target="_blank" rel="noopener">Replay / Stream</a>`
-            : ""
-        }
-      </div>
-    </article>
-  `;
-}
-
 function initializeCountdowns() {
   const countdowns = [...document.querySelectorAll("[data-race-countdown]")];
-
   if (!countdowns.length) return;
 
   function update() {
@@ -444,33 +439,20 @@ function initializeCountdowns() {
         getRaceDateTime(race).toMillis() -
         DateTime.now().toMillis();
 
-      const values = distance > 0
-        ? luxon.Duration.fromMillis(distance).shiftTo(
-            "days",
-            "hours",
-            "minutes",
-            "seconds"
-          )
-        : {
-            days: 0,
-            hours: 0,
-            minutes: 0,
-            seconds: 0
-          };
+      const values =
+        distance > 0
+          ? luxon.Duration.fromMillis(distance).shiftTo(
+              "days",
+              "hours",
+              "minutes",
+              "seconds"
+            )
+          : { days: 0, hours: 0, minutes: 0, seconds: 0 };
 
-      countdown.querySelector("[data-days]").textContent =
-        Math.max(0, Math.floor(values.days || 0));
-
-      countdown.querySelector("[data-hours]").textContent =
-        Math.max(0, Math.floor(values.hours || 0));
-
-      countdown.querySelector("[data-minutes]").textContent =
-        Math.max(0, Math.floor(values.minutes || 0));
-
-      countdown.querySelector("[data-seconds]").textContent =
-        Math.max(0, Math.floor(values.seconds || 0));
-
-      countdown.classList.toggle("countdown-complete", distance <= 0);
+      setValue(countdown, "[data-days]", values.days);
+      setValue(countdown, "[data-hours]", values.hours);
+      setValue(countdown, "[data-minutes]", values.minutes);
+      setValue(countdown, "[data-seconds]", values.seconds);
     });
   }
 
@@ -478,11 +460,9 @@ function initializeCountdowns() {
   setInterval(update, 1000);
 }
 
-function getLeagueInitials(league) {
-  return (
-    league.abbreviation ||
-    String(league.name || "LG").slice(0, 3).toUpperCase()
-  );
+function setValue(container, selector, value) {
+  const element = container.querySelector(selector);
+  if (element) element.textContent = Math.max(0, Math.floor(value || 0));
 }
 
 function getRaceDateTime(race) {
@@ -522,121 +502,56 @@ function formatViewerDateTime(race) {
     .toFormat("ccc, d LLL · h:mm a");
 }
 
-function formatOriginalDateTime(race) {
-  return getRaceDateTime(race)
-    .toFormat("ccc, d LLL · h:mm a");
+function getLeagueInitials(league) {
+  return (
+    league.abbreviation ||
+    String(league.name || "LG").slice(0, 3).toUpperCase()
+  );
 }
 
 function initializeAnimations() {
   const hero = document.querySelector(".hero-reveal");
-  requestAnimationFrame(() => hero?.classList.add("is-visible"));
+
+  requestAnimationFrame(() => {
+    hero?.classList.add("is-visible");
+  });
 
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-
         entry.target.classList.add("is-visible");
         observer.unobserve(entry.target);
       });
     },
-    {
-      threshold: 0.13
-    }
+    { threshold: 0.12 }
   );
 
-  document.querySelectorAll(".reveal-card, .section-heading").forEach(
-    (item, index) => {
-      item.style.setProperty(
-        "--reveal-delay",
-        `${Math.min(index * 50, 280)}ms`
-      );
-
-      observer.observe(item);
-    }
-  );
+  document
+    .querySelectorAll(".reveal-card, .section-heading")
+    .forEach((item) => observer.observe(item));
 }
 
 function initializeScrollExperience() {
   const progress = document.getElementById("scrollProgress");
-  const scenes = [...document.querySelectorAll(".scroll-scene")];
 
-  function updateProgress() {
-    const maximum =
-      document.documentElement.scrollHeight - window.innerHeight;
+  function update() {
+    const max =
+      document.documentElement.scrollHeight -
+      window.innerHeight;
 
-    const amount =
-      maximum > 0
-        ? window.scrollY / maximum
-        : 0;
-
+    const ratio = max > 0 ? window.scrollY / max : 0;
     progress.style.transform =
-      `scaleX(${Math.min(Math.max(amount, 0), 1)})`;
+      `scaleX(${Math.min(Math.max(ratio, 0), 1)})`;
   }
 
-  let ticking = false;
-
-  function onScroll() {
-    if (ticking) return;
-
-    requestAnimationFrame(() => {
-      updateProgress();
-
-      scenes.forEach((scene) => {
-        const rect = scene.getBoundingClientRect();
-        const progress =
-          1 -
-          Math.min(
-            Math.max(
-              Math.abs(
-                rect.top + rect.height / 2 - window.innerHeight / 2
-              ) /
-              (window.innerHeight + rect.height),
-              0
-            ),
-            1
-          );
-
-        scene.style.setProperty(
-          "--scene-progress",
-          progress.toFixed(3)
-        );
-      });
-
-      ticking = false;
-    });
-
-    ticking = true;
-  }
-
-  window.addEventListener("scroll", onScroll, {
-    passive: true
-  });
-
-  window.addEventListener("resize", onScroll);
-  onScroll();
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        entry.target.classList.toggle(
-          "scene-active",
-          entry.isIntersecting
-        );
-      });
-    },
-    {
-      threshold: 0.15
-    }
-  );
-
-  scenes.forEach((scene) => observer.observe(scene));
+  window.addEventListener("scroll", update, { passive: true });
+  update();
 }
 
 function safeUrl(value) {
   try {
     const url = new URL(value);
-
     return ["http:", "https:"].includes(url.protocol)
       ? url.href
       : "#";
@@ -652,8 +567,4 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
-}
-
-function escapeAttribute(value) {
-  return escapeHtml(value);
 }

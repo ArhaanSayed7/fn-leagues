@@ -398,6 +398,14 @@ window.editLeague = function (id) {
   $("leagueYoutube").value = league.youtube_url || "";
   $("leagueTwitch").value = league.twitch_url || "";
   $("leagueDescription").value = league.description || "";
+  $("leagueTheme").value = league.theme_key || "aurora";
+  $("leagueAccentColor").value = league.accent_color || "#9c7ddd";
+  $("leagueBadge").value = league.badge_type || "";
+  $("leagueOwner").value = league.owner_name || "";
+  $("leagueStaff").value = Array.isArray(league.staff_members)
+    ? league.staff_members.join("\n")
+    : "";
+  $("leagueContactUrl").value = league.contact_url || "";
   $("leagueFeatured").checked = league.featured === true;
 
   $("formTitle").textContent = "Edit League";
@@ -427,6 +435,14 @@ window.duplicateLeague = function (id) {
   $("leagueYoutube").value = league.youtube_url || "";
   $("leagueTwitch").value = league.twitch_url || "";
   $("leagueDescription").value = league.description || "";
+  $("leagueTheme").value = league.theme_key || "aurora";
+  $("leagueAccentColor").value = league.accent_color || "#9c7ddd";
+  $("leagueBadge").value = league.badge_type || "";
+  $("leagueOwner").value = league.owner_name || "";
+  $("leagueStaff").value = Array.isArray(league.staff_members)
+    ? league.staff_members.join("\n")
+    : "";
+  $("leagueContactUrl").value = league.contact_url || "";
   $("leagueFeatured").checked = false;
   $("formTitle").textContent = "Duplicate League";
 
@@ -487,6 +503,15 @@ async function saveLeague(event) {
       instagram_url: $("leagueInstagram").value.trim() || null,
       youtube_url: $("leagueYoutube").value.trim() || null,
       twitch_url: $("leagueTwitch").value.trim() || null,
+      theme_key: $("leagueTheme").value || "aurora",
+      accent_color: $("leagueAccentColor").value || "#9c7ddd",
+      badge_type: $("leagueBadge").value || null,
+      owner_name: $("leagueOwner").value.trim() || null,
+      staff_members: $("leagueStaff").value
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean),
+      contact_url: $("leagueContactUrl").value.trim() || null,
       featured: $("leagueFeatured").checked,
       logo_url: logoUrl,
       banner_url: bannerUrl
