@@ -1328,6 +1328,54 @@ function initializeScrollExperience() {
     sceneObserver.observe(scene);
   });
 }
+function initializeButtonRipples() {
+  document.addEventListener("pointerdown", (event) => {
+    const button = event.target.closest(".button, .carousel-controls button");
+
+    if (!button) {
+      return;
+    }
+
+    button.querySelectorAll(".button-ripple").forEach((oldRipple) => {
+      oldRipple.remove();
+    });
+
+    const rect = button.getBoundingClientRect();
+    const ripple = document.createElement("span");
+    const size = Math.max(rect.width, rect.height);
+
+    ripple.className = "button-ripple";
+    ripple.style.width = `${size}px`;
+    ripple.style.height = `${size}px`;
+    ripple.style.left = `${event.clientX - rect.left - size / 2}px`;
+    ripple.style.top = `${event.clientY - rect.top - size / 2}px`;
+
+    button.appendChild(ripple);
+
+    ripple.addEventListener("animationend", () => ripple.remove(), {
+      once: true,
+    });
+  });
+}
+
+function initializeImageLoading() {
+  document.querySelectorAll("img").forEach((image) => {
+    const isPriorityImage =
+      image.closest(".site-header") ||
+      image.closest(".hero-spotlight") ||
+      image.closest(".homepage-hero");
+
+    if (isPriorityImage) {
+      image.loading = "eager";
+      image.fetchPriority = "high";
+      return;
+    }
+
+    image.loading = "lazy";
+    image.decoding = "async";
+  });
+}
+
 function initializeHeaderMotion() {
   const header = document.querySelector(".site-header");
 
