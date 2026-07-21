@@ -484,6 +484,54 @@ window.deleteLeague = async function (id, name) {
   clearLeagueForm();
   await Promise.all([loadLeagues(), loadRaces(), loadStats()]);
 };
+async function uploadAsset(file, folder, currentUrl = null) {
+  // Keep the existing image when no new file is selected.
+  if (!file) {
+    return currentUrl || null;
+  }
+
+  if (file.size > 8 * 1024 * 1024) {
+    throw new Error("Images must be 8 MB or smaller.");
+  }
+
+  const allowedTypes = [
+    "image/png",
+    "image/jpeg",
+    "image/webp",
+    "image/gif"
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error("Please upload a PNG, JPG, WebP, or GIF image.");
+  }
+
+  const extension =
+    file.name.split(".").pop()?.toLowerCase() || "png";
+
+  const filePath =
+    `${folder}/${crypto.randomUUID()}.${extension}`;
+
+  const { error: uploadError } = await client.storage
+    .from("league-assets")
+    .upload(filePath, file, {
+      cacheControl: "3600",
+      upsert: false
+    });
+
+  if (uploadError) {
+    throw uploadError;
+  }
+
+  const { data } = client.storage
+    .from("league-assets")
+    .getPublicUrl(filePath);
+
+  if (!data?.publicUrl) {
+    throw new Error("The uploaded image URL could not be created.");
+  }
+
+  return data.publicUrl;
+}
 
 async function saveLeague(event) {
   event.preventDefault();
