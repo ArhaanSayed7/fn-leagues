@@ -49,6 +49,7 @@
           <button data-tab="races">Races</button>
           <button data-tab="rankings">Rankings</button>
           <button data-tab="community">Community</button>
+          <button data-tab="gallery">Gallery</button>
         </nav>
 
         <div class="admin-sidebar-actions">
@@ -400,6 +401,83 @@
               <h3>Draft Summary</h3>
               <div id="communityDraftPreview"></div>
             </aside>
+          </div>
+        </section>
+
+
+        <section id="galleryTab" class="admin-tab hidden">
+          <div class="management-layout">
+            <form id="galleryForm" class="glass management-form">
+              <div class="form-heading">
+                <div>
+                  <span class="eyebrow">MEDIA UPLOAD</span>
+                  <h3>Add Gallery Image</h3>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <label class="full-span">
+                  League
+                  <select id="galleryLeague" required>
+                    <option value="">Choose a league</option>
+                  </select>
+                </label>
+
+                <label class="full-span upload-zone" id="galleryUploadZone">
+                  <span>Gallery image</span>
+                  <strong>Drop image here or click to browse</strong>
+                  <small>PNG, JPG or WebP · Max 8 MB</small>
+                  <input
+                    id="galleryImage"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    required
+                  >
+                </label>
+
+                <label class="full-span">
+                  Caption
+                  <input
+                    id="galleryCaption"
+                    maxlength="180"
+                    placeholder="Optional image caption"
+                  >
+                </label>
+
+                <label class="checkbox-label full-span">
+                  <input id="galleryFeatured" type="checkbox">
+                  Use as featured gallery image
+                </label>
+              </div>
+
+              <div id="galleryPreview" class="asset-preview"></div>
+
+              <button class="button primary full" type="submit">
+                Upload Image
+              </button>
+
+              <p id="galleryMessage" class="form-message"></p>
+            </form>
+
+            <div class="glass management-list">
+              <div class="form-heading">
+                <div>
+                  <span class="eyebrow">LEAGUE MEDIA</span>
+                  <h3>Gallery Images</h3>
+                </div>
+              </div>
+
+              <div class="admin-toolbar">
+                <select id="galleryLeagueFilter">
+                  <option value="all">All leagues</option>
+                </select>
+              </div>
+
+              <div id="adminGalleryList" class="admin-gallery-grid"></div>
+              <div id="adminGalleryEmpty" class="empty-state hidden">
+                No gallery images match this view.
+              </div>
+            </div>
           </div>
         </section>
 

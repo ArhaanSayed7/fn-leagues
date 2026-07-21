@@ -9,6 +9,8 @@ let raceSearchQuery = "";
 let leagueAdminSearchQuery = "";
 let rankingAdminSearchQuery = "";
 let communityDraft = {};
+let galleryCache = [];
+let galleryLeagueFilter = "all";
 
 document.addEventListener("DOMContentLoaded", initialize);
 
@@ -60,6 +62,14 @@ $("clearRankingButton").addEventListener("click", () => clearRankingForm());
 
 $("saveCommunityDraft").addEventListener("click", saveCommunityDraft);
 $("publishCommunity").addEventListener("click", publishCommunity);
+
+$("galleryForm").addEventListener("submit", uploadGalleryImage);
+$("galleryLeagueFilter").addEventListener("change", (event) => {
+  galleryLeagueFilter = event.target.value;
+  renderGalleryList();
+});
+setupUploadZone("galleryUploadZone", "galleryImage");
+$("galleryImage").addEventListener("change", renderGalleryPreview);
 
 [
   "announcementEnabled",
@@ -140,7 +150,8 @@ async function showDashboard(user) {
     loadLeagues(),
     loadRaces(),
     loadRankings(),
-    loadCommunitySettings()
+    loadCommunitySettings(),
+    loadGalleryImages()
   ]);
 }
 
@@ -211,6 +222,7 @@ async function loadLeagues() {
   populateLeagueSelect();
   populateRankingLeagueSelect();
   populateCommunitySelectors();
+  populateGallerySelectors();
   $("adminLeagueCount").textContent = leagueCache.length;
 }
 
@@ -750,13 +762,15 @@ function switchTab(tab) {
   $("racesTab").classList.toggle("hidden", tab !== "races");
   $("rankingsTab").classList.toggle("hidden", tab !== "rankings");
   $("communityTab").classList.toggle("hidden", tab !== "community");
+  $("galleryTab").classList.toggle("hidden", tab !== "gallery");
 
   const titles = {
     overview: "Dashboard",
     leagues: "Leagues",
     races: "Races",
     rankings: "Rankings",
-    community: "Community"
+    community: "Community",
+    gallery: "Gallery"
   };
 
   $("adminTitle").textContent = titles[tab] || "Dashboard";
@@ -1515,4 +1529,232 @@ async function saveRankingOrder(rankingIds) {
 
   await loadRankings();
   showAdminToast("Ranking order updated.");
+}
+
+
+async function loadGalleryImages() {
+  const { data, error } = await client
+    .from("league_gallery")
+    .select("*, leagues(name)")
+    .order("is_featured", { ascending: false })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    if ($("galleryMessage")) {
+      $("galleryMessage").textContent = error.message;
+    }
+    return;
+  }
+
+  galleryCache = data || [];
+  renderGalleryList();
+}
+
+function populateGallerySelectors() {
+  if (!$("galleryLeague") || !$("galleryLeagueFilter")) return;
+
+  const uploadValue = $("galleryLeague").value;
+  const filterValue = $("galleryLeagueFilter").value;
+
+  const options = leagueCache.map((league) => `
+    <option value="${league.id}">${escapeHtml(league.name)}</option>
+  `).join("");
+
+  $("galleryLeague").innerHTML = `
+    <option value="">Choose a league</option>
+    ${options}
+  `;
+
+  $("galleryLeagueFilter").innerHTML = `
+    <option value="all">All leagues</option>
+    ${options}
+  `;
+
+  if (uploadValue) $("galleryLeague").value = uploadValue;
+  if (filterValue) $("galleryLeagueFilter").value = filterValue;
+}
+
+function renderGalleryList() {
+  if (!$("adminGalleryList")) return;
+
+  const filtered = galleryCache.filter((item) =>
+    galleryLeagueFilter === "all" ||
+    String(item.league_id) === String(galleryLeagueFilter)
+  );
+
+  $("adminGalleryEmpty").classList.toggle("hidden", filtered.length > 0);
+
+  $("adminGalleryList").innerHTML = filtered.map((item) => `
+    <article class="admin-gallery-card ${item.is_featured ? "featured-gallery-item" : ""}">
+      <div class="admin-gallery-image">
+        <img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.caption || "Gallery image")}">
+        ${item.is_featured ? `<span class="featured-pill">FEATURED</span>` : ""}
+      </div>
+
+      <div class="admin-gallery-copy">
+        <strong>${escapeHtml(item.leagues?.name || "Unknown league")}</strong>
+        <span>${escapeHtml(item.caption || "No caption")}</span>
+      </div>
+
+      <div class="admin-row-actions">
+        ${
+          item.is_featured
+            ? `<button class="button secondary" onclick="setGalleryFeatured(${item.id}, false)">Unfeature</button>`
+            : `<button class="button secondary" onclick="setGalleryFeatured(${item.id}, true)">Feature</button>`
+        }
+
+        <button
+          class="button danger"
+          onclick="deleteGalleryImage(${item.id}, '${escapeJs(item.storage_path)}')"
+        >
+          Delete
+        </button>
+      </div>
+    </article>
+  `).join("");
+}
+
+async function uploadGalleryImage(event) {
+  event.preventDefault();
+  $("galleryMessage").textContent = "Uploading…";
+
+  try {
+    const leagueId = Number($("galleryLeague").value);
+    const file = $("galleryImage").files[0];
+
+    if (!leagueId) {
+      throw new Error("Choose a league.");
+    }
+
+    if (!file) {
+      throw new Error("Choose an image.");
+    }
+
+    if (file.size > 8 * 1024 * 1024) {
+      throw new Error("Gallery images must be 8 MB or smaller.");
+    }
+
+    const extension = (file.name.split(".").pop() || "jpg").toLowerCase();
+    const path = `gallery/${leagueId}/${crypto.randomUUID()}.${extension}`;
+
+    const uploadResult = await client.storage
+      .from("league-assets")
+      .upload(path, file, {
+        cacheControl: "3600",
+        upsert: false
+      });
+
+    if (uploadResult.error) throw uploadResult.error;
+
+    const publicUrl = client.storage
+      .from("league-assets")
+      .getPublicUrl(path)
+      .data.publicUrl;
+
+    const featured = $("galleryFeatured").checked;
+
+    if (featured) {
+      const clearResult = await client
+        .from("league_gallery")
+        .update({ is_featured: false })
+        .eq("league_id", leagueId);
+
+      if (clearResult.error) throw clearResult.error;
+    }
+
+    const insertResult = await client
+      .from("league_gallery")
+      .insert({
+        league_id: leagueId,
+        image_url: publicUrl,
+        storage_path: path,
+        caption: $("galleryCaption").value.trim() || null,
+        is_featured: featured
+      });
+
+    if (insertResult.error) throw insertResult.error;
+
+    $("galleryMessage").textContent = "Gallery image uploaded.";
+    $("galleryForm").reset();
+    $("galleryPreview").innerHTML = "";
+
+    await loadGalleryImages();
+    showAdminToast("Gallery image uploaded.");
+  } catch (error) {
+    $("galleryMessage").textContent = error.message;
+  }
+}
+
+window.setGalleryFeatured = async function (id, featured) {
+  const item = galleryCache.find((entry) => entry.id === id);
+  if (!item) return;
+
+  if (featured) {
+    const clearResult = await client
+      .from("league_gallery")
+      .update({ is_featured: false })
+      .eq("league_id", item.league_id);
+
+    if (clearResult.error) {
+      alert(clearResult.error.message);
+      return;
+    }
+  }
+
+  const result = await client
+    .from("league_gallery")
+    .update({ is_featured: featured })
+    .eq("id", id);
+
+  if (result.error) {
+    alert(result.error.message);
+    return;
+  }
+
+  await loadGalleryImages();
+  showAdminToast(featured ? "Featured image updated." : "Image unfeatured.");
+};
+
+window.deleteGalleryImage = async function (id, storagePath) {
+  if (!confirm("Delete this gallery image permanently?")) return;
+
+  if (storagePath) {
+    const storageResult = await client.storage
+      .from("league-assets")
+      .remove([storagePath]);
+
+    if (storageResult.error) {
+      alert(storageResult.error.message);
+      return;
+    }
+  }
+
+  const result = await client
+    .from("league_gallery")
+    .delete()
+    .eq("id", id);
+
+  if (result.error) {
+    alert(result.error.message);
+    return;
+  }
+
+  await loadGalleryImages();
+  showAdminToast("Gallery image deleted.");
+};
+
+function renderGalleryPreview() {
+  const file = $("galleryImage").files[0];
+
+  if (!file) {
+    $("galleryPreview").innerHTML = "";
+    return;
+  }
+
+  const image = document.createElement("img");
+  image.src = URL.createObjectURL(file);
+  image.alt = file.name;
+
+  $("galleryPreview").innerHTML = "";
+  $("galleryPreview").appendChild(image);
 }

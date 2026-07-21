@@ -16,7 +16,7 @@ async function loadLeague() {
     return;
   }
 
-  const [leagueResult, racesResult, rankingResult] = await Promise.all([
+  const [leagueResult, racesResult, rankingResult, galleryResult] = await Promise.all([
     client.from("leagues").select("*").eq("id", id).single(),
     client
       .from("races")
@@ -28,7 +28,14 @@ async function loadLeague() {
       .from("league_rankings")
       .select("*")
       .eq("league_id", id)
-      .maybeSingle()
+      .maybeSingle(),
+
+    client
+      .from("league_gallery")
+      .select("*")
+      .eq("league_id", id)
+      .order("is_featured", { ascending: false })
+      .order("created_at", { ascending: false })
   ]);
 
   if (leagueResult.error) {
@@ -38,6 +45,7 @@ async function loadLeague() {
 
   const league = leagueResult.data;
   const ranking = rankingResult.data;
+  const gallery = galleryResult.data || [];
   const races = (racesResult.data || []).filter(
     (race) => race.is_archived !== true
   );
@@ -207,6 +215,43 @@ async function loadLeague() {
       </article>
     </section>
 
+    <section class="league-gallery-section scroll-scene">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">LEAGUE MEDIA</span>
+          <h2>Gallery</h2>
+        </div>
+
+        ${
+          gallery.length
+            ? `<span class="section-note">${gallery.length} image${gallery.length === 1 ? "" : "s"}</span>`
+            : ""
+        }
+      </div>
+
+      ${
+        gallery.length
+          ? `
+            <div class="league-gallery-grid">
+              ${gallery.map((item, index) => renderGalleryItem(item, index)).join("")}
+            </div>
+          `
+          : `<div class="empty-state">No gallery images have been added.</div>`
+      }
+    </section>
+
+    <div id="galleryLightbox" class="gallery-lightbox hidden" aria-hidden="true">
+      <button id="lightboxClose" class="lightbox-close" type="button" aria-label="Close gallery">×</button>
+      <button id="lightboxPrevious" class="lightbox-nav lightbox-previous" type="button" aria-label="Previous image">←</button>
+
+      <figure>
+        <img id="lightboxImage" alt="">
+        <figcaption id="lightboxCaption"></figcaption>
+      </figure>
+
+      <button id="lightboxNext" class="lightbox-nav lightbox-next" type="button" aria-label="Next image">→</button>
+    </div>
+
     <section class="league-next-race-section scroll-scene">
       <div class="section-heading">
         <div>
@@ -242,6 +287,7 @@ async function loadLeague() {
     }
   `;
 
+  initializeGalleryLightbox(gallery);
   initializeCountdowns();
   initializeAnimations();
   initializeScrollExperience();
@@ -333,6 +379,79 @@ function renderSocialLinks(league) {
       `).join("")}
     </div>
   `;
+}
+
+
+function renderGalleryItem(item, index) {
+  return `
+    <button
+      class="league-gallery-item reveal-card ${item.is_featured ? "gallery-featured" : ""}"
+      type="button"
+      data-gallery-index="${index}"
+      aria-label="Open gallery image"
+    >
+      <img
+        src="${escapeHtml(item.image_url)}"
+        alt="${escapeHtml(item.caption || "League gallery image")}"
+        loading="lazy"
+      >
+
+      <div class="gallery-item-overlay">
+        ${item.is_featured ? `<span class="featured-pill">FEATURED</span>` : ""}
+        <strong>${escapeHtml(item.caption || "View image")}</strong>
+      </div>
+    </button>
+  `;
+}
+
+function initializeGalleryLightbox(gallery) {
+  if (!gallery.length) return;
+
+  const lightbox = document.getElementById("galleryLightbox");
+  const image = document.getElementById("lightboxImage");
+  const caption = document.getElementById("lightboxCaption");
+  let activeIndex = 0;
+
+  function show(index) {
+    activeIndex = (index + gallery.length) % gallery.length;
+    const item = gallery[activeIndex];
+
+    image.src = item.image_url;
+    image.alt = item.caption || "League gallery image";
+    caption.textContent = item.caption || "";
+
+    lightbox.classList.remove("hidden");
+    lightbox.setAttribute("aria-hidden", "false");
+    document.body.classList.add("lightbox-open");
+  }
+
+  function close() {
+    lightbox.classList.add("hidden");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("lightbox-open");
+  }
+
+  document.querySelectorAll("[data-gallery-index]").forEach((button) => {
+    button.addEventListener("click", () => {
+      show(Number(button.dataset.galleryIndex));
+    });
+  });
+
+  document.getElementById("lightboxClose").addEventListener("click", close);
+  document.getElementById("lightboxPrevious").addEventListener("click", () => show(activeIndex - 1));
+  document.getElementById("lightboxNext").addEventListener("click", () => show(activeIndex + 1));
+
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox) close();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (lightbox.classList.contains("hidden")) return;
+
+    if (event.key === "Escape") close();
+    if (event.key === "ArrowLeft") show(activeIndex - 1);
+    if (event.key === "ArrowRight") show(activeIndex + 1);
+  });
 }
 
 function renderNextRace(race, league) {

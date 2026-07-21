@@ -1,56 +1,55 @@
-# FN Leagues 2.0 — Phase 12A
+# FN Leagues 2.0 — Phase 12B
 
-Phase 12A adds premium league identity and custom league themes.
+Phase 12B adds league galleries and media management.
 
-## New league identity features
+## New public features
 
-- Custom theme per league:
-  - Aurora
-  - Velocity
-  - Inferno
-  - Nebula
-  - Monochrome
-  - Neon
-- Custom accent colour
-- Verification badge:
-  - Verified
-  - Featured
-  - Official Partner
-- Owner name
-- Staff list
-- Contact button
-- Redesigned animated league hero
-- Theme-based particles, gradients and visual effects
-- Better About section
-- Better Staff section
-- Redesigned next-race card
+- Gallery section on every league page
+- Featured gallery image
+- Responsive gallery layout
+- Image captions
+- Click-to-expand lightbox
+- Previous and next controls
+- Keyboard controls:
+  - Escape closes the lightbox
+  - Left arrow shows the previous image
+  - Right arrow shows the next image
 
-## Not included
+## New admin features
 
-This phase does not add:
+A new Gallery tab allows admins to:
 
-- League statistics
-- Years active
-- Founding date
-- Country
-- Past seasons
-- Season-by-season history
-- Race history section
-- Gallery system
+- Choose a league
+- Drag and drop an image
+- Add an optional caption
+- Mark an image as featured
+- Change the featured image
+- Delete gallery images permanently
+- Filter gallery images by league
 
 ## Required Supabase update
 
 Open:
 
-`phase-12a-league-identity.sql`
+`phase-12b-gallery.sql`
 
 Then:
 
 1. Open Supabase.
 2. Open SQL Editor.
 3. Create a new query.
-4. Paste the full SQL file.
+4. Paste the complete SQL file.
 5. Click Run.
+
+This creates the gallery table and its permissions.
+
+## Storage
+
+Gallery files use your existing public bucket:
+
+`league-assets`
+
+No new bucket is required.
 
 ## Update GitHub
 
