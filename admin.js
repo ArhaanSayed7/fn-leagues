@@ -3,6 +3,7 @@ const $ = (id) => document.getElementById(id);
 
 let leagueCache = [];
 let raceCache = [];
+let rankingCache = [];
 
 document.addEventListener("DOMContentLoaded", initialize);
 
@@ -14,6 +15,9 @@ $("clearFormButton").addEventListener("click", () => clearLeagueForm());
 
 $("raceForm").addEventListener("submit", saveRace);
 $("clearRaceButton").addEventListener("click", () => clearRaceForm());
+
+$("rankingForm").addEventListener("submit", saveRanking);
+$("clearRankingButton").addEventListener("click", () => clearRankingForm());
 
 document.querySelectorAll(".admin-nav button[data-tab]").forEach((button) => {
   button.addEventListener("click", () => switchTab(button.dataset.tab));
@@ -70,7 +74,8 @@ async function showDashboard(user) {
   await Promise.all([
     loadStats(),
     loadLeagues(),
-    loadRaces()
+    loadRaces(),
+    loadRankings()
   ]);
 }
 
@@ -111,6 +116,7 @@ async function loadLeagues() {
   leagueCache = data || [];
   renderLeagueList();
   populateLeagueSelect();
+  populateRankingLeagueSelect();
   $("adminLeagueCount").textContent = leagueCache.length;
 }
 
@@ -452,11 +458,13 @@ function switchTab(tab) {
   $("overviewTab").classList.toggle("hidden", tab !== "overview");
   $("leaguesTab").classList.toggle("hidden", tab !== "leagues");
   $("racesTab").classList.toggle("hidden", tab !== "races");
+  $("rankingsTab").classList.toggle("hidden", tab !== "rankings");
 
   const titles = {
     overview: "Dashboard",
     leagues: "Leagues",
-    races: "Races"
+    races: "Races",
+    rankings: "Rankings"
   };
 
   $("adminTitle").textContent = titles[tab] || "Dashboard";
@@ -509,3 +517,216 @@ function normalizeSavedZone(value) {
 
   return aliases[value] || value || "Asia/Dubai";
 }
+
+
+async function loadRankings() {
+  const { data, error } = await client
+    .from("league_rankings")
+    .select("*, leagues(name, abbreviation, logo_url)")
+    .order("position", { ascending: true });
+
+  if (error) {
+    $("rankingMessage").textContent = error.message;
+    return;
+  }
+
+  rankingCache = data || [];
+  renderRankingList();
+  $("adminRankingCount").textContent = rankingCache.length;
+}
+
+function populateRankingLeagueSelect() {
+  const currentValue = $("rankingLeague")?.value || "";
+
+  if (!$("rankingLeague")) return;
+
+  $("rankingLeague").innerHTML = `
+    <option value="">Choose a league</option>
+    ${leagueCache.map((league) => `
+      <option value="${league.id}">${escapeHtml(league.name)}</option>
+    `).join("")}
+  `;
+
+  if (currentValue) {
+    $("rankingLeague").value = currentValue;
+  }
+}
+
+function renderRankingList() {
+  $("adminRankingEmpty").classList.toggle("hidden", rankingCache.length > 0);
+
+  $("adminRankingList").innerHTML = rankingCache.map((ranking) => `
+    <article class="admin-list-row ranking-admin-row">
+      <div class="ranking-position-badge">#${ranking.position}</div>
+
+      <div class="admin-list-copy">
+        <strong>${escapeHtml(ranking.leagues?.name || "Unknown league")}</strong>
+        <span>
+          ${ranking.points} pts · ${ranking.wins} wins · ${ranking.podiums} podiums
+          ${ranking.rating !== null ? ` · Rating ${ranking.rating}` : ""}
+        </span>
+      </div>
+
+      <div class="admin-row-actions">
+        <button class="button secondary" onclick="editRanking(${ranking.id})">Edit</button>
+        <button class="button danger" onclick="deleteRanking(${ranking.id}, '${escapeJs(ranking.leagues?.name || "ranking")}')">Delete</button>
+      </div>
+    </article>
+  `).join("");
+}
+
+window.editRanking = function (id) {
+  const ranking = rankingCache.find((item) => item.id === id);
+  if (!ranking) return;
+
+  switchTab("rankings");
+
+  $("rankingId").value = ranking.id;
+  $("rankingLeague").value = ranking.league_id;
+  $("rankingPosition").value = ranking.position;
+  $("rankingPoints").value = ranking.points;
+  $("rankingWins").value = ranking.wins;
+  $("rankingPodiums").value = ranking.podiums;
+  $("rankingRating").value = ranking.rating ?? "";
+  $("rankingFormTitle").textContent = "Edit Ranking";
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+window.deleteRanking = async function (id, name) {
+  if (!confirm(`Delete the ranking for ${name}?`)) return;
+
+  const { error } = await client
+    .from("league_rankings")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  clearRankingForm();
+  await Promise.all([loadRankings(), loadStats()]);
+};
+
+async function saveRanking(event) {
+  event.preventDefault();
+  $("rankingMessage").textContent = "Saving…";
+
+  try {
+    const id = $("rankingId").value;
+    const leagueId = Number($("rankingLeague").value);
+
+    if (!leagueId) {
+      throw new Error("Choose a league.");
+    }
+
+    const payload = {
+      league_id: leagueId,
+      position: Number($("rankingPosition").value),
+      points: Number($("rankingPoints").value || 0),
+      wins: Number($("rankingWins").value || 0),
+      podiums: Number($("rankingPodiums").value || 0),
+      rating: $("rankingRating").value === ""
+        ? null
+        : Number($("rankingRating").value),
+      updated_at: new Date().toISOString()
+    };
+
+    const result = id
+      ? await client.from("league_rankings").update(payload).eq("id", id)
+      : await client.from("league_rankings").insert(payload);
+
+    if (result.error) throw result.error;
+
+    $("rankingMessage").textContent = id
+      ? "Ranking updated."
+      : "Ranking added.";
+
+    clearRankingForm(false);
+    await Promise.all([loadRankings(), loadStats()]);
+  } catch (error) {
+    $("rankingMessage").textContent = error.message;
+  }
+}
+
+function clearRankingForm(clearMessage = true) {
+  $("rankingForm").reset();
+  $("rankingId").value = "";
+  $("rankingPoints").value = "0";
+  $("rankingWins").value = "0";
+  $("rankingPodiums").value = "0";
+  $("rankingFormTitle").textContent = "Add Ranking";
+
+  if (clearMessage) {
+    $("rankingMessage").textContent = "";
+  }
+}
+
+
+function initializeScrollExperience() {
+  const progress = document.getElementById("scrollProgress");
+  const navLinks = [...document.querySelectorAll(".site-header nav a[href^='#']")];
+  const sections = [...document.querySelectorAll("main section[id]")];
+
+  function updateProgress() {
+    const maxScroll = document.documentElement.scrollHeight - innerHeight;
+    const ratio = maxScroll > 0 ? scrollY / maxScroll : 0;
+    if (progress) progress.style.transform = `scaleX(${Math.min(Math.max(ratio, 0), 1)})`;
+
+    document.documentElement.style.setProperty("--scroll-y", `${scrollY}px`);
+  }
+
+  function updateActiveSection() {
+    let activeId = "";
+
+    for (const section of sections) {
+      const rect = section.getBoundingClientRect();
+      if (rect.top <= innerHeight * 0.35 && rect.bottom >= innerHeight * 0.35) {
+        activeId = section.id;
+        break;
+      }
+    }
+
+    navLinks.forEach((link) => {
+      link.classList.toggle("active-section", link.getAttribute("href") === `#${activeId}`);
+    });
+  }
+
+  let ticking = false;
+
+  function onScroll() {
+    if (ticking) return;
+
+    requestAnimationFrame(() => {
+      updateProgress();
+      updateActiveSection();
+      ticking = false;
+    });
+
+    ticking = true;
+  }
+
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  onScroll();
+
+  document.querySelectorAll("main > section").forEach((section, index) => {
+    section.classList.add("scroll-scene");
+    section.style.setProperty("--scene-index", index);
+  });
+
+  const sceneObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle("scene-active", entry.isIntersecting);
+      });
+    },
+    { threshold: 0.22 }
+  );
+
+  document.querySelectorAll(".scroll-scene").forEach((scene) => sceneObserver.observe(scene));
+}
+
+window.addEventListener('load', initializeScrollExperience);

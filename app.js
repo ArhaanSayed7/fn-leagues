@@ -281,3 +281,70 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
+
+
+function initializeScrollExperience() {
+  const progress = document.getElementById("scrollProgress");
+  const navLinks = [...document.querySelectorAll(".site-header nav a[href^='#']")];
+  const sections = [...document.querySelectorAll("main section[id]")];
+
+  function updateProgress() {
+    const maxScroll = document.documentElement.scrollHeight - innerHeight;
+    const ratio = maxScroll > 0 ? scrollY / maxScroll : 0;
+    if (progress) progress.style.transform = `scaleX(${Math.min(Math.max(ratio, 0), 1)})`;
+
+    document.documentElement.style.setProperty("--scroll-y", `${scrollY}px`);
+  }
+
+  function updateActiveSection() {
+    let activeId = "";
+
+    for (const section of sections) {
+      const rect = section.getBoundingClientRect();
+      if (rect.top <= innerHeight * 0.35 && rect.bottom >= innerHeight * 0.35) {
+        activeId = section.id;
+        break;
+      }
+    }
+
+    navLinks.forEach((link) => {
+      link.classList.toggle("active-section", link.getAttribute("href") === `#${activeId}`);
+    });
+  }
+
+  let ticking = false;
+
+  function onScroll() {
+    if (ticking) return;
+
+    requestAnimationFrame(() => {
+      updateProgress();
+      updateActiveSection();
+      ticking = false;
+    });
+
+    ticking = true;
+  }
+
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  onScroll();
+
+  document.querySelectorAll("main > section").forEach((section, index) => {
+    section.classList.add("scroll-scene");
+    section.style.setProperty("--scene-index", index);
+  });
+
+  const sceneObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle("scene-active", entry.isIntersecting);
+      });
+    },
+    { threshold: 0.22 }
+  );
+
+  document.querySelectorAll(".scroll-scene").forEach((scene) => sceneObserver.observe(scene));
+}
+
+window.addEventListener('load', initializeScrollExperience);

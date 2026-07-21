@@ -1,51 +1,51 @@
-# FN Leagues — Timezone & Animation Upgrade
+# FN Leagues 2.0 — Phase 4
 
-This upgrade adds:
+Phase 4 adds league ranking management and a more cinematic scroll experience.
 
-- Automatic conversion to each visitor's local timezone
-- Original league time shown underneath
-- IANA timezone selection in the admin dashboard
-- Daylight-saving-aware conversion
-- Animated counters
-- Scroll reveal animations
-- Floating background gradients
-- Card hover motion
-- Button shimmer effects
-- Pulsing live indicators
-- Animated league-page logo
-- Reduced-motion accessibility support
+## New admin features
 
-## Timezone setup
+- Add league rankings
+- Edit rankings
+- Delete rankings
+- Set position
+- Set points
+- Set wins
+- Set podiums
+- Set an optional rating
 
-When adding or editing a race, choose the league timezone from the dropdown.
+## New public effects
 
-Examples:
-
-- Dubai: Asia/Dubai
-- United Kingdom: Europe/London
-- Toronto: America/Toronto
-- New York: America/New_York
-- Sydney: Australia/Sydney
-
-The public website automatically converts the race to the viewer's browser timezone.
+- Scroll progress bar
+- Active navigation section indicator
+- Section focus transitions
+- Parallax-style background glow
+- Animated section underline
+- Staggered content reveals
+- Smoother card tilt and lift
+- Ranking row hover motion
 
 ## Upload to GitHub
 
 Upload these files:
 
-- index.html
-- app.js
 - admin.html
 - admin.js
-- league.html
+- app.js
 - league.js
 - styles.css
 - README.md
 
-Keep your existing `config.js`.
+You can also upload index.html and league.html from this package because they include the progress bar.
 
-After committing, Cloudflare deploys automatically.
+Keep your working config.js.
 
-## Existing GMT+4 races
+## After deployment
 
-Old races saved as `GMT+4` are automatically treated as `Asia/Dubai`, so they will continue to work.
+1. Open `/admin.html`
+2. Sign in
+3. Click Rankings
+4. Choose a league
+5. Set its position and statistics
+6. Save
+
+The public ranking table updates automatically.
