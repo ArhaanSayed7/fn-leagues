@@ -1,61 +1,37 @@
-# FN Leagues 2.0 — Phase 6
+# FN Leagues 2.0 — Phase 7
 
-Phase 6 upgrades the dedicated public league pages.
+Phase 7 adds complete league session history and a countdown for every upcoming race.
 
-## New league-page features
+## New features
 
-- Larger league banner and logo
-- Featured-league badge
-- Position and tier summary
-- Upcoming-race and live-race totals
-- Dedicated live-race section
-- Next-event countdown
-- Upcoming-event timeline
-- Automatic viewer-timezone conversion
-- Original league time underneath
-- Optional Instagram, YouTube and Twitch links
-- Improved mobile layout
-- Richer page animations
+- Every league page keeps a complete archive of past sessions
+- History is automatically generated from race dates
+- Newest completed sessions appear first
+- Every upcoming race has its own countdown
+- Countdowns update every second
+- The next-event countdown now includes seconds
+- The league summary shows how many sessions have been held
+- Past sessions retain event and replay/stream links
 
-## Required Supabase update
+## How history works
 
-Open:
+A race moves into Session History automatically when:
 
-`phase-6-league-socials.sql`
+- Its scheduled date and time have passed
+- It is not currently marked live
 
-Then:
-
-1. Open Supabase.
-2. Open SQL Editor.
-3. Create a new query.
-4. Paste the complete SQL file.
-5. Click Run.
-
-This adds optional social-link fields to the leagues table.
+No manual archive button is needed.
 
 ## Update GitHub
 
 Upload:
 
-- league.html
 - league.js
-- admin.html
-- admin.js
 - styles.css
 - README.md
 
+You may also upload `league.html`; it is included for convenience.
+
 Keep your existing `config.js`.
 
-You do not need to upload the SQL file to GitHub.
-
-## Adding social links
-
-Open the admin dashboard and edit a league.
-
-You will now see fields for:
-
-- Instagram
-- YouTube
-- Twitch
-
-Leave any field empty if that league does not use the platform.
+No Supabase SQL update is required.

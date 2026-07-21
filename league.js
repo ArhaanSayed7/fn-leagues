@@ -46,6 +46,10 @@ async function loadLeague() {
     .filter((race) => getRaceDateTime(race) >= now && race.is_live !== true)
     .sort((a, b) => getRaceDateTime(a).toMillis() - getRaceDateTime(b).toMillis());
 
+  const historyRaces = races
+    .filter((race) => getRaceDateTime(race) < now && race.is_live !== true)
+    .sort((a, b) => getRaceDateTime(b).toMillis() - getRaceDateTime(a).toMillis());
+
   const nextRace = upcomingRaces[0] || null;
 
   document.title = `${league.name} | FN Leagues`;
@@ -115,8 +119,8 @@ async function loadLeague() {
         </article>
 
         <article>
-          <span>Live now</span>
-          <strong>${liveRaces.length}</strong>
+          <span>Sessions held</span>
+          <strong>${historyRaces.length}</strong>
         </article>
       </div>
     </section>
@@ -171,6 +175,11 @@ async function loadLeague() {
             <span>Featured</span>
             <strong>${league.featured ? "Yes" : "No"}</strong>
           </div>
+
+          <div>
+            <span>Recorded sessions</span>
+            <strong>${historyRaces.length}</strong>
+          </div>
         </div>
       </article>
 
@@ -198,13 +207,15 @@ async function loadLeague() {
 
               <div
                 class="event-countdown"
+                data-race-countdown
                 data-race-date="${escapeAttribute(nextRace.race_date)}"
                 data-race-time="${escapeAttribute(String(nextRace.race_time || "00:00").slice(0, 5))}"
                 data-race-zone="${escapeAttribute(nextRace.timezone || "UTC")}"
               >
-                <div><strong data-countdown-days>0</strong><span>Days</span></div>
-                <div><strong data-countdown-hours>0</strong><span>Hours</span></div>
-                <div><strong data-countdown-minutes>0</strong><span>Minutes</span></div>
+                <div><strong data-days>0</strong><span>Days</span></div>
+                <div><strong data-hours>0</strong><span>Hours</span></div>
+                <div><strong data-minutes>0</strong><span>Minutes</span></div>
+                <div><strong data-seconds>0</strong><span>Seconds</span></div>
               </div>
 
               ${
@@ -221,8 +232,8 @@ async function loadLeague() {
     <section class="league-events-section scroll-scene" id="league-events">
       <div class="section-heading">
         <div>
-          <span class="eyebrow">RACE CALENDAR</span>
-          <h2>Upcoming Events</h2>
+          <span class="eyebrow">UPCOMING SESSIONS</span>
+          <h2>Race Schedule</h2>
         </div>
 
         <span class="viewer-timezone-chip">
@@ -236,9 +247,26 @@ async function loadLeague() {
           : `<div class="empty-state">No upcoming races have been added.</div>`
       }
     </section>
+
+    <section class="league-history-section scroll-scene" id="league-history">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">ARCHIVE</span>
+          <h2>Session History</h2>
+        </div>
+
+        <span class="history-count">${historyRaces.length} recorded</span>
+      </div>
+
+      ${
+        historyRaces.length
+          ? `<div class="league-history-list">${historyRaces.map((race, index) => renderHistoryRace(race, index)).join("")}</div>`
+          : `<div class="empty-state">No completed sessions have been recorded yet.</div>`
+      }
+    </section>
   `;
 
-  initializeCountdown();
+  initializeCountdowns();
   initializeAnimations();
   initializeScrollExperience();
 }
@@ -334,6 +362,19 @@ function renderUpcomingRace(race, index) {
           League time: ${formatOriginalDateTime(race)}
           (${escapeHtml(race.timezone || "UTC")})
         </small>
+
+        <div
+          class="inline-race-countdown"
+          data-race-countdown
+          data-race-date="${escapeAttribute(race.race_date)}"
+          data-race-time="${escapeAttribute(String(race.race_time || "00:00").slice(0, 5))}"
+          data-race-zone="${escapeAttribute(race.timezone || "UTC")}"
+        >
+          <span><strong data-days>0</strong>d</span>
+          <span><strong data-hours>0</strong>h</span>
+          <span><strong data-minutes>0</strong>m</span>
+          <span><strong data-seconds>0</strong>s</span>
+        </div>
       </div>
 
       ${
@@ -345,44 +386,96 @@ function renderUpcomingRace(race, index) {
   `;
 }
 
-function initializeCountdown() {
-  const countdown = document.querySelector(".event-countdown");
-  if (!countdown) return;
+function renderHistoryRace(race, index) {
+  const local = getRaceDateTime(race).toLocal();
 
-  const race = {
-    race_date: countdown.dataset.raceDate,
-    race_time: countdown.dataset.raceTime,
-    timezone: countdown.dataset.raceZone
-  };
+  return `
+    <article class="history-race-card reveal-card" style="--history-delay:${index * 55}ms">
+      <div class="history-race-date">
+        <strong>${local.toFormat("d")}</strong>
+        <span>${local.toFormat("LLL yyyy")}</span>
+      </div>
+
+      <div class="history-race-main">
+        <div class="history-race-labels">
+          <span class="session-complete-pill">COMPLETED</span>
+          <span>${escapeHtml(race.category || "Race Session")}</span>
+        </div>
+
+        <h3>${escapeHtml(race.event_name || "Race session")}</h3>
+
+        <p>
+          ${race.circuit ? escapeHtml(race.circuit) : "Circuit not specified"}
+          · ${local.toFormat("h:mm a")}
+        </p>
+      </div>
+
+      <div class="history-race-actions">
+        ${
+          race.event_url
+            ? `<a class="button secondary" href="${safeUrl(race.event_url)}" target="_blank" rel="noopener">Event Link</a>`
+            : ""
+        }
+
+        ${
+          race.stream_url
+            ? `<a class="button secondary" href="${safeUrl(race.stream_url)}" target="_blank" rel="noopener">Replay / Stream</a>`
+            : ""
+        }
+      </div>
+    </article>
+  `;
+}
+
+function initializeCountdowns() {
+  const countdowns = [...document.querySelectorAll("[data-race-countdown]")];
+
+  if (!countdowns.length) return;
 
   function update() {
-    const distance = getRaceDateTime(race).toMillis() - DateTime.now().toMillis();
+    countdowns.forEach((countdown) => {
+      const race = {
+        race_date: countdown.dataset.raceDate,
+        race_time: countdown.dataset.raceTime,
+        timezone: countdown.dataset.raceZone
+      };
 
-    if (distance <= 0) {
-      countdown.querySelector("[data-countdown-days]").textContent = "0";
-      countdown.querySelector("[data-countdown-hours]").textContent = "0";
-      countdown.querySelector("[data-countdown-minutes]").textContent = "0";
-      return;
-    }
+      const distance =
+        getRaceDateTime(race).toMillis() -
+        DateTime.now().toMillis();
 
-    const duration = luxon.Duration.fromMillis(distance).shiftTo(
-      "days",
-      "hours",
-      "minutes"
-    );
+      const values = distance > 0
+        ? luxon.Duration.fromMillis(distance).shiftTo(
+            "days",
+            "hours",
+            "minutes",
+            "seconds"
+          )
+        : {
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0
+          };
 
-    countdown.querySelector("[data-countdown-days]").textContent =
-      Math.floor(duration.days);
+      countdown.querySelector("[data-days]").textContent =
+        Math.max(0, Math.floor(values.days || 0));
 
-    countdown.querySelector("[data-countdown-hours]").textContent =
-      Math.floor(duration.hours);
+      countdown.querySelector("[data-hours]").textContent =
+        Math.max(0, Math.floor(values.hours || 0));
 
-    countdown.querySelector("[data-countdown-minutes]").textContent =
-      Math.floor(duration.minutes);
+      countdown.querySelector("[data-minutes]").textContent =
+        Math.max(0, Math.floor(values.minutes || 0));
+
+      countdown.querySelector("[data-seconds]").textContent =
+        Math.max(0, Math.floor(values.seconds || 0));
+
+      countdown.classList.toggle("countdown-complete", distance <= 0);
+    });
   }
 
   update();
-  setInterval(update, 30000);
+  setInterval(update, 1000);
 }
 
 function getLeagueInitials(league) {
