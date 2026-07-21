@@ -1,93 +1,95 @@
-# FN Leagues V4
+# FN Leagues 2.0 — Phase 1
 
-This version includes:
+Phase 1 includes:
 
-- Custom league logos
-- Featured league section
-- 30 league slots
-- 20 race slots
-- League search
-- Schedule filters
-- Next-race countdown
-- Automatic league and race totals
-- Soft pink and purple design
-- Mobile-friendly layout
+- Supabase connection
+- Public homepage
+- Public league directory
+- Upcoming schedule
+- Live races
+- League ranking table
+- Admin login
+- Authenticated dashboard
+- Pink and purple responsive design
 
-## Main file to edit
+## 1. Add your Supabase values
 
-Edit:
+Open `config.js`.
 
-`data.js`
-
-## Adding a custom logo
-
-1. Put your logo inside:
-
-`images/leagues/`
-
-2. Use a simple filename, for example:
-
-`fes.png`
-
-3. Edit the league in `data.js`:
+Replace:
 
 ```js
-{
-  name: "FES Formula 1",
-  abbreviation: "FES",
-  category: "Formula Racing",
-  description: "Weekly Fortnite formula racing league.",
-  discord: "https://discord.gg/example",
-  logo: "images/leagues/fes.png",
-  featured: true
-}
+const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL_HERE";
+const SUPABASE_PUBLISHABLE_KEY = "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
 ```
 
-Use PNG images with transparent backgrounds where possible.
+Project URL:
 
-## Featured leagues
+Use your Data API URL without `/rest/v1/`.
 
-Change:
+Example:
 
-```js
-featured: false
+```text
+https://abcdefghijkl.supabase.co
 ```
 
-to:
+Publishable key:
 
-```js
-featured: true
+Use the key beginning with:
+
+```text
+sb_publishable_
 ```
 
-## Updating GitHub
+Never use the secret key.
 
-1. Open your GitHub repository.
-2. Click **Add file**.
-3. Click **Upload files**.
-4. Drag in the new V4 files.
-5. Also upload the `images` folder and its contents.
-6. Click **Commit changes**.
+## 2. Create your admin account
 
-Files with matching names will be replaced automatically.
+In Supabase:
 
-## Adding logos later
+1. Open Authentication.
+2. Open Users.
+3. Click Add user.
+4. Enter your email and password.
+5. Enable Auto confirm user if offered.
 
-1. Open the GitHub repository.
-2. Click **Add file → Upload files**.
-3. Drag the logo into the correct path.
+## 3. Upload to GitHub
 
-GitHub’s browser uploader may not place a file inside a folder automatically. The easiest method is to upload the full `images` folder from Finder when first installing V4.
+Upload all files in this folder to the root of your FN Leagues repository:
 
-Later, you can open `images`, then `leagues`, choose **Add file → Upload files**, and upload new logos there.
+- index.html
+- admin.html
+- styles.css
+- config.js
+- app.js
+- admin.js
+- README.md
 
-## Cloudflare
+Matching files will be replaced automatically.
 
-Cloudflare is already connected to the GitHub repository.
+## 4. Cloudflare
 
-After each GitHub commit:
+Cloudflare automatically deploys after the GitHub commit.
 
-1. Cloudflare automatically starts a new deployment.
-2. Wait roughly one minute.
-3. Refresh your `.pages.dev` website.
+Public website:
 
-You do not need to upload anything manually to Cloudflare.
+```text
+https://fn-leagues.pages.dev
+```
+
+Admin page:
+
+```text
+https://fn-leagues.pages.dev/admin.html
+```
+
+## Important
+
+The database may be empty at first. The public site will display empty-state messages until content is added.
+
+Phase 2 will add:
+
+- Add/edit/delete league forms
+- Logo uploads
+- Banner uploads
+- Dedicated league pages
