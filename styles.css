@@ -2469,3 +2469,252 @@ footer div span {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* PHASE 10 — INTERACTION & FULL RANKINGS */
+.featured-slide,
+.league-card,
+.content-card {
+  position: relative;
+  will-change: transform;
+  transition:
+    transform .42s cubic-bezier(.2,.8,.2,1),
+    box-shadow .42s ease,
+    border-color .42s ease,
+    filter .42s ease;
+}
+
+.featured-slide:hover {
+  transform:
+    perspective(1000px)
+    translateY(-14px)
+    rotateX(2.5deg)
+    rotateY(-1.5deg)
+    scale(1.018);
+  box-shadow:
+    0 36px 80px rgba(125,95,150,.22),
+    0 0 0 1px rgba(255,255,255,.8);
+  border-color: rgba(205,186,255,.9);
+  filter: saturate(1.08);
+}
+
+.league-card:hover,
+.content-card:hover {
+  transform:
+    perspective(900px)
+    translateY(-12px)
+    rotateX(2deg)
+    rotateY(1deg)
+    scale(1.012);
+  box-shadow:
+    0 32px 72px rgba(125,95,150,.20),
+    0 0 0 1px rgba(255,255,255,.82);
+  border-color: rgba(205,186,255,.88);
+}
+
+.featured-slide::before,
+.league-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  opacity: 0;
+  background:
+    radial-gradient(circle at 25% 15%, rgba(255,255,255,.42), transparent 34%),
+    linear-gradient(135deg, rgba(247,194,226,.10), rgba(196,220,255,.10));
+  transition: opacity .35s ease;
+  pointer-events: none;
+}
+
+.featured-slide:hover::before,
+.league-card:hover::before {
+  opacity: 1;
+}
+
+.featured-slide > *,
+.league-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.featured-slide:hover .featured-slide-logo,
+.league-card:hover .logo-frame {
+  animation: hoverFloatLogo 1.8s ease-in-out infinite;
+}
+
+@keyframes hoverFloatLogo {
+  0%, 100% {
+    transform: translateY(0) rotate(0);
+  }
+
+  50% {
+    transform: translateY(-7px) rotate(-1.5deg);
+  }
+}
+
+.rankings-page {
+  padding-top: 70px;
+}
+
+.rankings-page-hero {
+  display: grid;
+  grid-template-columns: 1fr .8fr;
+  gap: 42px;
+  align-items: center;
+  min-height: 460px;
+  padding: 35px;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.rankings-page-hero h1 {
+  margin: 15px 0 18px;
+  font-size: clamp(3.8rem, 8vw, 6.8rem);
+}
+
+.rankings-page-hero p {
+  max-width: 620px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.rankings-page-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 11px;
+}
+
+.rankings-page-stats article {
+  padding: 21px;
+  border: 1px solid rgba(255,255,255,.76);
+  border-radius: 18px;
+  background: rgba(255,255,255,.55);
+  backdrop-filter: blur(16px);
+}
+
+.rankings-page-stats strong,
+.rankings-page-stats span {
+  display: block;
+}
+
+.rankings-page-stats strong {
+  font: 800 1.8rem Outfit, sans-serif;
+}
+
+.rankings-page-stats span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: .73rem;
+}
+
+.rankings-browser {
+  margin-top: 85px;
+}
+
+.rankings-toolbar {
+  display: flex;
+  gap: 8px;
+  width: min(470px, 100%);
+}
+
+.rankings-toolbar input,
+.rankings-toolbar select {
+  flex: 1;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--text);
+  background: rgba(255,255,255,.68);
+  outline: 0;
+}
+
+.ranking-league-content {
+  text-decoration: none;
+}
+
+.ranking-league-content:hover strong {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.upload-zone {
+  position: relative;
+  display: grid !important;
+  gap: 5px;
+  align-content: center;
+  min-height: 135px;
+  padding: 18px;
+  border: 1.5px dashed rgba(156,125,221,.28);
+  border-radius: 16px;
+  background: rgba(255,255,255,.45);
+  cursor: pointer;
+  transition:
+    transform .2s ease,
+    background .2s ease,
+    border-color .2s ease;
+}
+
+.upload-zone:hover,
+.upload-zone.dragging {
+  transform: translateY(-2px);
+  border-color: rgba(156,125,221,.65);
+  background: rgba(216,198,255,.22);
+}
+
+.upload-zone span {
+  color: var(--accent);
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.upload-zone strong {
+  font-size: .82rem;
+}
+
+.upload-zone small {
+  color: var(--muted);
+  font-size: .67rem;
+}
+
+.upload-zone input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .rankings-page-hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .rankings-page-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .rankings-toolbar {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .featured-slide:hover,
+  .league-card:hover,
+  .content-card:hover {
+    transform: none;
+  }
+
+  .featured-slide:hover .featured-slide-logo,
+  .league-card:hover .logo-frame {
+    animation: none;
+  }
+}

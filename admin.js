@@ -4,6 +4,10 @@ const $ = (id) => document.getElementById(id);
 let leagueCache = [];
 let raceCache = [];
 let rankingCache = [];
+let activeRaceFilter = "all";
+let raceSearchQuery = "";
+let leagueAdminSearchQuery = "";
+let rankingAdminSearchQuery = "";
 
 document.addEventListener("DOMContentLoaded", initialize);
 
@@ -15,6 +19,40 @@ $("clearFormButton").addEventListener("click", () => clearLeagueForm());
 
 $("raceForm").addEventListener("submit", saveRace);
 $("clearRaceButton").addEventListener("click", () => clearRaceForm());
+
+$("raceSearch").addEventListener("input", (event) => {
+  raceSearchQuery = event.target.value.trim().toLowerCase();
+  renderRaceList();
+});
+
+
+$("leagueAdminSearch").addEventListener("input", (event) => {
+  leagueAdminSearchQuery = event.target.value.trim().toLowerCase();
+  renderLeagueList();
+});
+
+$("rankingAdminSearch").addEventListener("input", (event) => {
+  rankingAdminSearchQuery = event.target.value.trim().toLowerCase();
+  renderRankingList();
+});
+
+setupUploadZone("logoUploadZone", "leagueLogo");
+setupUploadZone("bannerUploadZone", "leagueBanner");
+
+$("leagueLogo").addEventListener("change", renderSelectedAssetPreviews);
+$("leagueBanner").addEventListener("change", renderSelectedAssetPreviews);
+
+document.querySelectorAll("[data-race-filter]").forEach((button) => {
+  button.addEventListener("click", () => {
+    activeRaceFilter = button.dataset.raceFilter;
+
+    document.querySelectorAll("[data-race-filter]").forEach((item) => {
+      item.classList.toggle("active", item === button);
+    });
+
+    renderRaceList();
+  });
+});
 
 $("rankingForm").addEventListener("submit", saveRanking);
 $("clearRankingButton").addEventListener("click", () => clearRankingForm());
@@ -89,17 +127,45 @@ function validateConfig() {
 }
 
 async function loadStats() {
-  const [leagues, races, liveRaces, rankings] = await Promise.all([
-    client.from("leagues").select("*", { count: "exact", head: true }),
-    client.from("races").select("*", { count: "exact", head: true }),
-    client.from("races").select("*", { count: "exact", head: true }).eq("is_live", true),
-    client.from("league_rankings").select("*", { count: "exact", head: true })
+  const [leagueResult, raceResult, rankingResult] = await Promise.all([
+    client.from("leagues").select("*"),
+    client.from("races").select("*"),
+    client.from("league_rankings").select("*")
   ]);
 
-  $("adminLeagueCount").textContent = leagues.count ?? 0;
-  $("adminRaceCount").textContent = races.count ?? 0;
-  $("adminLiveCount").textContent = liveRaces.count ?? 0;
-  $("adminRankingCount").textContent = rankings.count ?? 0;
+  const leagues = leagueResult.data || [];
+  const races = raceResult.data || [];
+  const rankings = rankingResult.data || [];
+  const now = new Date();
+
+  const upcoming = races.filter((race) =>
+    !race.is_archived &&
+    !race.is_live &&
+    getAdminRaceDate(race) >= now
+  );
+
+  const live = races.filter((race) =>
+    !race.is_archived &&
+    race.is_live === true
+  );
+
+  const completed = races.filter((race) =>
+    !race.is_archived &&
+    race.is_live !== true &&
+    getAdminRaceDate(race) < now
+  );
+
+  const archived = races.filter((race) => race.is_archived === true);
+  const featured = leagues.filter((league) => league.featured === true);
+
+  animateAdminNumber($("adminLeagueCount"), leagues.length);
+  animateAdminNumber($("adminRaceCount"), races.length);
+  animateAdminNumber($("adminUpcomingCount"), upcoming.length);
+  animateAdminNumber($("adminLiveCount"), live.length);
+  animateAdminNumber($("adminCompletedCount"), completed.length);
+  animateAdminNumber($("adminArchivedCount"), archived.length);
+  animateAdminNumber($("adminRankingCount"), rankings.length);
+  animateAdminNumber($("adminFeaturedCount"), featured.length);
 }
 
 async function loadLeagues() {
@@ -156,9 +222,16 @@ function populateLeagueSelect() {
 }
 
 function renderLeagueList() {
-  $("adminLeagueEmpty").classList.toggle("hidden", leagueCache.length > 0);
+  const filteredLeagues = leagueCache.filter((league) =>
+    [league.name, league.abbreviation, league.category]
+      .join(" ")
+      .toLowerCase()
+      .includes(leagueAdminSearchQuery)
+  );
 
-  $("adminLeagueList").innerHTML = leagueCache.map((league) => `
+  $("adminLeagueEmpty").classList.toggle("hidden", filteredLeagues.length > 0);
+
+  $("adminLeagueList").innerHTML = filteredLeagues.map((league) => `
     <article class="admin-list-row">
       <div class="admin-list-logo">
         ${
@@ -177,6 +250,7 @@ function renderLeagueList() {
       </div>
 
       <div class="admin-row-actions">
+        <button class="button secondary" onclick="duplicateLeague(${league.id})">Duplicate</button>
         <button class="button secondary" onclick="editLeague(${league.id})">Edit</button>
         <button class="button danger" onclick="deleteLeague(${league.id}, '${escapeJs(league.name)}')">Delete</button>
       </div>
@@ -185,39 +259,98 @@ function renderLeagueList() {
 }
 
 function renderRaceList() {
-  $("adminRaceEmpty").classList.toggle("hidden", raceCache.length > 0);
+  const now = new Date();
 
-  $("adminRaceList").innerHTML = raceCache.map((race) => `
-    <article class="admin-list-row race-admin-row">
-      <div class="race-date-badge">
-        <strong>${formatShortDate(race.race_date)}</strong>
-        <span>${formatTime(race.race_time)}</span>
-      </div>
+  const filtered = raceCache.filter((race) => {
+    const searchText = [
+      race.league_name,
+      race.event_name,
+      race.category,
+      race.circuit
+    ].join(" ").toLowerCase();
 
-      <div class="admin-list-copy">
-        <strong>
-          ${race.is_live ? `<span class="live-pill">LIVE</span>` : ""}
-          ${escapeHtml(race.league_name)}
-        </strong>
-        <span>
-          ${escapeHtml(race.event_name || "Race event")}
-          ${race.circuit ? ` · ${escapeHtml(race.circuit)}` : ""}
-        </span>
-      </div>
+    if (raceSearchQuery && !searchText.includes(raceSearchQuery)) {
+      return false;
+    }
 
-      <div class="admin-row-actions">
-        <button
-          class="button ${race.is_live ? "danger" : "secondary"}"
-          onclick="toggleLive(${race.id}, ${race.is_live === true})"
-        >
-          ${race.is_live ? "End Live" : "Go Live"}
-        </button>
+    if (activeRaceFilter === "archived") {
+      return race.is_archived === true;
+    }
 
-        <button class="button secondary" onclick="editRace(${race.id})">Edit</button>
-        <button class="button danger" onclick="deleteRace(${race.id}, '${escapeJs(race.event_name || race.league_name)}')">Delete</button>
-      </div>
-    </article>
-  `).join("");
+    if (race.is_archived === true) {
+      return activeRaceFilter === "all";
+    }
+
+    if (activeRaceFilter === "live") {
+      return race.is_live === true;
+    }
+
+    const raceDate = getAdminRaceDate(race);
+
+    if (activeRaceFilter === "upcoming") {
+      return race.is_live !== true && raceDate >= now;
+    }
+
+    if (activeRaceFilter === "completed") {
+      return race.is_live !== true && raceDate < now;
+    }
+
+    return true;
+  });
+
+  $("adminRaceEmpty").classList.toggle("hidden", filtered.length > 0);
+
+  $("adminRaceList").innerHTML = filtered.map((race) => {
+    const status = getRaceStatus(race);
+
+    return `
+      <article class="admin-list-row race-admin-row ${race.is_archived ? "archived-race-row" : ""}">
+        <div class="race-date-badge">
+          <strong>${formatShortDate(race.race_date)}</strong>
+          <span>${formatTime(race.race_time)}</span>
+        </div>
+
+        <div class="admin-list-copy">
+          <strong>
+            ${status === "live" ? `<span class="live-pill">LIVE</span>` : ""}
+            ${escapeHtml(race.league_name)}
+          </strong>
+
+          <span>
+            ${escapeHtml(race.event_name || "Race event")}
+            ${race.circuit ? ` · ${escapeHtml(race.circuit)}` : ""}
+          </span>
+
+          <span class="race-status-label status-${status}">
+            ${statusLabel(status)}
+          </span>
+        </div>
+
+        <div class="admin-row-actions race-row-actions">
+          ${
+            race.is_archived
+              ? `
+                <button class="button secondary" onclick="restoreRace(${race.id})">Restore</button>
+                <button class="button danger" onclick="deleteRace(${race.id}, '${escapeJs(race.event_name || race.league_name)}')">Delete Permanently</button>
+              `
+              : `
+                <button
+                  class="button ${race.is_live ? "danger" : "secondary"}"
+                  onclick="toggleLive(${race.id}, ${race.is_live === true})"
+                >
+                  ${race.is_live ? "End Live" : "Go Live"}
+                </button>
+
+                <button class="button secondary" onclick="duplicateRace(${race.id})">Duplicate</button>
+                <button class="button secondary" onclick="editRace(${race.id})">Edit</button>
+                <button class="button secondary" onclick="archiveRace(${race.id})">Archive</button>
+                <button class="button danger" onclick="deleteRace(${race.id}, '${escapeJs(race.event_name || race.league_name)}')">Delete</button>
+              `
+          }
+        </div>
+      </article>
+    `;
+  }).join("");
 }
 
 window.editLeague = function (id) {
@@ -246,6 +379,35 @@ window.editLeague = function (id) {
   `;
 
   window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+
+window.duplicateLeague = function (id) {
+  const league = leagueCache.find((item) => item.id === id);
+  if (!league) return;
+
+  switchTab("leagues");
+
+  $("leagueId").value = "";
+  $("leagueName").value = `${league.name} Copy`;
+  $("leagueAbbreviation").value = league.abbreviation || "";
+  $("leagueCategory").value = league.category || "";
+  $("leagueDiscord").value = league.discord_url || "";
+  $("leagueWebsite").value = league.website_url || "";
+  $("leagueInstagram").value = league.instagram_url || "";
+  $("leagueYoutube").value = league.youtube_url || "";
+  $("leagueTwitch").value = league.twitch_url || "";
+  $("leagueDescription").value = league.description || "";
+  $("leagueFeatured").checked = false;
+  $("formTitle").textContent = "Duplicate League";
+
+  $("assetPreview").innerHTML = `
+    ${league.logo_url ? `<img src="${escapeHtml(league.logo_url)}" alt="Current logo">` : ""}
+    ${league.banner_url ? `<img src="${escapeHtml(league.banner_url)}" alt="Current banner">` : ""}
+  `;
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  showAdminToast("League copied into the editor.");
 };
 
 window.deleteLeague = async function (id, name) {
@@ -335,6 +497,7 @@ window.editRace = function (id) {
   $("raceEventUrl").value = race.event_url || "";
   $("raceStreamUrl").value = race.stream_url || "";
   $("raceIsLive").checked = race.is_live === true;
+  $("raceIsArchived").checked = race.is_archived === true;
 
   $("raceFormTitle").textContent = "Edit Race";
 
@@ -369,6 +532,71 @@ window.toggleLive = async function (id, currentlyLive) {
   await Promise.all([loadRaces(), loadStats()]);
 };
 
+
+window.archiveRace = async function (id) {
+  const race = raceCache.find((item) => item.id === id);
+  if (!race) return;
+
+  if (!confirm(`Archive ${race.event_name || race.league_name}? It will be hidden from public pages.`)) {
+    return;
+  }
+
+  const { error } = await client
+    .from("races")
+    .update({
+      is_archived: true,
+      is_live: false
+    })
+    .eq("id", id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  await Promise.all([loadRaces(), loadStats()]);
+  showAdminToast("Race archived.");
+};
+
+window.restoreRace = async function (id) {
+  const { error } = await client
+    .from("races")
+    .update({ is_archived: false })
+    .eq("id", id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  await Promise.all([loadRaces(), loadStats()]);
+  showAdminToast("Race restored.");
+};
+
+window.duplicateRace = function (id) {
+  const race = raceCache.find((item) => item.id === id);
+  if (!race) return;
+
+  switchTab("races");
+
+  $("raceId").value = "";
+  $("raceLeague").value = race.league_id || "";
+  $("raceEventName").value = `${race.event_name || "Race event"} Copy`;
+  $("raceCategory").value = race.category || "";
+  $("raceCircuit").value = race.circuit || "";
+  $("raceTimezone").value = normalizeSavedZone(race.timezone);
+  $("raceDate").value = race.race_date || "";
+  $("raceTime").value = String(race.race_time || "").slice(0, 5);
+  $("raceEventUrl").value = race.event_url || "";
+  $("raceStreamUrl").value = race.stream_url || "";
+  $("raceIsLive").checked = false;
+  $("raceIsArchived").checked = false;
+  $("raceFormTitle").textContent = "Duplicate Race";
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  showAdminToast("Race copied into the editor.");
+};
+
 async function saveRace(event) {
   event.preventDefault();
   $("raceMessage").textContent = "Saving…";
@@ -393,7 +621,8 @@ async function saveRace(event) {
       timezone: $("raceTimezone").value || "Asia/Dubai",
       event_url: $("raceEventUrl").value.trim() || null,
       stream_url: $("raceStreamUrl").value.trim() || null,
-      is_live: $("raceIsLive").checked
+      is_live: $("raceIsLive").checked,
+      is_archived: $("raceIsArchived").checked
     };
 
     const result = id
@@ -453,6 +682,7 @@ function clearRaceForm(clearMessage = true) {
   $("raceForm").reset();
   $("raceId").value = "";
   $("raceTimezone").value = "Asia/Dubai";
+  $("raceIsArchived").checked = false;
   $("raceFormTitle").textContent = "Add Race";
 
   if (clearMessage) {
@@ -559,9 +789,15 @@ function populateRankingLeagueSelect() {
 }
 
 function renderRankingList() {
-  $("adminRankingEmpty").classList.toggle("hidden", rankingCache.length > 0);
+  const filteredRankings = rankingCache.filter((ranking) =>
+    String(ranking.leagues?.name || "")
+      .toLowerCase()
+      .includes(rankingAdminSearchQuery)
+  );
 
-  $("adminRankingList").innerHTML = rankingCache.map((ranking) => `
+  $("adminRankingEmpty").classList.toggle("hidden", filteredRankings.length > 0);
+
+  $("adminRankingList").innerHTML = filteredRankings.map((ranking) => `
     <article class="admin-list-row ranking-admin-row">
       <div class="ranking-position-badge">#${ranking.position}</div>
 
@@ -727,3 +963,124 @@ function initializeScrollExperience() {
 }
 
 window.addEventListener('load', initializeScrollExperience);
+
+
+function getAdminRaceDate(race) {
+  const time = String(race.race_time || "00:00").slice(0, 5);
+  return new Date(`${race.race_date}T${time}:00`);
+}
+
+function getRaceStatus(race) {
+  if (race.is_archived) return "archived";
+  if (race.is_live) return "live";
+  return getAdminRaceDate(race) < new Date()
+    ? "completed"
+    : "upcoming";
+}
+
+function statusLabel(status) {
+  const labels = {
+    upcoming: "Upcoming",
+    live: "Live now",
+    completed: "Completed",
+    archived: "Archived"
+  };
+
+  return labels[status] || status;
+}
+
+function animateAdminNumber(element, target) {
+  if (!element) return;
+
+  const startValue = Number(element.textContent) || 0;
+  const duration = 500;
+  const start = performance.now();
+
+  function frame(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+
+    element.textContent = Math.round(
+      startValue + (target - startValue) * eased
+    );
+
+    if (progress < 1) {
+      requestAnimationFrame(frame);
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function showAdminToast(message) {
+  let toast = document.getElementById("adminToast");
+
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "adminToast";
+    toast.className = "admin-toast";
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(window.adminToastTimer);
+
+  window.adminToastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2400);
+}
+
+
+function setupUploadZone(zoneId, inputId) {
+  const zone = $(zoneId);
+  const input = $(inputId);
+
+  if (!zone || !input) return;
+
+  ["dragenter", "dragover"].forEach((eventName) => {
+    zone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      zone.classList.add("dragging");
+    });
+  });
+
+  ["dragleave", "drop"].forEach((eventName) => {
+    zone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      zone.classList.remove("dragging");
+    });
+  });
+
+  zone.addEventListener("drop", (event) => {
+    const files = event.dataTransfer.files;
+
+    if (!files.length) return;
+
+    const transfer = new DataTransfer();
+    transfer.items.add(files[0]);
+    input.files = transfer.files;
+
+    renderSelectedAssetPreviews();
+  });
+}
+
+function renderSelectedAssetPreviews() {
+  const preview = $("assetPreview");
+  const files = [
+    $("leagueLogo").files[0],
+    $("leagueBanner").files[0]
+  ].filter(Boolean);
+
+  if (!files.length) return;
+
+  preview.innerHTML = "";
+
+  files.forEach((file) => {
+    const image = document.createElement("img");
+    image.src = URL.createObjectURL(file);
+    image.alt = file.name;
+    preview.appendChild(image);
+  });
+}

@@ -629,11 +629,12 @@ function renderRankings() {
   const body = document.getElementById("rankingBody");
   const empty = document.getElementById("rankingEmpty");
   const wrap = document.querySelector(".ranking-wrap");
+  const topRankings = rankings.slice(0, 10);
 
-  empty.classList.toggle("hidden", rankings.length > 0);
-  wrap.classList.toggle("hidden", rankings.length === 0);
+  empty.classList.toggle("hidden", topRankings.length > 0);
+  wrap.classList.toggle("hidden", topRankings.length === 0);
 
-  body.innerHTML = rankings.map((ranking, index) => {
+  body.innerHTML = topRankings.map((ranking, index) => {
     const league = ranking.leagues || {};
     const fallback =
       league.abbreviation ||

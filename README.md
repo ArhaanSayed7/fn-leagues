@@ -1,34 +1,34 @@
-# FN Leagues 2.0 — Phase 9
+# FN Leagues 2.0 — Phase 10
 
-Phase 9 redesigns the public homepage.
+Phase 10 adds stronger interactions, a full rankings page,
+and admin workflow improvements.
 
-## New homepage features
+## Public website updates
 
-- Stronger esports-style hero section
-- Featured league spotlight
-- Featured league banner, logo and tier
-- Horizontal featured-leagues carousel
-- Improved live-race cards
-- Next-race feature with live countdown
-- Animated league, race and ranking statistics
-- Searchable schedule
-- Filter schedule by league
-- Countdown displayed on schedule entries
-- Better mobile navigation
-- More polished visual hierarchy
-- Stronger motion, depth and hover effects
+- Homepage rankings now show only the top 10 leagues
+- New `rankings.html` page shows every ranked league
+- Full rankings page supports:
+  - Search
+  - Tier filtering
+  - Animated tier statistics
+  - Links to league pages
+- Featured league cards float, tilt and lift on hover
+- League-directory cards float, tilt and lift on hover
+- League logos gently animate while their card is hovered
+- Reduced-motion accessibility remains supported
+
+## Admin updates
+
+- Search leagues
+- Search rankings
+- Duplicate a league
+- Drag-and-drop logo uploads
+- Drag-and-drop banner uploads
+- Immediate image previews
 
 ## Database changes
 
-No new Supabase SQL is required.
-
-This phase uses existing:
-
-- Featured league setting
-- League banners and logos
-- Race schedule
-- Live race status
-- League rankings
+No Supabase SQL update is required.
 
 ## Update GitHub
 
@@ -36,9 +36,13 @@ Upload:
 
 - index.html
 - app.js
+- rankings.html
+- rankings.js
+- admin.html
+- admin.js
 - styles.css
 - README.md
 
 Keep your existing `config.js`.
 
-Cloudflare will deploy automatically after the commit.
+Cloudflare deploys automatically after you commit the files.

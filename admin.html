@@ -50,7 +50,10 @@
           <button data-tab="rankings">Rankings</button>
         </nav>
 
-        <button id="logoutButton" class="button secondary full">Sign Out</button>
+        <div class="admin-sidebar-actions">
+          <a href="index.html" class="button secondary full">← Back to Home</a>
+          <button id="logoutButton" class="button secondary full">Sign Out</button>
+        </div>
       </aside>
 
       <div class="admin-main">
@@ -63,11 +66,15 @@
         </div>
 
         <section id="overviewTab" class="admin-tab">
-          <div class="dashboard-stats">
+          <div class="dashboard-stats phase-eight-stats">
             <article class="glass"><strong id="adminLeagueCount">—</strong><span>Leagues</span></article>
             <article class="glass"><strong id="adminRaceCount">—</strong><span>Total races</span></article>
+            <article class="glass"><strong id="adminUpcomingCount">—</strong><span>Upcoming</span></article>
             <article class="glass"><strong id="adminLiveCount">—</strong><span>Live races</span></article>
+            <article class="glass"><strong id="adminCompletedCount">—</strong><span>Completed</span></article>
+            <article class="glass"><strong id="adminArchivedCount">—</strong><span>Archived</span></article>
             <article class="glass"><strong id="adminRankingCount">—</strong><span>Ranked leagues</span></article>
+            <article class="glass"><strong id="adminFeaturedCount">—</strong><span>Featured leagues</span></article>
           </div>
 
           <section class="glass dashboard-panel">
@@ -103,8 +110,19 @@
                 <label class="full-span">Twitch URL<input id="leagueTwitch" type="url" placeholder="https://twitch.tv/..."></label>
 
                 <label class="full-span">Description<textarea id="leagueDescription" rows="4"></textarea></label>
-                <label>Logo image<input id="leagueLogo" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>
-                <label>Banner image<input id="leagueBanner" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+                <label class="upload-zone" id="logoUploadZone">
+                  <span>Logo image</span>
+                  <strong>Drop logo here or click to browse</strong>
+                  <small>PNG, JPG, WebP or GIF · Max 5 MB</small>
+                  <input id="leagueLogo" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+                </label>
+
+                <label class="upload-zone" id="bannerUploadZone">
+                  <span>Banner image</span>
+                  <strong>Drop banner here or click to browse</strong>
+                  <small>Wide images work best · Max 5 MB</small>
+                  <input id="leagueBanner" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+                </label>
                 <label class="checkbox-label full-span"><input id="leagueFeatured" type="checkbox"> Show as a featured league</label>
               </div>
 
@@ -118,8 +136,16 @@
                 <div><span class="eyebrow">CURRENT CONTENT</span><h3>Leagues</h3></div>
               </div>
 
+              <div class="admin-toolbar">
+                <input
+                  id="leagueAdminSearch"
+                  type="search"
+                  placeholder="Search leagues…"
+                >
+              </div>
+
               <div id="adminLeagueList"></div>
-              <div id="adminLeagueEmpty" class="empty-state hidden">No leagues have been added.</div>
+              <div id="adminLeagueEmpty" class="empty-state hidden">No leagues match this view.</div>
             </div>
           </div>
         </section>
@@ -168,8 +194,16 @@
                 <div><span class="eyebrow">CURRENT ORDER</span><h3>League Rankings</h3></div>
               </div>
 
+              <div class="admin-toolbar">
+                <input
+                  id="rankingAdminSearch"
+                  type="search"
+                  placeholder="Search rankings…"
+                >
+              </div>
+
               <div id="adminRankingList"></div>
-              <div id="adminRankingEmpty" class="empty-state hidden">No rankings have been added.</div>
+              <div id="adminRankingEmpty" class="empty-state hidden">No rankings match this view.</div>
             </div>
           </div>
         </section>
@@ -222,6 +256,11 @@
                   <input id="raceIsLive" type="checkbox">
                   Mark this race as live
                 </label>
+
+                <label class="checkbox-label full-span">
+                  <input id="raceIsArchived" type="checkbox">
+                  Archive this race and hide it from public pages
+                </label>
               </div>
 
               <button class="button primary full" type="submit">Save Race</button>
@@ -229,12 +268,27 @@
             </form>
 
             <div class="glass management-list">
-              <div class="form-heading">
-                <div><span class="eyebrow">CURRENT CONTENT</span><h3>Races</h3></div>
+              <div class="form-heading race-management-heading">
+                <div>
+                  <span class="eyebrow">CURRENT CONTENT</span>
+                  <h3>Races</h3>
+                </div>
+              </div>
+
+              <div class="admin-toolbar">
+                <input id="raceSearch" type="search" placeholder="Search races or leagues…">
+
+                <div class="admin-filter-group" id="raceFilters">
+                  <button type="button" class="admin-filter-button active" data-race-filter="all">All</button>
+                  <button type="button" class="admin-filter-button" data-race-filter="upcoming">Upcoming</button>
+                  <button type="button" class="admin-filter-button" data-race-filter="live">Live</button>
+                  <button type="button" class="admin-filter-button" data-race-filter="completed">Completed</button>
+                  <button type="button" class="admin-filter-button" data-race-filter="archived">Archived</button>
+                </div>
               </div>
 
               <div id="adminRaceList"></div>
-              <div id="adminRaceEmpty" class="empty-state hidden">No races have been added.</div>
+              <div id="adminRaceEmpty" class="empty-state hidden">No races match this view.</div>
             </div>
           </div>
         </section>
