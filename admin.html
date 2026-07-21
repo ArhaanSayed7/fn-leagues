@@ -1,41 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FN Leagues Admin</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="admin-body">
-  <div class="orb orb-one"></div><div class="orb orb-two"></div>
+  <div class="orb orb-one"></div>
+  <div class="orb orb-two"></div>
+
   <main class="admin-shell">
     <section id="loginView" class="login-card glass">
-      <a href="index.html" class="brand admin-brand"><span class="brand-badge">FN</span><span><strong>FN Leagues</strong><small>Admin Dashboard</small></span></a>
-      <div class="login-copy"><span class="eyebrow">PRIVATE ACCESS</span><h1>Welcome back.</h1><p>Sign in with your Supabase admin account.</p></div>
+      <a href="index.html" class="brand admin-brand">
+        <span class="brand-badge">FN</span>
+        <span><strong>FN Leagues</strong><small>Admin Dashboard</small></span>
+      </a>
+
+      <div class="login-copy">
+        <span class="eyebrow">PRIVATE ACCESS</span>
+        <h1>Welcome back.</h1>
+        <p>Sign in with your Supabase admin account.</p>
+      </div>
+
       <form id="loginForm" class="admin-form">
         <label>Email<input id="email" type="email" required autocomplete="email"></label>
         <label>Password<input id="password" type="password" required autocomplete="current-password"></label>
         <button class="button primary full">Sign In</button>
       </form>
+
       <p id="loginMessage" class="form-message"></p>
     </section>
 
     <section id="dashboardView" class="dashboard hidden">
       <aside class="admin-sidebar glass">
-        <a href="index.html" class="brand"><span class="brand-badge">FN</span><span><strong>FN Leagues</strong><small>Admin Dashboard</small></span></a>
+        <a href="index.html" class="brand">
+          <span class="brand-badge">FN</span>
+          <span><strong>FN Leagues</strong><small>Admin Dashboard</small></span>
+        </a>
+
         <nav class="admin-nav">
           <button data-tab="overview" class="active">Overview</button>
           <button data-tab="leagues">Leagues</button>
-          <button disabled>Races <span>Phase 3</span></button>
+          <button data-tab="races">Races</button>
           <button disabled>Rankings <span>Phase 4</span></button>
         </nav>
+
         <button id="logoutButton" class="button secondary full">Sign Out</button>
       </aside>
 
       <div class="admin-main">
         <div class="admin-topbar">
-          <div><span class="eyebrow">CONTENT MANAGEMENT</span><h2 id="adminTitle">Dashboard</h2></div>
+          <div>
+            <span class="eyebrow">CONTENT MANAGEMENT</span>
+            <h2 id="adminTitle">Dashboard</h2>
+          </div>
           <span id="adminEmail" class="admin-email"></span>
         </div>
 
@@ -46,9 +68,14 @@
             <article class="glass"><strong id="adminLiveCount">—</strong><span>Live races</span></article>
             <article class="glass"><strong id="adminRankingCount">—</strong><span>Ranked leagues</span></article>
           </div>
+
           <section class="glass dashboard-panel">
-            <span class="eyebrow">PHASE 2</span><h3>League management is ready.</h3>
-            <p>Open the Leagues section to add, edit, feature, upload artwork for, or remove leagues.</p>
+            <span class="eyebrow">PHASE 3</span>
+            <h3>Race management is ready.</h3>
+            <p>
+              You can now schedule races, edit them, remove them, add stream links,
+              and switch live status on or off.
+            </p>
           </section>
         </section>
 
@@ -56,6 +83,7 @@
           <div class="management-layout">
             <form id="leagueForm" class="glass management-form">
               <input id="leagueId" type="hidden">
+
               <div class="form-heading">
                 <div><span class="eyebrow">LEAGUE EDITOR</span><h3 id="formTitle">Add League</h3></div>
                 <button id="clearFormButton" type="button" class="button secondary">Clear</button>
@@ -79,9 +107,63 @@
             </form>
 
             <div class="glass management-list">
-              <div class="form-heading"><div><span class="eyebrow">CURRENT CONTENT</span><h3>Leagues</h3></div></div>
+              <div class="form-heading">
+                <div><span class="eyebrow">CURRENT CONTENT</span><h3>Leagues</h3></div>
+              </div>
+
               <div id="adminLeagueList"></div>
               <div id="adminLeagueEmpty" class="empty-state hidden">No leagues have been added.</div>
+            </div>
+          </div>
+        </section>
+
+        <section id="racesTab" class="admin-tab hidden">
+          <div class="management-layout">
+            <form id="raceForm" class="glass management-form">
+              <input id="raceId" type="hidden">
+
+              <div class="form-heading">
+                <div><span class="eyebrow">RACE EDITOR</span><h3 id="raceFormTitle">Add Race</h3></div>
+                <button id="clearRaceButton" type="button" class="button secondary">Clear</button>
+              </div>
+
+              <div class="form-grid">
+                <label class="full-span">
+                  League
+                  <select id="raceLeague" required>
+                    <option value="">Choose a league</option>
+                  </select>
+                </label>
+
+                <label>Event name<input id="raceEventName" required placeholder="Round 1"></label>
+                <label>Category<input id="raceCategory" placeholder="Formula Racing"></label>
+
+                <label>Circuit<input id="raceCircuit" placeholder="Monaco"></label>
+                <label>Timezone<input id="raceTimezone" value="GMT+4" placeholder="GMT+4"></label>
+
+                <label>Date<input id="raceDate" type="date" required></label>
+                <label>Time<input id="raceTime" type="time" required></label>
+
+                <label class="full-span">Event URL<input id="raceEventUrl" type="url" placeholder="https://discord.gg/..."></label>
+                <label class="full-span">Stream URL<input id="raceStreamUrl" type="url" placeholder="https://youtube.com/..."></label>
+
+                <label class="checkbox-label full-span">
+                  <input id="raceIsLive" type="checkbox">
+                  Mark this race as live
+                </label>
+              </div>
+
+              <button class="button primary full" type="submit">Save Race</button>
+              <p id="raceMessage" class="form-message"></p>
+            </form>
+
+            <div class="glass management-list">
+              <div class="form-heading">
+                <div><span class="eyebrow">CURRENT CONTENT</span><h3>Races</h3></div>
+              </div>
+
+              <div id="adminRaceList"></div>
+              <div id="adminRaceEmpty" class="empty-state hidden">No races have been added.</div>
             </div>
           </div>
         </section>

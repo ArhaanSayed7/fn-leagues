@@ -254,3 +254,64 @@ footer strong { color: var(--text); margin-right: 12px; font-family: Outfit,sans
 
 @media(max-width:950px){.management-layout,.league-detail-grid{grid-template-columns:1fr}.league-hero-content{grid-template-columns:1fr}.league-page-logo{width:115px;height:115px}}
 @media(max-width:680px){.form-grid{grid-template-columns:1fr}.full-span{grid-column:auto}.admin-list-row{grid-template-columns:48px 1fr}.admin-row-actions{grid-column:2}.league-hero{padding:22px}.league-hero-content{min-height:300px}.league-race-row{align-items:flex-start;flex-direction:column}}
+
+
+/* PHASE 3 */
+.form-grid select {
+  width: 100%;
+  margin-top: 7px;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255,255,255,.72);
+  color: var(--text);
+  outline: 0;
+}
+
+.race-admin-row {
+  grid-template-columns: 74px 1fr auto;
+}
+
+.race-date-badge {
+  display: grid;
+  place-items: center;
+  width: 70px;
+  min-height: 56px;
+  padding: 8px;
+  border-radius: 14px;
+  background: rgba(216,198,255,.28);
+  text-align: center;
+}
+
+.race-date-badge strong,
+.race-date-badge span {
+  display: block;
+}
+
+.race-date-badge strong {
+  font-family: Outfit, sans-serif;
+  font-size: .86rem;
+}
+
+.race-date-badge span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: .67rem;
+}
+
+.race-admin-row .live-pill {
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: 1px;
+}
+
+@media (max-width: 760px) {
+  .race-admin-row {
+    grid-template-columns: 64px 1fr;
+  }
+
+  .race-admin-row .admin-row-actions {
+    grid-column: 2;
+    flex-wrap: wrap;
+  }
+}

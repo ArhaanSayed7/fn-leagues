@@ -1,77 +1,66 @@
-# FN Leagues 2.0 — Phase 2
+# FN Leagues 2.0 — Phase 3
 
-Phase 2 adds:
+Phase 3 adds full race management.
 
-- Add, edit and delete leagues from the admin dashboard
-- Upload league logos and banners
-- Featured league toggle
-- Dedicated public league pages
-- Existing public schedule, live races and rankings
-- Your existing Supabase login
+## New features
 
-## Important: preserve config.js
+- Add races
+- Edit races
+- Delete races
+- Assign a race to an existing league
+- Add date, time and timezone
+- Add event links
+- Add stream links
+- Mark a race as live
+- Turn live status on or off from the race list
+- Public homepage automatically shows live and upcoming races
+- Dedicated league pages automatically show linked races
 
-This ZIP deliberately does not include `config.js`.
+## Important
 
-Keep the working `config.js` already in your GitHub repository. Do not delete it.
+Keep your existing working `config.js`.
 
-## Before uploading Phase 2
+This ZIP does not require any new SQL if your earlier `races` table already contains:
 
-### 1. Confirm the Storage bucket exists
+- `league_id`
+- `league_name`
+- `event_name`
+- `category`
+- `circuit`
+- `race_date`
+- `race_time`
+- `timezone`
+- `event_url`
+- `is_live`
+- `stream_url`
 
-In Supabase, create a public bucket named:
-
-`league-assets`
-
-### 2. Add Storage policies
-
-Open `storage-policies.sql` from this download.
-
-In Supabase:
-
-1. Open SQL Editor.
-2. Create a new query.
-3. Paste the contents of `storage-policies.sql`.
-4. Click Run.
+Those fields were added during the earlier setup.
 
 ## Upload to GitHub
 
-Upload these files to the root of the repository:
+Upload these files:
 
-- index.html
 - admin.html
-- app.js
 - admin.js
 - styles.css
-- league.html
-- league.js
 - README.md
 
-Do not upload `config.example.js` over your working `config.js`.
+The other Phase 2 public files can remain as they are.
 
-You do not need to upload `storage-policies.sql` to the website; it is only an instruction file for Supabase.
+You may also upload all website files from this folder except:
 
-After committing, Cloudflare deploys automatically.
+- config.example.js
+- storage-policies.sql
 
-## Using the dashboard
+Do not overwrite your existing `config.js`.
 
-Open:
+## After deployment
 
-`https://fn-leagues.pages.dev/admin.html`
+1. Wait for Cloudflare to show a green deployment.
+2. Open:
+   `https://fn-leagues.pages.dev/admin.html`
+3. Sign in.
+4. Click **Races**.
+5. Add your first race.
 
-Select **Leagues** in the sidebar.
-
-You can:
-
-- Add a league
-- Edit an existing league
-- Delete a league
-- Upload a logo
-- Upload a banner
-- Mark it as featured
-
-The public league page uses:
-
-`league.html?id=LEAGUE_ID`
-
-The website creates these links automatically.
+The league must already exist before you can assign a race to it.
