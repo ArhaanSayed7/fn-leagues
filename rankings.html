@@ -1,140 +1,139 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta
-    name="description"
-    content="Full FDH community rankings."
-  >
-  <title>League Rankings | FDH</title>
-  <link rel="icon" type="image/png" href="assets/fdh-logo.png">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Full FDH community rankings." />
+    <title>League Rankings | FDH</title>
+    <link rel="icon" type="image/png" href="images/fdh-logo.png" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
-    rel="stylesheet"
-  >
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
-  <link rel="stylesheet" href="styles.css">
-</head>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-<body class="rankings-page-body">
-  <div class="scroll-progress" id="scrollProgress"></div>
+  <body class="rankings-page-body">
+    <div class="scroll-progress" id="scrollProgress"></div>
 
-  <div class="orb orb-one"></div>
-  <div class="orb orb-two"></div>
-  <div class="orb orb-three"></div>
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
+    <div class="orb orb-three"></div>
 
-  <header class="site-header">
-    <a href="index.html" class="brand">
-      <span class="brand-logo"><img src="assets/fdh-logo.png" alt="FDH logo"></span>
-      <span>
-        <strong>FDH</strong>
-        <small>Fortnite Driving Hub</small>
-      </span>
-    </a>
+    <header class="site-header">
+      <a href="index.html" class="brand">
+        <span class="brand-logo"
+          ><img src="images/fdh-logo.png" alt="FDH logo"
+        /></span>
+        <span>
+          <strong>FDH</strong>
+          <small>Fortnite Driving Hub</small>
+        </span>
+      </a>
 
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="index.html#live">Live</a>
-      <a href="index.html#schedule">Schedule</a>
-      <a href="rankings.html" class="active-section">Rankings</a>
-      <a href="index.html#leagues">Leagues</a>
-      <a href="admin.html" class="nav-admin">Admin</a>
-    </nav>
-  </header>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="index.html#live">Live</a>
+        <a href="index.html#schedule">Schedule</a>
+        <a href="rankings.html" class="active-section">Rankings</a>
+        <a href="index.html#leagues">Leagues</a>
+        <a href="admin.html" class="nav-admin">Admin</a>
+      </nav>
+    </header>
 
-  <main class="rankings-page section">
-    <section class="rankings-page-hero glass hero-reveal">
-      <div>
-        <span class="eyebrow">COMPLETE COMMUNITY ORDER</span>
-        <h1>All League<br><span>Rankings.</span></h1>
-        <p>
-          Browse every ranked FN league, filter by tier,
-          and search by league name.
-        </p>
-      </div>
-
-      <div class="rankings-page-stats">
-        <article>
-          <strong id="totalRankedCount">0</strong>
-          <span>Ranked leagues</span>
-        </article>
-
-        <article>
-          <strong id="sTierCount">0</strong>
-          <span>S Tier</span>
-        </article>
-
-        <article>
-          <strong id="aTierCount">0</strong>
-          <span>A Tier</span>
-        </article>
-
-        <article>
-          <strong id="otherTierCount">0</strong>
-          <span>B/C Tier</span>
-        </article>
-      </div>
-    </section>
-
-    <section class="rankings-browser scroll-scene">
-      <div class="section-heading split">
+    <main class="rankings-page section">
+      <section class="rankings-page-hero glass hero-reveal">
         <div>
-          <span class="eyebrow">FULL TABLE</span>
-          <h2>League Rankings</h2>
+          <span class="eyebrow">COMPLETE COMMUNITY ORDER</span>
+          <h1>All League<br /><span>Rankings.</span></h1>
+          <p>
+            Browse every ranked FN league, filter by tier, and search by league
+            name.
+          </p>
         </div>
 
-        <div class="rankings-toolbar">
-          <input
-            id="rankingSearch"
-            type="search"
-            placeholder="Search leagues…"
-          >
+        <div class="rankings-page-stats">
+          <article>
+            <strong id="totalRankedCount">0</strong>
+            <span>Ranked leagues</span>
+          </article>
 
-          <select id="tierFilter">
-            <option value="all">All tiers</option>
-            <option value="S">S Tier</option>
-            <option value="A">A Tier</option>
-            <option value="B">B Tier</option>
-            <option value="C">C Tier</option>
-          </select>
+          <article>
+            <strong id="sTierCount">0</strong>
+            <span>S Tier</span>
+          </article>
+
+          <article>
+            <strong id="aTierCount">0</strong>
+            <span>A Tier</span>
+          </article>
+
+          <article>
+            <strong id="otherTierCount">0</strong>
+            <span>B/C Tier</span>
+          </article>
         </div>
+      </section>
+
+      <section class="rankings-browser scroll-scene">
+        <div class="section-heading split">
+          <div>
+            <span class="eyebrow">FULL TABLE</span>
+            <h2>League Rankings</h2>
+          </div>
+
+          <div class="rankings-toolbar">
+            <input
+              id="rankingSearch"
+              type="search"
+              placeholder="Search leagues…"
+            />
+
+            <select id="tierFilter">
+              <option value="all">All tiers</option>
+              <option value="S">S Tier</option>
+              <option value="A">A Tier</option>
+              <option value="B">B Tier</option>
+              <option value="C">C Tier</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="ranking-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Pos.</th>
+                <th>League</th>
+                <th>Tier</th>
+              </tr>
+            </thead>
+
+            <tbody id="fullRankingBody"></tbody>
+          </table>
+        </div>
+
+        <div id="fullRankingEmpty" class="empty-state hidden">
+          No rankings match your filters.
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>
+        <strong>FDH</strong>
+        <span>The home of Fortnite racing leagues.</span>
       </div>
 
-      <div class="ranking-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Pos.</th>
-              <th>League</th>
-              <th>Tier</th>
-            </tr>
-          </thead>
+      <a href="index.html">Back to Home</a>
+    </footer>
 
-          <tbody id="fullRankingBody"></tbody>
-        </table>
-      </div>
-
-      <div id="fullRankingEmpty" class="empty-state hidden">
-        No rankings match your filters.
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div>
-      <strong>FDH</strong>
-      <span>The home of Fortnite racing leagues.</span>
-    </div>
-
-    <a href="index.html">Back to Home</a>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="rankings.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="rankings.js"></script>
+  </body>
 </html>
