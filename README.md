@@ -16,7 +16,7 @@ website from FN Leagues to FDH.
 
 The logo is stored at:
 
-`assets/fdh-logo.png`
+`images/fdh-logo.png`
 
 ## Phase 12C next-race features
 
@@ -65,7 +65,7 @@ Files are stored inside:
 
 Upload all of these:
 
-- `assets/fdh-logo.png`
+- `images/fdh-logo.png`
 - `index.html`
 - `app.js`
 - `admin.html`

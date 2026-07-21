@@ -1,6 +1,6 @@
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
+  SUPABASE_PUBLISHABLE_KEY,
 );
 
 const DateTime = luxon.DateTime;
@@ -15,32 +15,37 @@ let selectedScheduleLeague = "all";
 document.addEventListener("DOMContentLoaded", initializeHomepage);
 
 async function initializeHomepage() {
+  requestAnimationFrame(() => {
+    document.body.classList.add("page-loaded");
+  });
+
   try {
     validateConfiguration();
 
-    const [leagueResult, raceResult, rankingResult, communityResult] = await Promise.all([
-      supabaseClient
-        .from("leagues")
-        .select("*")
-        .order("created_at", { ascending: false }),
+    const [leagueResult, raceResult, rankingResult, communityResult] =
+      await Promise.all([
+        supabaseClient
+          .from("leagues")
+          .select("*")
+          .order("created_at", { ascending: false }),
 
-      supabaseClient
-        .from("races")
-        .select("*")
-        .order("race_date", { ascending: true })
-        .order("race_time", { ascending: true }),
+        supabaseClient
+          .from("races")
+          .select("*")
+          .order("race_date", { ascending: true })
+          .order("race_time", { ascending: true }),
 
-      supabaseClient
-        .from("league_rankings")
-        .select("*, leagues(name, abbreviation, logo_url, banner_url)")
-        .order("position", { ascending: true }),
+        supabaseClient
+          .from("league_rankings")
+          .select("*, leagues(name, abbreviation, logo_url, banner_url)")
+          .order("position", { ascending: true }),
 
-      supabaseClient
-        .from("community_settings")
-        .select("published")
-        .eq("id", 1)
-        .maybeSingle()
-    ]);
+        supabaseClient
+          .from("community_settings")
+          .select("published")
+          .eq("id", 1)
+          .maybeSingle(),
+      ]);
 
     throwIfError(leagueResult.error);
     throwIfError(raceResult.error);
@@ -48,15 +53,16 @@ async function initializeHomepage() {
     throwIfError(communityResult.error);
 
     leagues = leagueResult.data || [];
-    races = (raceResult.data || []).filter(
-      (race) => race.is_archived !== true
-    );
+    races = (raceResult.data || []).filter((race) => race.is_archived !== true);
     rankings = rankingResult.data || [];
     communitySettings = communityResult.data?.published || {};
 
     renderHomepage();
     setupInteractions();
     initializeScrollExperience();
+    initializeHeaderMotion();
+    initializeButtonRipples();
+    initializeImageLoading();
 
     document.getElementById("connectionStatus").textContent =
       `Times shown in ${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
@@ -97,7 +103,6 @@ function throwIfError(error) {
   if (error) throw error;
 }
 
-
 function renderCommunityHub() {
   renderAnnouncement();
   renderWeeklySpotlights();
@@ -111,8 +116,7 @@ function renderAnnouncement() {
   const announcement = communitySettings.announcement || {};
 
   const expired =
-    announcement.expires_at &&
-    new Date(announcement.expires_at) < new Date();
+    announcement.expires_at && new Date(announcement.expires_at) < new Date();
 
   if (!announcement.enabled || !announcement.text || expired) {
     container.classList.add("hidden");
@@ -165,10 +169,10 @@ function renderAnnouncement() {
 function renderWeeklySpotlights() {
   const section = document.getElementById("communitySpotlights");
   const league = leagues.find(
-    (item) => String(item.id) === String(communitySettings.league_of_week_id)
+    (item) => String(item.id) === String(communitySettings.league_of_week_id),
   );
   const race = races.find(
-    (item) => String(item.id) === String(communitySettings.race_of_week_id)
+    (item) => String(item.id) === String(communitySettings.race_of_week_id),
   );
 
   if (!league && !race) {
@@ -187,7 +191,7 @@ function renderWeeklySpotlights() {
     leagueCard.classList.remove("hidden");
     leagueCard.style.setProperty(
       "--community-banner",
-      league.banner_url ? `url('${league.banner_url}')` : "none"
+      league.banner_url ? `url('${league.banner_url}')` : "none",
     );
 
     leagueCard.innerHTML = `
@@ -243,7 +247,7 @@ function renderWeeklySpotlights() {
     raceCard.classList.remove("hidden");
     raceCard.style.setProperty(
       "--community-banner",
-      linkedLeague?.banner_url ? `url('${linkedLeague.banner_url}')` : "none"
+      linkedLeague?.banner_url ? `url('${linkedLeague.banner_url}')` : "none",
     );
 
     raceCard.innerHTML = `
@@ -423,9 +427,7 @@ function getYouTubeEmbed(url) {
 
     id = id.split("?")[0].split("&")[0];
 
-    return id
-      ? `https://www.youtube.com/embed/${encodeURIComponent(id)}`
-      : "";
+    return id ? `https://www.youtube.com/embed/${encodeURIComponent(id)}` : "";
   } catch {
     return "";
   }
@@ -435,40 +437,22 @@ function renderStats() {
   const now = DateTime.now();
 
   const upcoming = races.filter(
-    (race) =>
-      race.is_live !== true &&
-      getRaceDateTime(race) >= now
+    (race) => race.is_live !== true && getRaceDateTime(race) >= now,
   );
 
-  const live = races.filter(
-    (race) => race.is_live === true
-  );
+  const live = races.filter((race) => race.is_live === true);
 
-  animateNumber(
-    document.getElementById("leagueCount"),
-    leagues.length
-  );
+  animateNumber(document.getElementById("leagueCount"), leagues.length);
 
-  animateNumber(
-    document.getElementById("upcomingCount"),
-    upcoming.length
-  );
+  animateNumber(document.getElementById("upcomingCount"), upcoming.length);
 
-  animateNumber(
-    document.getElementById("liveCount"),
-    live.length
-  );
+  animateNumber(document.getElementById("liveCount"), live.length);
 
-  animateNumber(
-    document.getElementById("rankedCount"),
-    rankings.length
-  );
+  animateNumber(document.getElementById("rankedCount"), rankings.length);
 }
 
 function renderHeroSpotlight() {
-  const featured = leagues.filter(
-    (league) => league.featured === true
-  );
+  const featured = leagues.filter((league) => league.featured === true);
 
   const spotlight = featured[0] || leagues[0] || null;
   const container = document.getElementById("heroSpotlight");
@@ -482,9 +466,7 @@ function renderHeroSpotlight() {
     return;
   }
 
-  const ranking = rankings.find(
-    (item) => item.league_id === spotlight.id
-  );
+  const ranking = rankings.find((item) => item.league_id === spotlight.id);
 
   container.innerHTML = `
     <article
@@ -531,8 +513,7 @@ function renderHeroSpotlight() {
 
           <p>
             ${escapeHtml(
-              spotlight.description ||
-              "Fortnite racing league community."
+              spotlight.description || "Fortnite racing league community.",
             )}
           </p>
         </div>
@@ -569,15 +550,9 @@ function renderNextRaceFeature() {
   const now = DateTime.now();
 
   const nextRace = races
-    .filter(
-      (race) =>
-        race.is_live !== true &&
-        getRaceDateTime(race) >= now
-    )
+    .filter((race) => race.is_live !== true && getRaceDateTime(race) >= now)
     .sort(
-      (a, b) =>
-        getRaceDateTime(a).toMillis() -
-        getRaceDateTime(b).toMillis()
+      (a, b) => getRaceDateTime(a).toMillis() - getRaceDateTime(b).toMillis(),
     )[0];
 
   const container = document.getElementById("nextRaceFeature");
@@ -591,9 +566,7 @@ function renderNextRaceFeature() {
     return;
   }
 
-  const league = leagues.find(
-    (item) => item.id === nextRace.league_id
-  );
+  const league = leagues.find((item) => item.id === nextRace.league_id);
 
   const local = getRaceDateTime(nextRace).toLocal();
 
@@ -672,21 +645,18 @@ function renderNextRaceFeature() {
 }
 
 function renderLiveRaces() {
-  const live = races.filter(
-    (race) => race.is_live === true
-  );
+  const live = races.filter((race) => race.is_live === true);
 
   const grid = document.getElementById("liveGrid");
   const empty = document.getElementById("liveEmpty");
 
   empty.classList.toggle("hidden", live.length > 0);
 
-  grid.innerHTML = live.map((race, index) => {
-    const league = leagues.find(
-      (item) => item.id === race.league_id
-    );
+  grid.innerHTML = live
+    .map((race, index) => {
+      const league = leagues.find((item) => item.id === race.league_id);
 
-    return `
+      return `
       <article
         class="homepage-live-card reveal-card"
         style="--live-delay:${index * 80}ms"
@@ -764,25 +734,23 @@ function renderLiveRaces() {
         </div>
       </article>
     `;
-  }).join("");
+    })
+    .join("");
 }
 
 function renderFeaturedCarousel() {
-  const featured = leagues.filter(
-    (league) => league.featured === true
-  );
+  const featured = leagues.filter((league) => league.featured === true);
 
   const carousel = document.getElementById("featuredCarousel");
   const empty = document.getElementById("featuredEmpty");
 
   empty.classList.toggle("hidden", featured.length > 0);
 
-  carousel.innerHTML = featured.map((league, index) => {
-    const ranking = rankings.find(
-      (item) => item.league_id === league.id
-    );
+  carousel.innerHTML = featured
+    .map((league, index) => {
+      const ranking = rankings.find((item) => item.league_id === league.id);
 
-    return `
+      return `
       <article
         class="featured-slide reveal-card"
         style="--featured-delay:${index * 65}ms; ${
@@ -822,8 +790,7 @@ function renderFeaturedCarousel() {
 
           <p>
             ${escapeHtml(
-              league.description ||
-              "Fortnite racing league community."
+              league.description || "Fortnite racing league community.",
             )}
           </p>
 
@@ -836,21 +803,24 @@ function renderFeaturedCarousel() {
         </div>
       </article>
     `;
-  }).join("");
+    })
+    .join("");
 }
 
 function populateScheduleFilter() {
-  const select = document.getElementById(
-    "scheduleLeagueFilter"
-  );
+  const select = document.getElementById("scheduleLeagueFilter");
 
   select.innerHTML = `
     <option value="all">All leagues</option>
-    ${leagues.map((league) => `
+    ${leagues
+      .map(
+        (league) => `
       <option value="${league.id}">
         ${escapeHtml(league.name)}
       </option>
-    `).join("")}
+    `,
+      )
+      .join("")}
   `;
 }
 
@@ -858,11 +828,7 @@ function renderSchedule() {
   const now = DateTime.now();
 
   const filtered = races
-    .filter(
-      (race) =>
-        race.is_live !== true &&
-        getRaceDateTime(race) >= now
-    )
+    .filter((race) => race.is_live !== true && getRaceDateTime(race) >= now)
     .filter((race) => {
       if (
         selectedScheduleLeague !== "all" &&
@@ -873,20 +839,13 @@ function renderSchedule() {
 
       if (!scheduleSearchQuery) return true;
 
-      return [
-        race.league_name,
-        race.event_name,
-        race.category,
-        race.circuit
-      ]
+      return [race.league_name, race.event_name, race.category, race.circuit]
         .join(" ")
         .toLowerCase()
         .includes(scheduleSearchQuery);
     })
     .sort(
-      (a, b) =>
-        getRaceDateTime(a).toMillis() -
-        getRaceDateTime(b).toMillis()
+      (a, b) => getRaceDateTime(a).toMillis() - getRaceDateTime(b).toMillis(),
     );
 
   const list = document.getElementById("scheduleList");
@@ -894,13 +853,12 @@ function renderSchedule() {
 
   empty.classList.toggle("hidden", filtered.length > 0);
 
-  list.innerHTML = filtered.map((race, index) => {
-    const local = getRaceDateTime(race).toLocal();
-    const league = leagues.find(
-      (item) => item.id === race.league_id
-    );
+  list.innerHTML = filtered
+    .map((race, index) => {
+      const local = getRaceDateTime(race).toLocal();
+      const league = leagues.find((item) => item.id === race.league_id);
 
-    return `
+      return `
       <article
         class="homepage-schedule-card reveal-card"
         style="--schedule-delay:${index * 55}ms"
@@ -963,7 +921,8 @@ function renderSchedule() {
         }
       </article>
     `;
-  }).join("");
+    })
+    .join("");
 
   initializeRevealAnimations();
   initializeCountdowns();
@@ -978,19 +937,20 @@ function renderRankings() {
   empty.classList.toggle("hidden", topRankings.length > 0);
   wrap.classList.toggle("hidden", topRankings.length === 0);
 
-  body.innerHTML = topRankings.map((ranking, index) => {
-    const league = ranking.leagues || {};
-    const fallback =
-      league.abbreviation ||
-      String(league.name || "LG")
-        .slice(0, 3)
-        .toUpperCase();
+  body.innerHTML = topRankings
+    .map((ranking, index) => {
+      const league = ranking.leagues || {};
+      const fallback =
+        league.abbreviation ||
+        String(league.name || "LG")
+          .slice(0, 3)
+          .toUpperCase();
 
-    const bannerStyle = league.banner_url
-      ? `style="--ranking-banner:url('${escapeHtml(league.banner_url)}')"`
-      : "";
+      const bannerStyle = league.banner_url
+        ? `style="--ranking-banner:url('${escapeHtml(league.banner_url)}')"`
+        : "";
 
-    return `
+      return `
       <tr
         class="ranking-row reveal-row tier-${String(ranking.tier || "C").toLowerCase()}"
         style="--row-delay:${index * 55}ms"
@@ -1032,7 +992,8 @@ function renderRankings() {
         </td>
       </tr>
     `;
-  }).join("");
+    })
+    .join("");
 }
 
 function renderLeagues(items) {
@@ -1041,7 +1002,9 @@ function renderLeagues(items) {
 
   empty.classList.toggle("hidden", items.length > 0);
 
-  grid.innerHTML = items.map((league, index) => `
+  grid.innerHTML = items
+    .map(
+      (league, index) => `
     <article
       class="content-card league-card reveal-card"
       style="--league-delay:${index * 45}ms"
@@ -1061,10 +1024,7 @@ function renderLeagues(items) {
       <h3>${escapeHtml(league.name)}</h3>
 
       <p>
-        ${escapeHtml(
-          league.description ||
-          "Fortnite racing league community."
-        )}
+        ${escapeHtml(league.description || "Fortnite racing league community.")}
       </p>
 
       <div class="card-actions">
@@ -1091,39 +1051,31 @@ function renderLeagues(items) {
         }
       </div>
     </article>
-  `).join("");
+  `,
+    )
+    .join("");
 
   initializeRevealAnimations();
 }
 
 function setupInteractions() {
-  document
-    .getElementById("leagueSearch")
-    .addEventListener("input", (event) => {
-      const query = event.target.value
-        .toLowerCase()
-        .trim();
+  document.getElementById("leagueSearch").addEventListener("input", (event) => {
+    const query = event.target.value.toLowerCase().trim();
 
-      renderLeagues(
-        leagues.filter((league) =>
-          [
-            league.name,
-            league.category,
-            league.description
-          ]
-            .join(" ")
-            .toLowerCase()
-            .includes(query)
-        )
-      );
-    });
+    renderLeagues(
+      leagues.filter((league) =>
+        [league.name, league.category, league.description]
+          .join(" ")
+          .toLowerCase()
+          .includes(query),
+      ),
+    );
+  });
 
   document
     .getElementById("scheduleSearch")
     .addEventListener("input", (event) => {
-      scheduleSearchQuery = event.target.value
-        .toLowerCase()
-        .trim();
+      scheduleSearchQuery = event.target.value.toLowerCase().trim();
 
       renderSchedule();
     });
@@ -1135,106 +1087,69 @@ function setupInteractions() {
       renderSchedule();
     });
 
-  const carousel = document.getElementById(
-    "featuredCarousel"
-  );
+  const carousel = document.getElementById("featuredCarousel");
 
-  document
-    .getElementById("featuredPrevious")
-    .addEventListener("click", () => {
-      carousel.scrollBy({
-        left: -420,
-        behavior: "smooth"
-      });
+  document.getElementById("featuredPrevious").addEventListener("click", () => {
+    carousel.scrollBy({
+      left: -420,
+      behavior: "smooth",
     });
+  });
 
-  document
-    .getElementById("featuredNext")
-    .addEventListener("click", () => {
-      carousel.scrollBy({
-        left: 420,
-        behavior: "smooth"
-      });
+  document.getElementById("featuredNext").addEventListener("click", () => {
+    carousel.scrollBy({
+      left: 420,
+      behavior: "smooth",
     });
+  });
 
-  document
-    .getElementById("mobileMenuButton")
-    .addEventListener("click", () => {
-      document
-        .getElementById("mainNavigation")
-        .classList.toggle("open");
-    });
+  document.getElementById("mobileMenuButton").addEventListener("click", () => {
+    document.getElementById("mainNavigation").classList.toggle("open");
+  });
 
-  document
-    .querySelectorAll("#mainNavigation a")
-    .forEach((link) => {
-      link.addEventListener("click", () => {
-        document
-          .getElementById("mainNavigation")
-          .classList.remove("open");
-      });
+  document.querySelectorAll("#mainNavigation a").forEach((link) => {
+    link.addEventListener("click", () => {
+      document.getElementById("mainNavigation").classList.remove("open");
     });
+  });
 }
 
 function initializeCountdowns() {
-  const countdowns = [
-    ...document.querySelectorAll(
-      "[data-race-countdown]"
-    )
-  ];
+  const countdowns = [...document.querySelectorAll("[data-race-countdown]")];
 
   function update() {
     countdowns.forEach((countdown) => {
       const race = {
         race_date: countdown.dataset.raceDate,
         race_time: countdown.dataset.raceTime,
-        timezone: countdown.dataset.raceZone
+        timezone: countdown.dataset.raceZone,
       };
 
       const distance =
-        getRaceDateTime(race).toMillis() -
-        DateTime.now().toMillis();
+        getRaceDateTime(race).toMillis() - DateTime.now().toMillis();
 
       const values =
         distance > 0
-          ? luxon.Duration
-              .fromMillis(distance)
-              .shiftTo(
-                "days",
-                "hours",
-                "minutes",
-                "seconds"
-              )
+          ? luxon.Duration.fromMillis(distance).shiftTo(
+              "days",
+              "hours",
+              "minutes",
+              "seconds",
+            )
           : {
               days: 0,
               hours: 0,
               minutes: 0,
-              seconds: 0
+              seconds: 0,
             };
 
-      setCountdownValue(
-        countdown,
-        "[data-days]",
-        values.days
-      );
+      setCountdownValue(countdown, "[data-days]", values.days);
 
-      setCountdownValue(
-        countdown,
-        "[data-hours]",
-        values.hours
-      );
+      setCountdownValue(countdown, "[data-hours]", values.hours);
 
-      setCountdownValue(
-        countdown,
-        "[data-minutes]",
-        values.minutes
-      );
+      setCountdownValue(countdown, "[data-minutes]", values.minutes);
 
-      setCountdownValue(
-        countdown,
-        "[data-seconds]",
-        values.seconds
-      );
+      setCountdownValue(countdown, "[data-seconds]", values.seconds);
     });
   }
 
@@ -1242,41 +1157,27 @@ function initializeCountdowns() {
 
   clearInterval(window.homepageCountdownTimer);
 
-  window.homepageCountdownTimer =
-    setInterval(update, 1000);
+  window.homepageCountdownTimer = setInterval(update, 1000);
 }
 
-function setCountdownValue(
-  container,
-  selector,
-  value
-) {
+function setCountdownValue(container, selector, value) {
   const element = container.querySelector(selector);
 
   if (element) {
-    element.textContent =
-      Math.max(0, Math.floor(value || 0));
+    element.textContent = Math.max(0, Math.floor(value || 0));
   }
 }
 
 function getRaceDateTime(race) {
   const zone = normalizeZone(race.timezone);
 
-  const time = String(
-    race.race_time || "00:00"
-  ).slice(0, 5);
+  const time = String(race.race_time || "00:00").slice(0, 5);
 
-  const value = DateTime.fromISO(
-    `${race.race_date}T${time}`,
-    { zone }
-  );
+  const value = DateTime.fromISO(`${race.race_date}T${time}`, { zone });
 
   return value.isValid
     ? value
-    : DateTime.fromISO(
-        `${race.race_date}T${time}`,
-        { zone: "UTC" }
-      );
+    : DateTime.fromISO(`${race.race_date}T${time}`, { zone: "UTC" });
 }
 
 function normalizeZone(value) {
@@ -1285,18 +1186,16 @@ function normalizeZone(value) {
   const aliases = {
     "GMT+4": "Asia/Dubai",
     "UTC+4": "Asia/Dubai",
-    "GST": "Asia/Dubai",
-    "GMT": "Europe/London",
-    "UTC": "UTC"
+    GST: "Asia/Dubai",
+    GMT: "Europe/London",
+    UTC: "UTC",
   };
 
   return aliases[raw] || raw || "UTC";
 }
 
 function formatViewerDateTime(race) {
-  return getRaceDateTime(race)
-    .toLocal()
-    .toFormat("ccc, d LLL · h:mm a");
+  return getRaceDateTime(race).toLocal().toFormat("ccc, d LLL · h:mm a");
 }
 
 function getLeagueInitials(league) {
@@ -1313,16 +1212,11 @@ function animateNumber(element, target) {
   const start = performance.now();
 
   function frame(now) {
-    const progress = Math.min(
-      (now - start) / duration,
-      1
-    );
+    const progress = Math.min((now - start) / duration, 1);
 
-    const eased =
-      1 - Math.pow(1 - progress, 3);
+    const eased = 1 - Math.pow(1 - progress, 3);
 
-    element.textContent =
-      Math.round(target * eased);
+    element.textContent = Math.round(target * eased);
 
     if (progress < 1) {
       requestAnimationFrame(frame);
@@ -1335,8 +1229,8 @@ function animateNumber(element, target) {
 function initializeRevealAnimations() {
   const items = document.querySelectorAll(
     ".reveal-card:not(.is-visible), " +
-    ".reveal-row:not(.is-visible), " +
-    ".section-heading:not(.is-visible)"
+      ".reveal-row:not(.is-visible), " +
+      ".section-heading:not(.is-visible)",
   );
 
   const observer = new IntersectionObserver(
@@ -1348,93 +1242,60 @@ function initializeRevealAnimations() {
         observer.unobserve(entry.target);
       });
     },
-    { threshold: 0.12 }
+    { threshold: 0.12 },
   );
 
   items.forEach((item, index) => {
-    item.style.setProperty(
-      "--reveal-delay",
-      `${Math.min(index * 45, 320)}ms`
-    );
+    item.style.setProperty("--reveal-delay", `${Math.min(index * 45, 320)}ms`);
 
     observer.observe(item);
   });
 }
 
 function initializeScrollExperience() {
-  const progress = document.getElementById(
-    "scrollProgress"
-  );
+  const progress = document.getElementById("scrollProgress");
 
-  const sections = [
-    ...document.querySelectorAll(
-      "main section[id]"
-    )
-  ];
+  const sections = [...document.querySelectorAll("main section[id]")];
 
   const navigationLinks = [
-    ...document.querySelectorAll(
-      ".site-header nav a[href^='#']"
-    )
+    ...document.querySelectorAll(".site-header nav a[href^='#']"),
   ];
 
   let ticking = false;
 
   function update() {
-    const maximum =
-      document.documentElement.scrollHeight -
-      window.innerHeight;
+    const maximum = document.documentElement.scrollHeight - window.innerHeight;
 
-    const amount =
-      maximum > 0
-        ? window.scrollY / maximum
-        : 0;
+    const amount = maximum > 0 ? window.scrollY / maximum : 0;
 
-    progress.style.transform =
-      `scaleX(${Math.min(Math.max(amount, 0), 1)})`;
+    progress.style.transform = `scaleX(${Math.min(Math.max(amount, 0), 1)})`;
 
     sections.forEach((section) => {
       const rect = section.getBoundingClientRect();
 
-      const distance =
-        Math.abs(
-          rect.top +
-          rect.height / 2 -
-          window.innerHeight / 2
-        );
+      const distance = Math.abs(
+        rect.top + rect.height / 2 - window.innerHeight / 2,
+      );
 
       const sceneProgress =
-        1 -
-        Math.min(
-          distance /
-          (window.innerHeight + rect.height),
-          1
-        );
+        1 - Math.min(distance / (window.innerHeight + rect.height), 1);
 
-      section.style.setProperty(
-        "--scene-progress",
-        sceneProgress.toFixed(3)
-      );
+      section.style.setProperty("--scene-progress", sceneProgress.toFixed(3));
     });
 
-    const activeSection = sections.find(
-      (section) => {
-        const rect =
-          section.getBoundingClientRect();
+    const activeSection = sections.find((section) => {
+      const rect = section.getBoundingClientRect();
 
-        return (
-          rect.top <= window.innerHeight * 0.36 &&
-          rect.bottom >= window.innerHeight * 0.36
-        );
-      }
-    );
+      return (
+        rect.top <= window.innerHeight * 0.36 &&
+        rect.bottom >= window.innerHeight * 0.36
+      );
+    });
 
     navigationLinks.forEach((link) => {
       link.classList.toggle(
         "active-section",
-        activeSection &&
-        link.getAttribute("href") ===
-          `#${activeSection.id}`
+        activeSection && link.getAttribute("href") === `#${activeSection.id}`,
       );
     });
 
@@ -1448,48 +1309,31 @@ function initializeScrollExperience() {
     requestAnimationFrame(update);
   }
 
-  window.addEventListener(
-    "scroll",
-    requestUpdate,
-    { passive: true }
-  );
+  window.addEventListener("scroll", requestUpdate, { passive: true });
 
-  window.addEventListener(
-    "resize",
-    requestUpdate
-  );
+  window.addEventListener("resize", requestUpdate);
 
   requestUpdate();
 
-  const sceneObserver =
-    new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          entry.target.classList.toggle(
-            "scene-active",
-            entry.isIntersecting
-          );
-        });
-      },
-      { threshold: 0.15 }
-    );
+  const sceneObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle("scene-active", entry.isIntersecting);
+      });
+    },
+    { threshold: 0.15 },
+  );
 
-  document
-    .querySelectorAll(".scroll-scene")
-    .forEach((scene) => {
-      sceneObserver.observe(scene);
-    });
+  document.querySelectorAll(".scroll-scene").forEach((scene) => {
+    sceneObserver.observe(scene);
+  });
 }
 
 function safeUrl(value) {
   try {
     const url = new URL(value);
 
-    return ["http:", "https:"].includes(
-      url.protocol
-    )
-      ? url.href
-      : "#";
+    return ["http:", "https:"].includes(url.protocol) ? url.href : "#";
   } catch {
     return "#";
   }
