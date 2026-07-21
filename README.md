@@ -1,83 +1,107 @@
-# FDH — Phase 12C
+# FDH — Phase 13
 
-Phase 12C completes the League Showcase package and rebrands the entire
-website from FN Leagues to FDH.
+Phase 13 reorganizes the project and adds the premium animation and UX overhaul.
 
-## Full FDH rebrand
+## New project structure
 
-- Website name changed to FDH
-- Uploaded FDH logo used across all pages
-- Black and red colour system
-- Dark glass panels
-- Red gradients and glow effects
-- Updated favicon
-- Rebranded homepage, rankings, league pages and admin dashboard
-- Existing page layouts and features remain intact
+```text
+/
+├── index.html
+├── league.html
+├── rankings.html
+├── admin.html
+├── config.js
+│
+├── css/
+│   └── styles.css
+│
+├── js/
+│   ├── app.js
+│   ├── admin.js
+│   ├── league.js
+│   ├── rankings.js
+│   └── motion.js
+│
+├── images/
+│   ├── logo/
+│   │   └── fdh-logo.png
+│   ├── leagues/
+│   └── ui/
+│
+└── README.md
+```
 
-The logo is stored at:
+Your existing `config.js` remains in the repository root so your Supabase setup does not need to change.
 
-`assets/fdh-logo.png`
+## Branding fix
 
-## Phase 12C next-race features
+All pages now load the FDH logo from:
 
-- Premium large next-race card
-- Optional race/circuit artwork
-- Race artwork uploads from the admin dashboard
-- Large countdown
-- Live-state design when a race is marked live
-- League time and timezone
-- Viewer local time and timezone
-- Watch Stream button
-- Join Discord button
-- Event Page button
-- Add to Google Calendar
-- Add to Outlook
-- Download Apple Calendar / ICS file
-- Improved mobile layout
+`images/logo/fdh-logo.png`
 
-## Required Supabase update
+This fixes the missing top-left logo from Phase 12C.
 
-Open:
+## New animation features
 
-`phase-12c-fdh-rebrand-next-race.sql`
+- FDH page-loading transition
+- Smooth transitions between internal pages
+- Cursor-follow red lighting effect
+- Magnetic buttons
+- Interactive 3D card tilt
+- Mouse-follow card reflections
+- Improved league-card hover motion
+- Improved featured-league hover motion
+- Animated ranking rows and logos
+- Glass reflection sweeps
+- Staggered hero text animation
+- Smoother section depth while scrolling
+- Better admin toast animations
 
-Then:
+## Performance improvements
 
-1. Open Supabase.
-2. Open SQL Editor.
-3. Create a new query.
-4. Paste the full SQL file.
-5. Click Run.
+- Lazy-loaded non-critical images
+- Asynchronous image decoding
+- High-priority logo loading
+- CSS containment for complex cards
+- Reduced motion on mobile
+- Full `prefers-reduced-motion` support
+- GPU-friendly transforms
 
-This adds race-artwork fields to the existing races table.
+## Updating GitHub
 
-## Storage
+Because Phase 13 reorganizes the folders, upload the complete project structure.
 
-Race artwork uses the existing public bucket:
+Upload:
 
-`league-assets`
-
-Files are stored inside:
-
-`races/<league-id>/`
-
-## Update GitHub
-
-Upload all of these:
-
-- `assets/fdh-logo.png`
 - `index.html`
-- `app.js`
 - `admin.html`
-- `admin.js`
 - `league.html`
-- `league.js`
 - `rankings.html`
-- `rankings.js`
-- `styles.css`
+- `css/styles.css`
+- `js/app.js`
+- `js/admin.js`
+- `js/league.js`
+- `js/rankings.js`
+- `js/motion.js`
+- `images/logo/fdh-logo.png`
 - `README.md`
 
-Keep your existing `config.js`.
+Keep your existing root:
 
-Do not upload the SQL file unless you want to retain it as documentation.
-Cloudflare deploys automatically after the commit.
+- `config.js`
+
+You may delete these old root files after the new version is working:
+
+- `styles.css`
+- `app.js`
+- `admin.js`
+- `league.js`
+- `rankings.js`
+
+Do not delete `config.js`.
+
+## Supabase
+
+No new Supabase SQL is required for Phase 13.
+
+Cloudflare deploys automatically after the GitHub commit.

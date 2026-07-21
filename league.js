@@ -83,7 +83,7 @@ async function loadLeague() {
         <div class="league-showcase-logo logo-float">
           ${
             league.logo_url
-              ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name)} logo">`
+              ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name)} logo" loading="lazy" decoding="async">`
               : `<span>${escapeHtml(getLeagueInitials(league))}</span>`
           }
         </div>
@@ -467,7 +467,7 @@ function renderNextRace(race, league) {
         ${
           artwork
             ? `<img src="${escapeHtml(artwork)}" alt="${escapeHtml(race.event_name || "Race artwork")}">`
-            : `<div class="fdh-race-art-fallback"><img src="assets/fdh-logo.png" alt="FDH"></div>`
+            : `<div class="fdh-race-art-fallback"><img src="images/logo/fdh-logo.png" alt="FDH"></div>`
         }
 
         <div class="fdh-next-race-shade"></div>
@@ -494,7 +494,7 @@ function renderNextRace(race, league) {
             <h3>${escapeHtml(race.event_name || "Race Event")}</h3>
           </div>
 
-          <img src="assets/fdh-logo.png" alt="FDH">
+          <img src="images/logo/fdh-logo.png" alt="FDH">
         </div>
 
         ${

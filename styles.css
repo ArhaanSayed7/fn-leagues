@@ -4528,3 +4528,465 @@ footer {
     height: 52px;
   }
 }
+
+
+/* ============================================================
+   PHASE 13 — PREMIUM MOTION & PROJECT STRUCTURE
+   ============================================================ */
+
+body {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity .55s ease,
+    transform .55s cubic-bezier(.2,.8,.2,1);
+}
+
+body.page-ready {
+  opacity: 1;
+  transform: none;
+}
+
+body.page-leaving {
+  opacity: .55;
+  transform: scale(.992);
+  pointer-events: none;
+}
+
+.page-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at center,rgba(227,28,37,.18),transparent 34%),
+    #050506;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity .42s ease,
+    visibility .42s ease;
+}
+
+.page-transition.transition-complete {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.page-transition-logo {
+  display: grid;
+  place-items: center;
+  width: 116px;
+  height: 116px;
+  border-radius: 28px;
+  background: #080809;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.08),
+    0 0 70px rgba(227,28,37,.22);
+  animation: transitionLogoPulse 1.2s ease-in-out infinite alternate;
+}
+
+.page-transition-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+@keyframes transitionLogoPulse {
+  from {
+    transform: scale(.96);
+    filter: brightness(.9);
+  }
+
+  to {
+    transform: scale(1.04);
+    filter: brightness(1.16);
+  }
+}
+
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  opacity: 0;
+  background:
+    radial-gradient(
+      circle,
+      rgba(227,28,37,.13),
+      rgba(227,28,37,.045) 35%,
+      transparent 70%
+    );
+  filter: blur(7px);
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity .25s ease;
+}
+
+.cursor-glow.cursor-visible {
+  opacity: 1;
+}
+
+.button,
+.nav-admin,
+.carousel-controls button {
+  transform:
+    translate3d(
+      var(--magnetic-x,0),
+      var(--magnetic-y,0),
+      0
+    );
+  transition:
+    transform .2s cubic-bezier(.2,.8,.2,1),
+    box-shadow .2s ease,
+    border-color .2s ease,
+    background .2s ease;
+  will-change: transform;
+}
+
+.button:hover,
+.nav-admin:hover {
+  box-shadow:
+    0 16px 36px rgba(227,28,37,.18),
+    inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+.motion-card {
+  --card-rotate-x: 0deg;
+  --card-rotate-y: 0deg;
+  --card-light-x: 50%;
+  --card-light-y: 50%;
+  isolation: isolate;
+  transform:
+    perspective(1100px)
+    rotateX(var(--card-rotate-x))
+    rotateY(var(--card-rotate-y))
+    translateY(0);
+  transform-style: preserve-3d;
+  transition:
+    transform .2s cubic-bezier(.2,.8,.2,1),
+    box-shadow .3s ease,
+    border-color .3s ease;
+  will-change: transform;
+}
+
+.motion-card:hover {
+  transform:
+    perspective(1100px)
+    rotateX(var(--card-rotate-x))
+    rotateY(var(--card-rotate-y))
+    translateY(-10px)
+    scale(1.008);
+}
+
+.motion-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: inherit;
+  opacity: 0;
+  background:
+    radial-gradient(
+      circle at var(--card-light-x) var(--card-light-y),
+      rgba(255,255,255,.16),
+      transparent 30%
+    );
+  pointer-events: none;
+  transition: opacity .25s ease;
+}
+
+.motion-card:hover::after {
+  opacity: 1;
+}
+
+.motion-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.motion-card img {
+  transform: translateZ(14px);
+}
+
+.motion-card h3,
+.motion-card .logo-frame,
+.motion-card .featured-slide-logo,
+.motion-card .community-mini-logo {
+  transform: translateZ(22px);
+}
+
+.scroll-scene {
+  transform:
+    translateY(var(--section-shift,0))
+    scale(calc(.988 + var(--scene-progress,.8) * .012));
+  transition: transform .12s linear;
+  will-change: transform;
+}
+
+.site-header {
+  animation: headerDrop .65s .15s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes headerDrop {
+  from {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.homepage-hero-copy > *,
+.league-showcase-copy > *,
+.rankings-page-hero > div > * {
+  animation: staggerTextIn .7s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.homepage-hero-copy > *:nth-child(1),
+.league-showcase-copy > *:nth-child(1),
+.rankings-page-hero > div > *:nth-child(1) {
+  animation-delay: .14s;
+}
+
+.homepage-hero-copy > *:nth-child(2),
+.league-showcase-copy > *:nth-child(2),
+.rankings-page-hero > div > *:nth-child(2) {
+  animation-delay: .21s;
+}
+
+.homepage-hero-copy > *:nth-child(3),
+.league-showcase-copy > *:nth-child(3),
+.rankings-page-hero > div > *:nth-child(3) {
+  animation-delay: .28s;
+}
+
+.homepage-hero-copy > *:nth-child(4),
+.league-showcase-copy > *:nth-child(4),
+.rankings-page-hero > div > *:nth-child(4) {
+  animation-delay: .35s;
+}
+
+@keyframes staggerTextIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ranking-row {
+  transition:
+    transform .3s cubic-bezier(.2,.8,.2,1),
+    filter .3s ease,
+    opacity .3s ease;
+}
+
+.ranking-row:hover {
+  transform: translateX(7px) scale(1.004);
+  filter: brightness(1.08);
+}
+
+.ranking-position-cell strong {
+  display: inline-grid;
+  place-items: center;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 30% 20%,rgba(255,255,255,.13),transparent 45%),
+    rgba(227,28,37,.10);
+  box-shadow: inset 0 0 0 1px rgba(255,62,69,.12);
+  transition:
+    transform .25s ease,
+    background .25s ease;
+}
+
+.ranking-row:hover .ranking-position-cell strong {
+  transform: scale(1.08) rotate(-2deg);
+  background:
+    radial-gradient(circle at 30% 20%,rgba(255,255,255,.17),transparent 45%),
+    rgba(227,28,37,.20);
+}
+
+.ranking-league-logo {
+  transition:
+    transform .3s cubic-bezier(.2,.8,.2,1),
+    box-shadow .3s ease;
+}
+
+.ranking-row:hover .ranking-league-logo {
+  transform: translateY(-4px) rotate(-2deg) scale(1.05);
+  box-shadow: 0 15px 35px rgba(227,28,37,.18);
+}
+
+.logo-frame,
+.featured-slide-logo,
+.community-feature-logo,
+.community-mini-logo,
+.league-showcase-logo,
+.homepage-live-logo {
+  transition:
+    transform .35s cubic-bezier(.2,.8,.2,1),
+    box-shadow .35s ease;
+}
+
+.motion-card:hover .logo-frame,
+.motion-card:hover .featured-slide-logo,
+.motion-card:hover .community-feature-logo,
+.motion-card:hover .community-mini-logo,
+.motion-card:hover .league-showcase-logo,
+.motion-card:hover .homepage-live-logo {
+  transform: translateZ(30px) translateY(-5px) rotate(-2deg);
+  box-shadow: 0 18px 42px rgba(227,28,37,.18);
+}
+
+img {
+  content-visibility: auto;
+}
+
+.league-gallery-item img,
+.homepage-live-visual img,
+.featured-slide img,
+.spotlight-card img {
+  transition:
+    transform .7s cubic-bezier(.2,.8,.2,1),
+    filter .4s ease;
+}
+
+.motion-card:hover img {
+  filter: saturate(1.05) contrast(1.03);
+}
+
+.glass {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass::before {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: -50%;
+  z-index: 0;
+  width: 36%;
+  height: 300%;
+  opacity: 0;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.055),
+      transparent
+    );
+  transform: rotate(18deg);
+  transition:
+    left .8s cubic-bezier(.2,.8,.2,1),
+    opacity .35s ease;
+  pointer-events: none;
+}
+
+.glass:hover::before {
+  left: 125%;
+  opacity: 1;
+}
+
+.admin-toast {
+  animation: none;
+}
+
+.admin-toast.show {
+  animation: toastBounce .45s cubic-bezier(.2,.9,.2,1) both;
+}
+
+@keyframes toastBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(.92);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.01);
+  }
+
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Performance containment */
+.featured-slide,
+.league-card,
+.content-card,
+.community-feature-card,
+.homepage-live-card,
+.community-mini-card,
+.league-gallery-item,
+.ranking-row {
+  contain: layout paint style;
+}
+
+/* Correct logo path styling */
+.brand-logo img,
+.page-transition-logo img,
+.fdh-next-race-heading img,
+.fdh-race-art-fallback img {
+  object-fit: cover;
+}
+
+/* Mobile motion reduction */
+@media (max-width: 760px) {
+  .cursor-glow {
+    display: none;
+  }
+
+  .scroll-scene {
+    transform: none;
+  }
+
+  .motion-card,
+  .motion-card:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+
+  body,
+  body.page-ready,
+  body.page-leaving,
+  .motion-card,
+  .motion-card:hover,
+  .scroll-scene {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cursor-glow,
+  .page-transition {
+    display: none;
+  }
+}
