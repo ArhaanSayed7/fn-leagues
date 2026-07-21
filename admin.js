@@ -1,4 +1,7 @@
-const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const client = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY,
+);
 const $ = (id) => document.getElementById(id);
 
 let leagueCache = [];
@@ -27,7 +30,6 @@ $("raceSearch").addEventListener("input", (event) => {
   raceSearchQuery = event.target.value.trim().toLowerCase();
   renderRaceList();
 });
-
 
 $("leagueAdminSearch").addEventListener("input", (event) => {
   leagueAdminSearchQuery = event.target.value.trim().toLowerCase();
@@ -88,12 +90,11 @@ $("galleryImage").addEventListener("change", renderGalleryPreview);
   "streamUrl",
   "streamDescription",
   "showRecentlyAdded",
-  "recentlyAddedLimit"
+  "recentlyAddedLimit",
 ].forEach((id) => {
   $(id).addEventListener("input", updateCommunityPreview);
   $(id).addEventListener("change", updateCommunityPreview);
 });
-
 
 document.querySelectorAll(".admin-nav button[data-tab]").forEach((button) => {
   button.addEventListener("click", () => switchTab(button.dataset.tab));
@@ -104,7 +105,7 @@ async function initialize() {
     validateConfig();
 
     const {
-      data: { session }
+      data: { session },
     } = await client.auth.getSession();
 
     if (session) {
@@ -131,7 +132,7 @@ async function login(event) {
 
   const { error } = await client.auth.signInWithPassword({
     email: $("email").value.trim(),
-    password: $("password").value
+    password: $("password").value,
   });
 
   $("loginMessage").textContent = error ? error.message : "";
@@ -153,7 +154,7 @@ async function showDashboard(user) {
     loadRaces(),
     loadRankings(),
     loadCommunitySettings(),
-    loadGalleryImages()
+    loadGalleryImages(),
   ]);
 }
 
@@ -170,7 +171,7 @@ async function loadStats() {
   const [leagueResult, raceResult, rankingResult] = await Promise.all([
     client.from("leagues").select("*"),
     client.from("races").select("*"),
-    client.from("league_rankings").select("*")
+    client.from("league_rankings").select("*"),
   ]);
 
   const leagues = leagueResult.data || [];
@@ -178,21 +179,20 @@ async function loadStats() {
   const rankings = rankingResult.data || [];
   const now = new Date();
 
-  const upcoming = races.filter((race) =>
-    !race.is_archived &&
-    !race.is_live &&
-    getAdminRaceDate(race) >= now
+  const upcoming = races.filter(
+    (race) =>
+      !race.is_archived && !race.is_live && getAdminRaceDate(race) >= now,
   );
 
-  const live = races.filter((race) =>
-    !race.is_archived &&
-    race.is_live === true
+  const live = races.filter(
+    (race) => !race.is_archived && race.is_live === true,
   );
 
-  const completed = races.filter((race) =>
-    !race.is_archived &&
-    race.is_live !== true &&
-    getAdminRaceDate(race) < now
+  const completed = races.filter(
+    (race) =>
+      !race.is_archived &&
+      race.is_live !== true &&
+      getAdminRaceDate(race) < now,
   );
 
   const archived = races.filter((race) => race.is_archived === true);
@@ -244,7 +244,9 @@ async function loadRaces() {
   renderRaceList();
   populateCommunitySelectors();
   $("adminRaceCount").textContent = raceCache.length;
-  $("adminLiveCount").textContent = raceCache.filter((race) => race.is_live === true).length;
+  $("adminLiveCount").textContent = raceCache.filter(
+    (race) => race.is_live === true,
+  ).length;
 }
 
 function populateLeagueSelect() {
@@ -252,11 +254,15 @@ function populateLeagueSelect() {
 
   $("raceLeague").innerHTML = `
     <option value="">Choose a league</option>
-    ${leagueCache.map((league) => `
+    ${leagueCache
+      .map(
+        (league) => `
       <option value="${league.id}">
         ${escapeHtml(league.name)}
       </option>
-    `).join("")}
+    `,
+      )
+      .join("")}
   `;
 
   if (currentValue) {
@@ -269,12 +275,14 @@ function renderLeagueList() {
     [league.name, league.abbreviation, league.category]
       .join(" ")
       .toLowerCase()
-      .includes(leagueAdminSearchQuery)
+      .includes(leagueAdminSearchQuery),
   );
 
   $("adminLeagueEmpty").classList.toggle("hidden", filteredLeagues.length > 0);
 
-  $("adminLeagueList").innerHTML = filteredLeagues.map((league) => `
+  $("adminLeagueList").innerHTML = filteredLeagues
+    .map(
+      (league) => `
     <article class="admin-list-row">
       <div class="admin-list-logo">
         ${
@@ -298,7 +306,9 @@ function renderLeagueList() {
         <button class="button danger" onclick="deleteLeague(${league.id}, '${escapeJs(league.name)}')">Delete</button>
       </div>
     </article>
-  `).join("");
+  `,
+    )
+    .join("");
 }
 
 function renderRaceList() {
@@ -309,8 +319,10 @@ function renderRaceList() {
       race.league_name,
       race.event_name,
       race.category,
-      race.circuit
-    ].join(" ").toLowerCase();
+      race.circuit,
+    ]
+      .join(" ")
+      .toLowerCase();
 
     if (raceSearchQuery && !searchText.includes(raceSearchQuery)) {
       return false;
@@ -343,10 +355,11 @@ function renderRaceList() {
 
   $("adminRaceEmpty").classList.toggle("hidden", filtered.length > 0);
 
-  $("adminRaceList").innerHTML = filtered.map((race) => {
-    const status = getRaceStatus(race);
+  $("adminRaceList").innerHTML = filtered
+    .map((race) => {
+      const status = getRaceStatus(race);
 
-    return `
+      return `
       <article class="admin-list-row race-admin-row ${race.is_archived ? "archived-race-row" : ""}">
         <div class="race-date-badge">
           <strong>${formatShortDate(race.race_date)}</strong>
@@ -393,7 +406,8 @@ function renderRaceList() {
         </div>
       </article>
     `;
-  }).join("");
+    })
+    .join("");
 }
 
 window.editLeague = function (id) {
@@ -432,7 +446,6 @@ window.editLeague = function (id) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
-
 window.duplicateLeague = function (id) {
   const league = leagueCache.find((item) => item.id === id);
   if (!league) return;
@@ -470,7 +483,9 @@ window.duplicateLeague = function (id) {
 };
 
 window.deleteLeague = async function (id, name) {
-  if (!confirm(`Delete ${name}? This also deletes its linked races and ranking.`)) {
+  if (
+    !confirm(`Delete ${name}? This also deletes its linked races and ranking.`)
+  ) {
     return;
   }
 
@@ -494,37 +509,28 @@ async function uploadAsset(file, folder, currentUrl = null) {
     throw new Error("Images must be 8 MB or smaller.");
   }
 
-  const allowedTypes = [
-    "image/png",
-    "image/jpeg",
-    "image/webp",
-    "image/gif"
-  ];
+  const allowedTypes = ["image/png", "image/jpeg", "image/webp", "image/gif"];
 
   if (!allowedTypes.includes(file.type)) {
     throw new Error("Please upload a PNG, JPG, WebP, or GIF image.");
   }
 
-  const extension =
-    file.name.split(".").pop()?.toLowerCase() || "png";
+  const extension = file.name.split(".").pop()?.toLowerCase() || "png";
 
-  const filePath =
-    `${folder}/${crypto.randomUUID()}.${extension}`;
+  const filePath = `${folder}/${crypto.randomUUID()}.${extension}`;
 
   const { error: uploadError } = await client.storage
     .from("league-assets")
     .upload(filePath, file, {
       cacheControl: "3600",
-      upsert: false
+      upsert: false,
     });
 
   if (uploadError) {
     throw uploadError;
   }
 
-  const { data } = client.storage
-    .from("league-assets")
-    .getPublicUrl(filePath);
+  const { data } = client.storage.from("league-assets").getPublicUrl(filePath);
 
   if (!data?.publicUrl) {
     throw new Error("The uploaded image URL could not be created.");
@@ -532,7 +538,25 @@ async function uploadAsset(file, folder, currentUrl = null) {
 
   return data.publicUrl;
 }
+function clearLeagueForm(clearMessage = true) {
+  $("leagueForm").reset();
 
+  $("leagueId").value = "";
+  $("leagueTheme").value = "aurora";
+  $("leagueAccentColor").value = "#9c7ddd";
+  $("leagueBadge").value = "";
+  $("leagueFeatured").checked = false;
+
+  $("leagueLogo").value = "";
+  $("leagueBanner").value = "";
+  $("assetPreview").innerHTML = "";
+
+  $("formTitle").textContent = "Add League";
+
+  if (clearMessage) {
+    $("leagueMessage").textContent = "";
+  }
+}
 async function saveLeague(event) {
   event.preventDefault();
   $("leagueMessage").textContent = "Saving…";
@@ -546,13 +570,13 @@ async function saveLeague(event) {
     const logoUrl = await uploadAsset(
       $("leagueLogo").files[0],
       "logos",
-      current?.logo_url
+      current?.logo_url,
     );
 
     const bannerUrl = await uploadAsset(
       $("leagueBanner").files[0],
       "banners",
-      current?.banner_url
+      current?.banner_url,
     );
 
     const payload = {
@@ -569,14 +593,14 @@ async function saveLeague(event) {
       accent_color: $("leagueAccentColor").value || "#9c7ddd",
       badge_type: $("leagueBadge").value || null,
       owner_name: $("leagueOwner").value.trim() || null,
-      staff_members: $("leagueStaff").value
-        .split("\n")
+      staff_members: $("leagueStaff")
+        .value.split("\n")
         .map((item) => item.trim())
         .filter(Boolean),
       contact_url: $("leagueContactUrl").value.trim() || null,
       featured: $("leagueFeatured").checked,
       logo_url: logoUrl,
-      banner_url: bannerUrl
+      banner_url: bannerUrl,
     };
 
     const result = id
@@ -585,9 +609,7 @@ async function saveLeague(event) {
 
     if (result.error) throw result.error;
 
-    $("leagueMessage").textContent = id
-      ? "League updated."
-      : "League added.";
+    $("leagueMessage").textContent = id ? "League updated." : "League added.";
 
     clearLeagueForm(false);
     await Promise.all([loadLeagues(), loadStats()]);
@@ -651,12 +673,15 @@ window.toggleLive = async function (id, currentlyLive) {
   await Promise.all([loadRaces(), loadStats()]);
 };
 
-
 window.archiveRace = async function (id) {
   const race = raceCache.find((item) => item.id === id);
   if (!race) return;
 
-  if (!confirm(`Archive ${race.event_name || race.league_name}? It will be hidden from public pages.`)) {
+  if (
+    !confirm(
+      `Archive ${race.event_name || race.league_name}? It will be hidden from public pages.`,
+    )
+  ) {
     return;
   }
 
@@ -664,7 +689,7 @@ window.archiveRace = async function (id) {
     .from("races")
     .update({
       is_archived: true,
-      is_live: false
+      is_live: false,
     })
     .eq("id", id);
 
@@ -748,21 +773,21 @@ async function saveRace(event) {
         throw new Error("Race artwork must be 8 MB or smaller.");
       }
 
-      const extension = (bannerFile.name.split(".").pop() || "jpg").toLowerCase();
+      const extension = (
+        bannerFile.name.split(".").pop() || "jpg"
+      ).toLowerCase();
       bannerPath = `races/${leagueId}/${crypto.randomUUID()}.${extension}`;
 
       const upload = await client.storage
         .from("league-assets")
         .upload(bannerPath, bannerFile, {
           cacheControl: "3600",
-          upsert: false
+          upsert: false,
         });
 
       if (upload.error) throw upload.error;
 
-      bannerUrl = client.storage
-        .from("league-assets")
-        .getPublicUrl(bannerPath)
+      bannerUrl = client.storage.from("league-assets").getPublicUrl(bannerPath)
         .data.publicUrl;
     }
 
@@ -780,7 +805,7 @@ async function saveRace(event) {
       banner_url: bannerUrl,
       banner_storage_path: bannerPath,
       is_live: $("raceIsLive").checked,
-      is_archived: $("raceIsArchived").checked
+      is_archived: $("raceIsArchived").checked,
     };
 
     if (!payload.race_date || !payload.race_time) {
@@ -793,9 +818,7 @@ async function saveRace(event) {
 
     if (result.error) throw result.error;
 
-    $("raceMessage").textContent = id
-      ? "Race updated."
-      : "Race added.";
+    $("raceMessage").textContent = id ? "Race updated." : "Race added.";
 
     clearRaceForm(false);
     await Promise.all([loadRaces(), loadStats()]);
@@ -833,7 +856,7 @@ function switchTab(tab) {
     races: "Races",
     rankings: "Rankings",
     community: "Community",
-    gallery: "Gallery"
+    gallery: "Gallery",
   };
 
   $("adminTitle").textContent = titles[tab] || "Dashboard";
@@ -846,16 +869,18 @@ function switchTab(tab) {
 function formatShortDate(value) {
   return new Intl.DateTimeFormat("en", {
     day: "numeric",
-    month: "short"
+    month: "short",
   }).format(new Date(`${value}T12:00:00`));
 }
 
 function formatTime(value) {
-  const [hours, minutes] = String(value || "00:00").split(":").map(Number);
+  const [hours, minutes] = String(value || "00:00")
+    .split(":")
+    .map(Number);
 
   return new Intl.DateTimeFormat("en", {
     hour: "numeric",
-    minute: "2-digit"
+    minute: "2-digit",
   }).format(new Date(2000, 0, 1, hours, minutes));
 }
 
@@ -875,18 +900,16 @@ function escapeJs(value) {
     .replaceAll("\n", " ");
 }
 
-
 function normalizeSavedZone(value) {
   const aliases = {
     "GMT+4": "Asia/Dubai",
     "UTC+4": "Asia/Dubai",
-    "GST": "Asia/Dubai",
-    "GMT": "Europe/London"
+    GST: "Asia/Dubai",
+    GMT: "Europe/London",
   };
 
   return aliases[value] || value || "Asia/Dubai";
 }
-
 
 async function loadRankings() {
   const { data, error } = await client
@@ -911,9 +934,13 @@ function populateRankingLeagueSelect() {
 
   $("rankingLeague").innerHTML = `
     <option value="">Choose a league</option>
-    ${leagueCache.map((league) => `
+    ${leagueCache
+      .map(
+        (league) => `
       <option value="${league.id}">${escapeHtml(league.name)}</option>
-    `).join("")}
+    `,
+      )
+      .join("")}
   `;
 
   if (currentValue) {
@@ -925,12 +952,17 @@ function renderRankingList() {
   const filteredRankings = rankingCache.filter((ranking) =>
     String(ranking.leagues?.name || "")
       .toLowerCase()
-      .includes(rankingAdminSearchQuery)
+      .includes(rankingAdminSearchQuery),
   );
 
-  $("adminRankingEmpty").classList.toggle("hidden", filteredRankings.length > 0);
+  $("adminRankingEmpty").classList.toggle(
+    "hidden",
+    filteredRankings.length > 0,
+  );
 
-  $("adminRankingList").innerHTML = filteredRankings.map((ranking, index) => `
+  $("adminRankingList").innerHTML = filteredRankings
+    .map(
+      (ranking, index) => `
     <article
       class="admin-list-row ranking-admin-row smart-ranking-row"
       draggable="true"
@@ -976,7 +1008,9 @@ function renderRankingList() {
         <button class="button danger" onclick="deleteRanking(${ranking.id}, '${escapeJs(ranking.leagues?.name || "ranking")}')">Delete</button>
       </div>
     </article>
-  `).join("");
+  `,
+    )
+    .join("");
 
   initializeRankingDragAndDrop();
 }
@@ -997,12 +1031,16 @@ window.editRanking = function (id) {
 };
 
 window.deleteRanking = async function (id, name) {
-  if (!confirm(`Delete the ranking for ${name}? Other positions will close the gap automatically.`)) {
+  if (
+    !confirm(
+      `Delete the ranking for ${name}? Other positions will close the gap automatically.`,
+    )
+  ) {
     return;
   }
 
   const { error } = await client.rpc("delete_league_ranking", {
-    p_ranking_id: id
+    p_ranking_id: id,
   });
 
   if (error) {
@@ -1031,12 +1069,13 @@ async function saveRanking(event) {
     const { error } = await client.rpc("set_league_ranking", {
       p_league_id: leagueId,
       p_position: requestedPosition,
-      p_tier: tier
+      p_tier: tier,
     });
 
     if (error) throw error;
 
-    $("rankingMessage").textContent = "Ranking saved and all positions adjusted.";
+    $("rankingMessage").textContent =
+      "Ranking saved and all positions adjusted.";
     clearRankingForm(false);
     await Promise.all([loadRankings(), loadStats()]);
   } catch (error) {
@@ -1055,16 +1094,18 @@ function clearRankingForm(clearMessage = true) {
   }
 }
 
-
 function initializeScrollExperience() {
   const progress = document.getElementById("scrollProgress");
-  const navLinks = [...document.querySelectorAll(".site-header nav a[href^='#']")];
+  const navLinks = [
+    ...document.querySelectorAll(".site-header nav a[href^='#']"),
+  ];
   const sections = [...document.querySelectorAll("main section[id]")];
 
   function updateProgress() {
     const maxScroll = document.documentElement.scrollHeight - innerHeight;
     const ratio = maxScroll > 0 ? scrollY / maxScroll : 0;
-    if (progress) progress.style.transform = `scaleX(${Math.min(Math.max(ratio, 0), 1)})`;
+    if (progress)
+      progress.style.transform = `scaleX(${Math.min(Math.max(ratio, 0), 1)})`;
 
     document.documentElement.style.setProperty("--scroll-y", `${scrollY}px`);
   }
@@ -1081,7 +1122,10 @@ function initializeScrollExperience() {
     }
 
     navLinks.forEach((link) => {
-      link.classList.toggle("active-section", link.getAttribute("href") === `#${activeId}`);
+      link.classList.toggle(
+        "active-section",
+        link.getAttribute("href") === `#${activeId}`,
+      );
     });
   }
 
@@ -1114,14 +1158,15 @@ function initializeScrollExperience() {
         entry.target.classList.toggle("scene-active", entry.isIntersecting);
       });
     },
-    { threshold: 0.22 }
+    { threshold: 0.22 },
   );
 
-  document.querySelectorAll(".scroll-scene").forEach((scene) => sceneObserver.observe(scene));
+  document
+    .querySelectorAll(".scroll-scene")
+    .forEach((scene) => sceneObserver.observe(scene));
 }
 
-window.addEventListener('load', initializeScrollExperience);
-
+window.addEventListener("load", initializeScrollExperience);
 
 function getAdminRaceDate(race) {
   const time = String(race.race_time || "00:00").slice(0, 5);
@@ -1131,9 +1176,7 @@ function getAdminRaceDate(race) {
 function getRaceStatus(race) {
   if (race.is_archived) return "archived";
   if (race.is_live) return "live";
-  return getAdminRaceDate(race) < new Date()
-    ? "completed"
-    : "upcoming";
+  return getAdminRaceDate(race) < new Date() ? "completed" : "upcoming";
 }
 
 function statusLabel(status) {
@@ -1141,7 +1184,7 @@ function statusLabel(status) {
     upcoming: "Upcoming",
     live: "Live now",
     completed: "Completed",
-    archived: "Archived"
+    archived: "Archived",
   };
 
   return labels[status] || status;
@@ -1159,7 +1202,7 @@ function animateAdminNumber(element, target) {
     const eased = 1 - Math.pow(1 - progress, 3);
 
     element.textContent = Math.round(
-      startValue + (target - startValue) * eased
+      startValue + (target - startValue) * eased,
     );
 
     if (progress < 1) {
@@ -1189,7 +1232,6 @@ function showAdminToast(message) {
     toast.classList.remove("show");
   }, 2400);
 }
-
 
 function setupUploadZone(zoneId, inputId) {
   const zone = $(zoneId);
@@ -1226,10 +1268,9 @@ function setupUploadZone(zoneId, inputId) {
 
 function renderSelectedAssetPreviews() {
   const preview = $("assetPreview");
-  const files = [
-    $("leagueLogo").files[0],
-    $("leagueBanner").files[0]
-  ].filter(Boolean);
+  const files = [$("leagueLogo").files[0], $("leagueBanner").files[0]].filter(
+    Boolean,
+  );
 
   if (!files.length) return;
 
@@ -1242,7 +1283,6 @@ function renderSelectedAssetPreviews() {
     preview.appendChild(image);
   });
 }
-
 
 async function loadCommunitySettings() {
   const { data, error } = await client
@@ -1274,7 +1314,7 @@ function defaultCommunitySettings() {
       type: "info",
       button_text: "",
       button_url: "",
-      expires_at: ""
+      expires_at: "",
     },
     league_of_week_id: "",
     race_of_week_id: "",
@@ -1282,11 +1322,11 @@ function defaultCommunitySettings() {
       enabled: false,
       title: "",
       url: "",
-      description: ""
+      description: "",
     },
     trending_league_ids: [],
     show_recently_added: true,
-    recently_added_limit: 6
+    recently_added_limit: 6,
   };
 }
 
@@ -1298,20 +1338,27 @@ function populateCommunitySelectors() {
 
   $("leagueOfWeekSelect").innerHTML = `
     <option value="">None</option>
-    ${leagueCache.map((league) => `
+    ${leagueCache
+      .map(
+        (league) => `
       <option value="${league.id}">${escapeHtml(league.name)}</option>
-    `).join("")}
+    `,
+      )
+      .join("")}
   `;
 
   $("raceOfWeekSelect").innerHTML = `
     <option value="">None</option>
     ${raceCache
       .filter((race) => !race.is_archived)
-      .map((race) => `
+      .map(
+        (race) => `
         <option value="${race.id}">
           ${escapeHtml(race.league_name)} — ${escapeHtml(race.event_name || "Race")}
         </option>
-      `).join("")}
+      `,
+      )
+      .join("")}
   `;
 
   if (currentLeague) $("leagueOfWeekSelect").value = currentLeague;
@@ -1326,10 +1373,12 @@ function renderTrendingSelector() {
   const selected = new Set(
     Array.isArray(communityDraft.trending_league_ids)
       ? communityDraft.trending_league_ids.map(String)
-      : []
+      : [],
   );
 
-  $("trendingLeagueSelector").innerHTML = leagueCache.map((league) => `
+  $("trendingLeagueSelector").innerHTML = leagueCache
+    .map(
+      (league) => `
     <label class="trending-option">
       <input
         type="checkbox"
@@ -1340,12 +1389,16 @@ function renderTrendingSelector() {
         ${
           league.logo_url
             ? `<img src="${escapeHtml(league.logo_url)}" alt="">`
-            : escapeHtml(league.abbreviation || league.name.slice(0, 3).toUpperCase())
+            : escapeHtml(
+                league.abbreviation || league.name.slice(0, 3).toUpperCase(),
+              )
         }
       </span>
       <strong>${escapeHtml(league.name)}</strong>
     </label>
-  `).join("");
+  `,
+    )
+    .join("");
 
   $("trendingLeagueSelector")
     .querySelectorAll("input")
@@ -1382,7 +1435,7 @@ function fillCommunityForm(settings) {
 
 function collectCommunityForm() {
   const trendingIds = [
-    ...$("trendingLeagueSelector").querySelectorAll("input:checked")
+    ...$("trendingLeagueSelector").querySelectorAll("input:checked"),
   ].map((input) => Number(input.value));
 
   return {
@@ -1395,7 +1448,7 @@ function collectCommunityForm() {
       button_url: $("announcementButtonUrl").value.trim(),
       expires_at: $("announcementExpiry").value
         ? new Date($("announcementExpiry").value).toISOString()
-        : ""
+        : "",
     },
     league_of_week_id: $("leagueOfWeekSelect").value
       ? Number($("leagueOfWeekSelect").value)
@@ -1407,14 +1460,14 @@ function collectCommunityForm() {
       enabled: $("streamEnabled").checked,
       title: $("streamTitle").value.trim(),
       url: $("streamUrl").value.trim(),
-      description: $("streamDescription").value.trim()
+      description: $("streamDescription").value.trim(),
     },
     trending_league_ids: trendingIds.slice(0, 6),
     show_recently_added: $("showRecentlyAdded").checked,
     recently_added_limit: Math.min(
       12,
-      Math.max(1, Number($("recentlyAddedLimit").value || 6))
-    )
+      Math.max(1, Number($("recentlyAddedLimit").value || 6)),
+    ),
   };
 }
 
@@ -1422,13 +1475,11 @@ async function saveCommunityDraft() {
   const draft = collectCommunityForm();
   $("communityMessage").textContent = "Saving draft…";
 
-  const { error } = await client
-    .from("community_settings")
-    .upsert({
-      id: 1,
-      draft,
-      updated_at: new Date().toISOString()
-    });
+  const { error } = await client.from("community_settings").upsert({
+    id: 1,
+    draft,
+    updated_at: new Date().toISOString(),
+  });
 
   if (error) {
     $("communityMessage").textContent = error.message;
@@ -1436,7 +1487,8 @@ async function saveCommunityDraft() {
   }
 
   communityDraft = draft;
-  $("communityMessage").textContent = "Draft saved. Visitors cannot see it yet.";
+  $("communityMessage").textContent =
+    "Draft saved. Visitors cannot see it yet.";
   $("communitySaveState").textContent = "Draft saved just now";
   updateCommunityPreview();
 }
@@ -1445,15 +1497,13 @@ async function publishCommunity() {
   const published = collectCommunityForm();
   $("communityMessage").textContent = "Publishing…";
 
-  const { error } = await client
-    .from("community_settings")
-    .upsert({
-      id: 1,
-      draft: published,
-      published,
-      published_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    });
+  const { error } = await client.from("community_settings").upsert({
+    id: 1,
+    draft: published,
+    published,
+    published_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  });
 
   if (error) {
     $("communityMessage").textContent = error.message;
@@ -1472,10 +1522,10 @@ function updateCommunityPreview() {
 
   const settings = collectCommunityForm();
   const league = leagueCache.find(
-    (item) => String(item.id) === String(settings.league_of_week_id)
+    (item) => String(item.id) === String(settings.league_of_week_id),
   );
   const race = raceCache.find(
-    (item) => String(item.id) === String(settings.race_of_week_id)
+    (item) => String(item.id) === String(settings.race_of_week_id),
   );
 
   $("communityDraftPreview").innerHTML = `
@@ -1582,7 +1632,7 @@ function initializeRankingDragAndDrop() {
 
 async function saveRankingOrder(rankingIds) {
   const { error } = await client.rpc("reorder_league_rankings", {
-    p_ranking_ids: rankingIds
+    p_ranking_ids: rankingIds,
   });
 
   if (error) {
@@ -1593,7 +1643,6 @@ async function saveRankingOrder(rankingIds) {
   await loadRankings();
   showAdminToast("Ranking order updated.");
 }
-
 
 async function loadGalleryImages() {
   const { data, error } = await client
@@ -1619,9 +1668,13 @@ function populateGallerySelectors() {
   const uploadValue = $("galleryLeague").value;
   const filterValue = $("galleryLeagueFilter").value;
 
-  const options = leagueCache.map((league) => `
+  const options = leagueCache
+    .map(
+      (league) => `
     <option value="${league.id}">${escapeHtml(league.name)}</option>
-  `).join("");
+  `,
+    )
+    .join("");
 
   $("galleryLeague").innerHTML = `
     <option value="">Choose a league</option>
@@ -1640,14 +1693,17 @@ function populateGallerySelectors() {
 function renderGalleryList() {
   if (!$("adminGalleryList")) return;
 
-  const filtered = galleryCache.filter((item) =>
-    galleryLeagueFilter === "all" ||
-    String(item.league_id) === String(galleryLeagueFilter)
+  const filtered = galleryCache.filter(
+    (item) =>
+      galleryLeagueFilter === "all" ||
+      String(item.league_id) === String(galleryLeagueFilter),
   );
 
   $("adminGalleryEmpty").classList.toggle("hidden", filtered.length > 0);
 
-  $("adminGalleryList").innerHTML = filtered.map((item) => `
+  $("adminGalleryList").innerHTML = filtered
+    .map(
+      (item) => `
     <article class="admin-gallery-card ${item.is_featured ? "featured-gallery-item" : ""}">
       <div class="admin-gallery-image">
         <img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.caption || "Gallery image")}">
@@ -1674,7 +1730,9 @@ function renderGalleryList() {
         </button>
       </div>
     </article>
-  `).join("");
+  `,
+    )
+    .join("");
 }
 
 async function uploadGalleryImage(event) {
@@ -1704,14 +1762,12 @@ async function uploadGalleryImage(event) {
       .from("league-assets")
       .upload(path, file, {
         cacheControl: "3600",
-        upsert: false
+        upsert: false,
       });
 
     if (uploadResult.error) throw uploadResult.error;
 
-    const publicUrl = client.storage
-      .from("league-assets")
-      .getPublicUrl(path)
+    const publicUrl = client.storage.from("league-assets").getPublicUrl(path)
       .data.publicUrl;
 
     const featured = $("galleryFeatured").checked;
@@ -1725,15 +1781,13 @@ async function uploadGalleryImage(event) {
       if (clearResult.error) throw clearResult.error;
     }
 
-    const insertResult = await client
-      .from("league_gallery")
-      .insert({
-        league_id: leagueId,
-        image_url: publicUrl,
-        storage_path: path,
-        caption: $("galleryCaption").value.trim() || null,
-        is_featured: featured
-      });
+    const insertResult = await client.from("league_gallery").insert({
+      league_id: leagueId,
+      image_url: publicUrl,
+      storage_path: path,
+      caption: $("galleryCaption").value.trim() || null,
+      is_featured: featured,
+    });
 
     if (insertResult.error) throw insertResult.error;
 
@@ -1792,10 +1846,7 @@ window.deleteGalleryImage = async function (id, storagePath) {
     }
   }
 
-  const result = await client
-    .from("league_gallery")
-    .delete()
-    .eq("id", id);
+  const result = await client.from("league_gallery").delete().eq("id", id);
 
   if (result.error) {
     alert(result.error.message);
@@ -1821,7 +1872,6 @@ function renderGalleryPreview() {
   $("galleryPreview").innerHTML = "";
   $("galleryPreview").appendChild(image);
 }
-
 
 function renderRaceBannerPreview() {
   const file = $("raceBanner").files[0];
