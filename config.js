@@ -17,5 +17,5 @@ NEVER paste your secret key here.
 =============================================================
 */
 
-const SUPABASE_URL = "https://cnddoumiqxicsquladml.supabase.co/rest/v1/";
-const SUPABASE_PUBLISHABLE_KEY = "https://cnddoumiqxicsquladml.supabase.co";
+const SUPABASE_URL = "https://cnddoumiqxicsquladml.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_GuY-EhYG5abvM7ESP3DW0g_PoZTaRcv";
