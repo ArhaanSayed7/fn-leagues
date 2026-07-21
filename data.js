@@ -27,11 +27,11 @@ Example:
 const LEAGUES = [
   // LEAGUE SLOT 1
   {
-    name: "",
-    abbreviation: "",
-    category: "",
-    description: "",
-    discord: ""
+    name: "Formula Elite Series",
+    abbreviation: "FES",
+    category: "A Tier",
+    description: "One of the fastest growing Fortnite Racing Communities",
+    discord: "https://discord.gg/bRXT8BPCtv"
   },
 
   // LEAGUE SLOT 2
