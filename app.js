@@ -129,7 +129,7 @@ function renderAnnouncement() {
   container.innerHTML = `
     <div class="announcement-inner">
       <div>
-        <strong>${escapeHtml(announcement.title || "FN Leagues Announcement")}</strong>
+        <strong>${escapeHtml(announcement.title || "FDH Announcement")}</strong>
         <span>${escapeHtml(announcement.text)}</span>
       </div>
 
@@ -327,7 +327,7 @@ function renderFeaturedStream() {
     <div class="stream-copy">
       <span class="eyebrow">FEATURED LIVESTREAM</span>
       <h3>${escapeHtml(stream.title || "Community Broadcast")}</h3>
-      <p>${escapeHtml(stream.description || "Watch the latest featured FN Leagues broadcast.")}</p>
+      <p>${escapeHtml(stream.description || "Watch the latest featured FDH broadcast.")}</p>
 
       <a class="button secondary" href="${safeUrl(stream.url)}" target="_blank" rel="noopener">
         Watch Externally
@@ -606,7 +606,7 @@ function renderNextRaceFeature() {
           ${
             league?.logo_url
               ? `<img src="${escapeHtml(league.logo_url)}" alt="">`
-              : `<span>${escapeHtml(league ? getLeagueInitials(league) : "FN")}</span>`
+              : `<span>${escapeHtml(league ? getLeagueInitials(league) : "FDH")}</span>`
           }
         </div>
 
@@ -717,7 +717,7 @@ function renderLiveRaces() {
               ${
                 league?.logo_url
                   ? `<img src="${escapeHtml(league.logo_url)}" alt="">`
-                  : `<span>${escapeHtml(league ? getLeagueInitials(league) : "FN")}</span>`
+                  : `<span>${escapeHtml(league ? getLeagueInitials(league) : "FDH")}</span>`
               }
             </div>
 
@@ -914,7 +914,7 @@ function renderSchedule() {
           ${
             league?.logo_url
               ? `<img src="${escapeHtml(league.logo_url)}" alt="">`
-              : `<span>${escapeHtml(league ? getLeagueInitials(league) : "FN")}</span>`
+              : `<span>${escapeHtml(league ? getLeagueInitials(league) : "FDH")}</span>`
           }
         </div>
 

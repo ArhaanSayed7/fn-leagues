@@ -41,9 +41,11 @@ $("rankingAdminSearch").addEventListener("input", (event) => {
 
 setupUploadZone("logoUploadZone", "leagueLogo");
 setupUploadZone("bannerUploadZone", "leagueBanner");
+setupUploadZone("raceBannerUploadZone", "raceBanner");
 
 $("leagueLogo").addEventListener("change", renderSelectedAssetPreviews);
 $("leagueBanner").addEventListener("change", renderSelectedAssetPreviews);
+$("raceBanner").addEventListener("change", renderRaceBannerPreview);
 
 document.querySelectorAll("[data-race-filter]").forEach((button) => {
   button.addEventListener("click", () => {
@@ -562,6 +564,9 @@ window.editRace = function (id) {
   $("raceTime").value = String(race.race_time || "").slice(0, 5);
   $("raceEventUrl").value = race.event_url || "";
   $("raceStreamUrl").value = race.stream_url || "";
+  $("raceBannerPreview").innerHTML = race.banner_url
+    ? `<img src="${escapeHtml(race.banner_url)}" alt="Current race artwork">`
+    : "";
   $("raceIsLive").checked = race.is_live === true;
   $("raceIsArchived").checked = race.is_archived === true;
 
@@ -655,6 +660,9 @@ window.duplicateRace = function (id) {
   $("raceTime").value = String(race.race_time || "").slice(0, 5);
   $("raceEventUrl").value = race.event_url || "";
   $("raceStreamUrl").value = race.stream_url || "";
+  $("raceBannerPreview").innerHTML = race.banner_url
+    ? `<img src="${escapeHtml(race.banner_url)}" alt="Copied race artwork">`
+    : "";
   $("raceIsLive").checked = false;
   $("raceIsArchived").checked = false;
   $("raceFormTitle").textContent = "Duplicate Race";
@@ -672,24 +680,64 @@ async function saveRace(event) {
     const leagueId = Number($("raceLeague").value);
     const league = leagueCache.find((item) => item.id === leagueId);
 
-    if (!league) {
-      throw new Error("Choose a valid league.");
+    if (!leagueId || !league) {
+      throw new Error("Choose a league.");
+    }
+
+    let bannerUrl = null;
+    let bannerPath = null;
+
+    if (id) {
+      const existing = raceCache.find((item) => String(item.id) === String(id));
+      bannerUrl = existing?.banner_url || null;
+      bannerPath = existing?.banner_storage_path || null;
+    }
+
+    const bannerFile = $("raceBanner").files[0];
+
+    if (bannerFile) {
+      if (bannerFile.size > 8 * 1024 * 1024) {
+        throw new Error("Race artwork must be 8 MB or smaller.");
+      }
+
+      const extension = (bannerFile.name.split(".").pop() || "jpg").toLowerCase();
+      bannerPath = `races/${leagueId}/${crypto.randomUUID()}.${extension}`;
+
+      const upload = await client.storage
+        .from("league-assets")
+        .upload(bannerPath, bannerFile, {
+          cacheControl: "3600",
+          upsert: false
+        });
+
+      if (upload.error) throw upload.error;
+
+      bannerUrl = client.storage
+        .from("league-assets")
+        .getPublicUrl(bannerPath)
+        .data.publicUrl;
     }
 
     const payload = {
-      league_id: league.id,
+      league_id: leagueId,
       league_name: league.name,
-      event_name: $("raceEventName").value.trim(),
-      category: $("raceCategory").value.trim() || league.category || null,
+      event_name: $("raceEventName").value.trim() || null,
+      category: $("raceCategory").value.trim() || null,
       circuit: $("raceCircuit").value.trim() || null,
       race_date: $("raceDate").value,
       race_time: $("raceTime").value,
       timezone: $("raceTimezone").value || "Asia/Dubai",
       event_url: $("raceEventUrl").value.trim() || null,
       stream_url: $("raceStreamUrl").value.trim() || null,
+      banner_url: bannerUrl,
+      banner_storage_path: bannerPath,
       is_live: $("raceIsLive").checked,
       is_archived: $("raceIsArchived").checked
     };
+
+    if (!payload.race_date || !payload.race_time) {
+      throw new Error("Add the race date and time.");
+    }
 
     const result = id
       ? await client.from("races").update(payload).eq("id", id)
@@ -703,44 +751,9 @@ async function saveRace(event) {
 
     clearRaceForm(false);
     await Promise.all([loadRaces(), loadStats()]);
+    showAdminToast(id ? "Race updated." : "Race added.");
   } catch (error) {
     $("raceMessage").textContent = error.message;
-  }
-}
-
-async function uploadAsset(file, folder, existingUrl) {
-  if (!file) return existingUrl || null;
-
-  if (file.size > 5 * 1024 * 1024) {
-    throw new Error("Images must be 5 MB or smaller.");
-  }
-
-  const extension = (file.name.split(".").pop() || "png").toLowerCase();
-  const path = `${folder}/${crypto.randomUUID()}.${extension}`;
-
-  const { error } = await client.storage
-    .from("league-assets")
-    .upload(path, file, {
-      cacheControl: "3600",
-      upsert: false
-    });
-
-  if (error) throw error;
-
-  return client.storage
-    .from("league-assets")
-    .getPublicUrl(path)
-    .data.publicUrl;
-}
-
-function clearLeagueForm(clearMessage = true) {
-  $("leagueForm").reset();
-  $("leagueId").value = "";
-  $("formTitle").textContent = "Add League";
-  $("assetPreview").innerHTML = "";
-
-  if (clearMessage) {
-    $("leagueMessage").textContent = "";
   }
 }
 
@@ -749,6 +762,8 @@ function clearRaceForm(clearMessage = true) {
   $("raceId").value = "";
   $("raceTimezone").value = "Asia/Dubai";
   $("raceIsArchived").checked = false;
+  $("raceBanner").value = "";
+  $("raceBannerPreview").innerHTML = "";
   $("raceFormTitle").textContent = "Add Race";
 
   if (clearMessage) {
@@ -1757,4 +1772,18 @@ function renderGalleryPreview() {
 
   $("galleryPreview").innerHTML = "";
   $("galleryPreview").appendChild(image);
+}
+
+
+function renderRaceBannerPreview() {
+  const file = $("raceBanner").files[0];
+
+  if (!file) return;
+
+  const image = document.createElement("img");
+  image.src = URL.createObjectURL(file);
+  image.alt = file.name;
+
+  $("raceBannerPreview").innerHTML = "";
+  $("raceBannerPreview").appendChild(image);
 }

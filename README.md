@@ -1,66 +1,83 @@
-# FN Leagues 2.0 — Phase 12B
+# FDH — Phase 12C
 
-Phase 12B adds league galleries and media management.
+Phase 12C completes the League Showcase package and rebrands the entire
+website from FN Leagues to FDH.
 
-## New public features
+## Full FDH rebrand
 
-- Gallery section on every league page
-- Featured gallery image
-- Responsive gallery layout
-- Image captions
-- Click-to-expand lightbox
-- Previous and next controls
-- Keyboard controls:
-  - Escape closes the lightbox
-  - Left arrow shows the previous image
-  - Right arrow shows the next image
+- Website name changed to FDH
+- Uploaded FDH logo used across all pages
+- Black and red colour system
+- Dark glass panels
+- Red gradients and glow effects
+- Updated favicon
+- Rebranded homepage, rankings, league pages and admin dashboard
+- Existing page layouts and features remain intact
 
-## New admin features
+The logo is stored at:
 
-A new Gallery tab allows admins to:
+`assets/fdh-logo.png`
 
-- Choose a league
-- Drag and drop an image
-- Add an optional caption
-- Mark an image as featured
-- Change the featured image
-- Delete gallery images permanently
-- Filter gallery images by league
+## Phase 12C next-race features
+
+- Premium large next-race card
+- Optional race/circuit artwork
+- Race artwork uploads from the admin dashboard
+- Large countdown
+- Live-state design when a race is marked live
+- League time and timezone
+- Viewer local time and timezone
+- Watch Stream button
+- Join Discord button
+- Event Page button
+- Add to Google Calendar
+- Add to Outlook
+- Download Apple Calendar / ICS file
+- Improved mobile layout
 
 ## Required Supabase update
 
 Open:
 
-`phase-12b-gallery.sql`
+`phase-12c-fdh-rebrand-next-race.sql`
 
 Then:
 
 1. Open Supabase.
 2. Open SQL Editor.
 3. Create a new query.
-4. Paste the complete SQL file.
+4. Paste the full SQL file.
 5. Click Run.
 
-This creates the gallery table and its permissions.
+This adds race-artwork fields to the existing races table.
 
 ## Storage
 
-Gallery files use your existing public bucket:
+Race artwork uses the existing public bucket:
 
 `league-assets`
 
-No new bucket is required.
+Files are stored inside:
+
+`races/<league-id>/`
 
 ## Update GitHub
 
-Upload:
+Upload all of these:
 
-- admin.html
-- admin.js
-- league.js
-- styles.css
-- README.md
+- `assets/fdh-logo.png`
+- `index.html`
+- `app.js`
+- `admin.html`
+- `admin.js`
+- `league.html`
+- `league.js`
+- `rankings.html`
+- `rankings.js`
+- `styles.css`
+- `README.md`
 
 Keep your existing `config.js`.
 
+Do not upload the SQL file unless you want to retain it as documentation.
 Cloudflare deploys automatically after the commit.

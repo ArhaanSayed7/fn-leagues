@@ -3854,3 +3854,677 @@ footer div span {
     right: calc(50% - 62px);
   }
 }
+
+
+/* ============================================================
+   FDH GLOBAL REBRAND — BLACK & RED
+   ============================================================ */
+:root {
+  --bg: #070707;
+  --bg-2: #0c0c0d;
+  --surface: rgba(18,18,20,.86);
+  --surface-strong: rgba(24,24,27,.96);
+  --text: #f8f8f8;
+  --muted: #a4a4aa;
+  --line: rgba(255,255,255,.10);
+  --accent: #e31c25;
+  --pink: #e31c25;
+  --purple: #a30e16;
+  --blue: #ff4148;
+  --gradient: linear-gradient(135deg,#ff3038,#c70f18,#71070b);
+  --league-accent: #e31c25;
+  --league-gradient: linear-gradient(135deg,#ff3038,#c70f18,#71070b);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body,
+.homepage-body,
+.rankings-page-body {
+  color: var(--text);
+  background:
+    radial-gradient(circle at 86% 8%, rgba(227,28,37,.16), transparent 29%),
+    radial-gradient(circle at 12% 38%, rgba(128,7,13,.13), transparent 31%),
+    linear-gradient(180deg,#060606,#0b0b0c 50%,#070707);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -5;
+  opacity: .12;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size: 46px 46px;
+  mask-image: linear-gradient(to bottom,black,transparent 88%);
+  pointer-events: none;
+}
+
+.site-header {
+  border-bottom-color: rgba(255,255,255,.08);
+  background: rgba(7,7,8,.88);
+  backdrop-filter: blur(22px);
+}
+
+.brand-logo {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  border-radius: 13px;
+  background: #090909;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 10px 28px rgba(227,28,37,.14);
+}
+
+.brand-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand strong,
+.site-header nav a,
+h1,
+h2,
+h3,
+h4,
+strong {
+  color: var(--text);
+}
+
+.site-header nav a {
+  color: #b5b5ba;
+}
+
+.site-header nav a:hover,
+.site-header nav a.active-section {
+  color: #fff;
+}
+
+.site-header nav a::before {
+  background: linear-gradient(90deg,#e31c25,#ff4a50);
+}
+
+.nav-admin,
+.button.primary {
+  color: #fff !important;
+  border-color: rgba(255,70,75,.35);
+  background: linear-gradient(135deg,#ef252d,#bd0e16);
+  box-shadow: 0 12px 30px rgba(227,28,37,.20);
+}
+
+.button.secondary,
+input,
+select,
+textarea,
+.admin-filter-button,
+.carousel-controls button,
+.ranking-arrow {
+  color: var(--text);
+  border-color: rgba(255,255,255,.11);
+  background: rgba(20,20,22,.82);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #6f6f76;
+}
+
+.glass,
+.content-card,
+.schedule-card,
+.homepage-schedule-card,
+.homepage-live-card,
+.featured-slide,
+.community-feature-card,
+.community-mini-card,
+.management-form,
+.management-list,
+.admin-list-row,
+.ranking-wrap,
+.next-race-feature {
+  border-color: rgba(255,255,255,.09);
+  background-color: rgba(15,15,17,.78);
+  box-shadow: 0 24px 70px rgba(0,0,0,.28);
+}
+
+.eyebrow,
+.section-note,
+.viewer-zone-note,
+.connection-status {
+  color: #ff343c;
+}
+
+.orb-one,
+.orb-two,
+.orb-three {
+  background: rgba(227,28,37,.16);
+  filter: blur(8px);
+}
+
+.scroll-progress {
+  background: linear-gradient(90deg,#ff343c,#d01018,#75070c);
+  box-shadow: 0 2px 15px rgba(227,28,37,.55);
+}
+
+.logo-frame,
+.ranking-league-logo,
+.homepage-live-logo,
+.homepage-schedule-logo,
+.next-race-logo,
+.spotlight-logo,
+.featured-slide-logo,
+.community-mini-logo,
+.league-page-logo,
+.league-showcase-logo {
+  border-color: rgba(255,255,255,.10);
+  background: rgba(9,9,10,.92);
+}
+
+.logo-frame img,
+.ranking-league-logo img,
+.homepage-live-logo img,
+.homepage-schedule-logo img,
+.next-race-logo img,
+.spotlight-logo img,
+.featured-slide-logo img,
+.community-mini-logo img,
+.league-showcase-logo img {
+  filter: drop-shadow(0 8px 18px rgba(227,28,37,.18));
+}
+
+.tier-s {
+  color: #fff;
+  background: linear-gradient(135deg,#ff333b,#ae0911);
+}
+
+.tier-a {
+  color: #ffd8da;
+  background: linear-gradient(135deg,#691015,#38080b);
+  border-color: rgba(255,61,68,.30);
+}
+
+.tier-b {
+  color: #dedee3;
+  background: linear-gradient(135deg,#35353a,#1a1a1d);
+}
+
+.tier-c {
+  color: #b6b6bc;
+  background: linear-gradient(135deg,#242426,#121214);
+}
+
+.ranking-row td {
+  border-color: rgba(255,255,255,.08);
+  background-color: rgba(17,17,19,.84);
+}
+
+.ranking-league-cell {
+  background-image:
+    linear-gradient(90deg,rgba(9,9,10,.96),rgba(9,9,10,.76)),
+    var(--ranking-banner);
+}
+
+.admin-sidebar,
+.admin-topbar {
+  background: rgba(9,9,10,.95);
+  border-color: rgba(255,255,255,.08);
+}
+
+.admin-sidebar button.active,
+.admin-filter-button.active {
+  color: #fff;
+  background: linear-gradient(135deg,#e31c25,#970a10);
+}
+
+footer {
+  color: var(--muted);
+  border-top-color: rgba(255,255,255,.08);
+}
+
+.homepage-hero-copy h1 span,
+.rankings-page-hero h1 span {
+  color: #e31c25;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+
+.spotlight-card,
+.featured-slide,
+.community-feature-card,
+.league-showcase-hero {
+  background-color: #101011;
+  background-blend-mode: multiply, normal;
+}
+
+.spotlight-card {
+  background-image:
+    linear-gradient(180deg,rgba(6,6,7,.16),rgba(7,7,8,.96)),
+    var(--spotlight-banner);
+}
+
+.featured-slide {
+  background-image:
+    linear-gradient(180deg,rgba(6,6,7,.14),rgba(7,7,8,.95)),
+    var(--featured-banner);
+}
+
+.community-feature-card {
+  background-image:
+    linear-gradient(180deg,rgba(6,6,7,.14),rgba(7,7,8,.96)),
+    var(--community-banner);
+}
+
+.league-showcase-hero {
+  background-image:
+    linear-gradient(110deg,rgba(5,5,6,.96),rgba(7,7,8,.70)),
+    var(--league-banner);
+}
+
+.league-theme-wash {
+  background:
+    radial-gradient(circle at 82% 16%,rgba(227,28,37,.23),transparent 34%),
+    linear-gradient(135deg,rgba(227,28,37,.10),transparent 58%);
+}
+
+.league-showcase-copy p,
+.league-about-card > p,
+.timeline-content p,
+.homepage-live-content > p,
+.spotlight-content p,
+.featured-slide-content p,
+.community-feature-content p {
+  color: #a8a8ae;
+}
+
+.league-badge.badge-verified {
+  color: #fff;
+  border-color: rgba(255,55,62,.34);
+  background: rgba(177,9,16,.75);
+}
+
+.league-badge.badge-featured {
+  color: #fff;
+  border-color: rgba(255,255,255,.12);
+  background: #242426;
+}
+
+.league-badge.badge-partner {
+  background: linear-gradient(135deg,#f12a32,#a4080f);
+}
+
+/* ============================================================
+   PHASE 12C — NEXT RACE EXPERIENCE
+   ============================================================ */
+.fdh-next-race-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.08fr .92fr;
+  overflow: visible;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 28px;
+  background: #0d0d0f;
+  box-shadow: 0 36px 100px rgba(0,0,0,.48);
+}
+
+.fdh-next-race-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: .62;
+  background: linear-gradient(135deg,rgba(255,53,61,.65),transparent 30%,transparent 70%,rgba(151,5,12,.48));
+  filter: blur(1px);
+}
+
+.fdh-next-race-visual {
+  position: relative;
+  min-height: 510px;
+  overflow: hidden;
+  border-radius: 27px 0 0 27px;
+  background:
+    radial-gradient(circle at center,rgba(227,28,37,.24),transparent 55%),
+    #080809;
+}
+
+.fdh-next-race-visual > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .8s cubic-bezier(.2,.8,.2,1);
+}
+
+.fdh-next-race-card:hover .fdh-next-race-visual > img {
+  transform: scale(1.045);
+}
+
+.fdh-race-art-fallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 510px;
+  background:
+    linear-gradient(135deg,transparent 0 42%,rgba(227,28,37,.18) 42% 43%,transparent 43% 100%),
+    radial-gradient(circle,rgba(227,28,37,.18),transparent 50%),
+    #080809;
+}
+
+.fdh-race-art-fallback img {
+  width: min(260px,45%);
+  opacity: .62;
+  filter: drop-shadow(0 25px 60px rgba(227,28,37,.25));
+}
+
+.fdh-next-race-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(0deg,rgba(4,4,5,.94),transparent 58%),
+    linear-gradient(90deg,transparent 70%,rgba(8,8,9,.32));
+}
+
+.fdh-race-status {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.upcoming-race-pill {
+  display: inline-flex;
+  padding: 8px 11px;
+  border: 1px solid rgba(255,75,81,.35);
+  border-radius: 8px;
+  color: #fff;
+  background: rgba(210,13,22,.92);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+}
+
+.fdh-race-visual-copy {
+  position: absolute;
+  right: 28px;
+  bottom: 27px;
+  left: 28px;
+  z-index: 1;
+}
+
+.fdh-race-visual-copy span {
+  color: #ff3c43;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.fdh-race-visual-copy h3 {
+  margin: 8px 0 7px;
+  font-size: clamp(2rem,4vw,3.2rem);
+}
+
+.fdh-race-visual-copy p {
+  color: #c3c3c7;
+}
+
+.fdh-next-race-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 34px;
+}
+
+.fdh-next-race-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.fdh-next-race-heading h3 {
+  margin: 8px 0 0;
+  font-size: clamp(1.8rem,3vw,2.6rem);
+}
+
+.fdh-next-race-heading > img {
+  width: 64px;
+  height: 64px;
+  border-radius: 15px;
+  object-fit: cover;
+  opacity: .82;
+}
+
+.fdh-event-countdown {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 8px;
+  margin: 27px 0;
+}
+
+.fdh-event-countdown div {
+  position: relative;
+  overflow: hidden;
+  padding: 17px 8px;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  background: linear-gradient(180deg,#18181b,#0e0e10);
+  text-align: center;
+}
+
+.fdh-event-countdown div::after {
+  content: "";
+  position: absolute;
+  right: 15%;
+  bottom: -34px;
+  left: 15%;
+  height: 45px;
+  border-radius: 50%;
+  background: #e31c25;
+  filter: blur(22px);
+  opacity: .28;
+}
+
+.fdh-event-countdown strong,
+.fdh-event-countdown span {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.fdh-event-countdown strong {
+  color: #ff343c;
+  font: 800 1.55rem Outfit,sans-serif;
+}
+
+.fdh-event-countdown span {
+  margin-top: 4px;
+  color: #85858c;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.fdh-race-times {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.fdh-race-times div {
+  padding: 14px;
+  border-left: 2px solid #d7161f;
+  background: rgba(255,255,255,.025);
+}
+
+.fdh-race-times span,
+.fdh-race-times strong,
+.fdh-race-times small {
+  display: block;
+}
+
+.fdh-race-times span {
+  color: #ff343c;
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.fdh-race-times strong {
+  margin-top: 7px;
+  font-size: .79rem;
+}
+
+.fdh-race-times small {
+  margin-top: 4px;
+  color: #77777e;
+  font-size: .65rem;
+}
+
+.fdh-race-primary-actions {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 8px;
+}
+
+.fdh-race-primary-actions .button:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.fdh-calendar-menu {
+  position: relative;
+  margin-top: 9px;
+}
+
+.fdh-calendar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 12px;
+  color: #fff;
+  background: #111113;
+  cursor: pointer;
+  font-weight: 750;
+}
+
+.fdh-calendar-options {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 30;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 12px;
+  background: #151517;
+  box-shadow: 0 24px 60px rgba(0,0,0,.44);
+}
+
+.fdh-calendar-options a,
+.fdh-calendar-options button {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  border: 0;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  color: #d7d7dc;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  font-size: .77rem;
+}
+
+.fdh-calendar-options a:last-child,
+.fdh-calendar-options button:last-child {
+  border-bottom: 0;
+}
+
+.fdh-calendar-options a:hover,
+.fdh-calendar-options button:hover {
+  color: #fff;
+  background: rgba(227,28,37,.18);
+}
+
+.fdh-live-message {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 28px 0;
+  padding: 18px;
+  border: 1px solid rgba(255,48,56,.28);
+  border-radius: 14px;
+  color: #fff;
+  background: rgba(208,12,21,.18);
+  font-weight: 800;
+}
+
+.fdh-next-race-card.race-is-live {
+  animation: fdhLiveGlow 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes fdhLiveGlow {
+  from {
+    box-shadow: 0 36px 100px rgba(0,0,0,.48),0 0 0 rgba(227,28,37,0);
+  }
+  to {
+    box-shadow: 0 36px 100px rgba(0,0,0,.48),0 0 45px rgba(227,28,37,.22);
+  }
+}
+
+.asset-preview img {
+  max-height: 220px;
+  object-fit: cover;
+}
+
+@media (max-width: 980px) {
+  .fdh-next-race-card {
+    grid-template-columns: 1fr;
+  }
+
+  .fdh-next-race-visual {
+    min-height: 420px;
+    border-radius: 27px 27px 0 0;
+  }
+}
+
+@media (max-width: 620px) {
+  .brand-logo {
+    width: 42px;
+    height: 42px;
+  }
+
+  .fdh-next-race-content {
+    padding: 23px;
+  }
+
+  .fdh-event-countdown {
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .fdh-race-times,
+  .fdh-race-primary-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .fdh-race-primary-actions .button:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+
+  .fdh-next-race-heading > img {
+    width: 52px;
+    height: 52px;
+  }
+}

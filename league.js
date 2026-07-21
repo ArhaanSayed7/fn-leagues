@@ -60,7 +60,7 @@ async function loadLeague() {
   const theme = getTheme(league.theme_key);
   const accent = league.accent_color || theme.accent;
 
-  document.title = `${league.name} | FN Leagues`;
+  document.title = `${league.name} | FDH`;
 
   document.documentElement.style.setProperty("--league-accent", accent);
   document.documentElement.style.setProperty("--league-gradient", theme.gradient);
@@ -289,6 +289,7 @@ async function loadLeague() {
 
   initializeGalleryLightbox(gallery);
   initializeCountdowns();
+  initializeCalendarControls(nextRace, league);
   initializeAnimations();
   initializeScrollExperience();
 }
@@ -455,45 +456,89 @@ function initializeGalleryLightbox(gallery) {
 }
 
 function renderNextRace(race, league) {
-  const local = getRaceDateTime(race).toLocal();
+  const original = getRaceDateTime(race);
+  const local = original.toLocal();
+  const isLive = race.is_live === true;
+  const artwork = race.banner_url || league.banner_url || "";
 
   return `
-    <article class="league-premium-race-card glass reveal-card">
-      <div class="league-premium-race-visual">
+    <article class="fdh-next-race-card ${isLive ? "race-is-live" : ""}">
+      <div class="fdh-next-race-visual">
         ${
-          league.banner_url
-            ? `<img src="${escapeHtml(league.banner_url)}" alt="">`
-            : ""
+          artwork
+            ? `<img src="${escapeHtml(artwork)}" alt="${escapeHtml(race.event_name || "Race artwork")}">`
+            : `<div class="fdh-race-art-fallback"><img src="assets/fdh-logo.png" alt="FDH"></div>`
         }
-        <div class="league-premium-race-overlay"></div>
-      </div>
 
-      <div class="league-premium-race-content">
-        <span class="eyebrow">${escapeHtml(race.category || "RACE EVENT")}</span>
-        <h3>${escapeHtml(race.event_name || "Race Event")}</h3>
+        <div class="fdh-next-race-shade"></div>
 
-        <p>
-          ${race.circuit ? `${escapeHtml(race.circuit)} · ` : ""}
-          ${local.toFormat("cccc, d LLL yyyy · h:mm a")}
-        </p>
-
-        <div
-          class="event-countdown"
-          data-race-countdown
-          data-race-date="${escapeHtml(race.race_date)}"
-          data-race-time="${escapeHtml(String(race.race_time || "00:00").slice(0, 5))}"
-          data-race-zone="${escapeHtml(race.timezone || "UTC")}"
-        >
-          <div><strong data-days>0</strong><span>Days</span></div>
-          <div><strong data-hours>0</strong><span>Hours</span></div>
-          <div><strong data-minutes>0</strong><span>Minutes</span></div>
-          <div><strong data-seconds>0</strong><span>Seconds</span></div>
+        <div class="fdh-race-status">
+          ${
+            isLive
+              ? `<span class="live-pill"><span class="live-dot"></span>LIVE NOW</span>`
+              : `<span class="upcoming-race-pill">UPCOMING</span>`
+          }
         </div>
 
-        <div class="card-actions">
+        <div class="fdh-race-visual-copy">
+          <span>${escapeHtml(league.name)}</span>
+          <h3>${escapeHtml(race.event_name || "Race Event")}</h3>
+          <p>${escapeHtml(race.circuit || "Circuit to be announced")}</p>
+        </div>
+      </div>
+
+      <div class="fdh-next-race-content">
+        <div class="fdh-next-race-heading">
+          <div>
+            <span class="eyebrow">${escapeHtml(race.category || "RACE EVENT")}</span>
+            <h3>${escapeHtml(race.event_name || "Race Event")}</h3>
+          </div>
+
+          <img src="assets/fdh-logo.png" alt="FDH">
+        </div>
+
+        ${
+          isLive
+            ? `
+              <div class="fdh-live-message">
+                <span class="live-dot"></span>
+                This event is currently live
+              </div>
+            `
+            : `
+              <div
+                class="fdh-event-countdown"
+                data-race-countdown
+                data-race-date="${escapeHtml(race.race_date)}"
+                data-race-time="${escapeHtml(String(race.race_time || "00:00").slice(0, 5))}"
+                data-race-zone="${escapeHtml(race.timezone || "UTC")}"
+              >
+                <div><strong data-days>0</strong><span>Days</span></div>
+                <div><strong data-hours>0</strong><span>Hours</span></div>
+                <div><strong data-minutes>0</strong><span>Minutes</span></div>
+                <div><strong data-seconds>0</strong><span>Seconds</span></div>
+              </div>
+            `
+        }
+
+        <div class="fdh-race-times">
+          <div>
+            <span>League time</span>
+            <strong>${original.toFormat("ccc, d LLL yyyy · h:mm a")}</strong>
+            <small>${escapeHtml(race.timezone || "UTC")}</small>
+          </div>
+
+          <div>
+            <span>Your local time</span>
+            <strong>${local.toFormat("ccc, d LLL yyyy · h:mm a")}</strong>
+            <small>${escapeHtml(Intl.DateTimeFormat().resolvedOptions().timeZone)}</small>
+          </div>
+        </div>
+
+        <div class="fdh-race-primary-actions">
           ${
-            race.event_url
-              ? `<a class="button primary" href="${safeUrl(race.event_url)}" target="_blank" rel="noopener">Open Event</a>`
+            race.stream_url
+              ? `<a class="button primary" href="${safeUrl(race.stream_url)}" target="_blank" rel="noopener">${isLive ? "Watch Live" : "Stream Link"}</a>`
               : ""
           }
 
@@ -504,10 +549,31 @@ function renderNextRace(race, league) {
           }
 
           ${
-            race.stream_url
-              ? `<a class="button secondary" href="${safeUrl(race.stream_url)}" target="_blank" rel="noopener">Watch Stream</a>`
+            race.event_url
+              ? `<a class="button secondary" href="${safeUrl(race.event_url)}" target="_blank" rel="noopener">Event Page</a>`
               : ""
           }
+        </div>
+
+        <div class="fdh-calendar-menu">
+          <button class="fdh-calendar-toggle" type="button" data-calendar-toggle>
+            <span>Add to Calendar</span>
+            <strong>⌄</strong>
+          </button>
+
+          <div class="fdh-calendar-options hidden" data-calendar-options>
+            <a href="${buildGoogleCalendarUrl(race, league)}" target="_blank" rel="noopener">
+              Google Calendar
+            </a>
+
+            <a href="${buildOutlookCalendarUrl(race, league)}" target="_blank" rel="noopener">
+              Outlook
+            </a>
+
+            <button type="button" data-download-ics>
+              Apple Calendar / ICS
+            </button>
+          </div>
         </div>
       </div>
     </article>
@@ -540,6 +606,136 @@ function renderLiveRace(race) {
       </div>
     </article>
   `;
+}
+
+
+function initializeCalendarControls(race, league) {
+  if (!race) return;
+
+  const toggle = document.querySelector("[data-calendar-toggle]");
+  const options = document.querySelector("[data-calendar-options]");
+  const downloadButton = document.querySelector("[data-download-ics]");
+
+  toggle?.addEventListener("click", () => {
+    options?.classList.toggle("hidden");
+  });
+
+  downloadButton?.addEventListener("click", () => {
+    downloadIcsFile(race, league);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (
+      options &&
+      toggle &&
+      !options.contains(event.target) &&
+      !toggle.contains(event.target)
+    ) {
+      options.classList.add("hidden");
+    }
+  });
+}
+
+function getRaceEndDateTime(race) {
+  return getRaceDateTime(race).plus({ hours: 2 });
+}
+
+function calendarTitle(race, league) {
+  return `${race.event_name || "Race Event"} — ${league.name}`;
+}
+
+function calendarDescription(race, league) {
+  const parts = [
+    `${league.name} race session on FDH.`,
+    race.circuit ? `Circuit: ${race.circuit}.` : "",
+    race.event_url ? `Event: ${race.event_url}` : "",
+    race.stream_url ? `Stream: ${race.stream_url}` : "",
+    league.discord_url ? `Discord: ${league.discord_url}` : ""
+  ];
+
+  return parts.filter(Boolean).join("\n");
+}
+
+function buildGoogleCalendarUrl(race, league) {
+  const start = getRaceDateTime(race).toUTC().toFormat("yyyyLLdd'T'HHmmss'Z'");
+  const end = getRaceEndDateTime(race).toUTC().toFormat("yyyyLLdd'T'HHmmss'Z'");
+
+  const parameters = new URLSearchParams({
+    action: "TEMPLATE",
+    text: calendarTitle(race, league),
+    dates: `${start}/${end}`,
+    details: calendarDescription(race, league),
+    location: race.circuit || ""
+  });
+
+  return `https://calendar.google.com/calendar/render?${parameters.toString()}`;
+}
+
+function buildOutlookCalendarUrl(race, league) {
+  const start = getRaceDateTime(race).toUTC().toISO();
+  const end = getRaceEndDateTime(race).toUTC().toISO();
+
+  const parameters = new URLSearchParams({
+    path: "/calendar/action/compose",
+    rru: "addevent",
+    subject: calendarTitle(race, league),
+    startdt: start,
+    enddt: end,
+    body: calendarDescription(race, league),
+    location: race.circuit || ""
+  });
+
+  return `https://outlook.live.com/calendar/0/deeplink/compose?${parameters.toString()}`;
+}
+
+function downloadIcsFile(race, league) {
+  const start = getRaceDateTime(race).toUTC().toFormat("yyyyLLdd'T'HHmmss'Z'");
+  const end = getRaceEndDateTime(race).toUTC().toFormat("yyyyLLdd'T'HHmmss'Z'");
+  const now = DateTime.utc().toFormat("yyyyLLdd'T'HHmmss'Z'");
+  const uid = `${race.id || crypto.randomUUID()}@fdh-racing`;
+
+  const escapeIcs = (value) =>
+    String(value || "")
+      .replaceAll("\\", "\\\\")
+      .replaceAll("\n", "\\n")
+      .replaceAll(",", "\\,")
+      .replaceAll(";", "\\;");
+
+  const content = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//FDH//Fortnite Racing//EN",
+    "CALSCALE:GREGORIAN",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${now}`,
+    `DTSTART:${start}`,
+    `DTEND:${end}`,
+    `SUMMARY:${escapeIcs(calendarTitle(race, league))}`,
+    `DESCRIPTION:${escapeIcs(calendarDescription(race, league))}`,
+    `LOCATION:${escapeIcs(race.circuit || "")}`,
+    "END:VEVENT",
+    "END:VCALENDAR"
+  ].join("\r\n");
+
+  const blob = new Blob([content], {
+    type: "text/calendar;charset=utf-8"
+  });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${slugify(calendarTitle(race, league))}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(link.href);
+}
+
+function slugify(value) {
+  return String(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 function initializeCountdowns() {
