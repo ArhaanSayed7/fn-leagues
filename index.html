@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="FN Leagues - Fortnite racing league schedule and directory" />
+  <title>FN Leagues</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="background-orb orb-one"></div>
+  <div class="background-orb orb-two"></div>
+  <div class="background-orb orb-three"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#home">
+      <span class="brand-badge">FN</span>
+      <span>
+        <strong>FN Leagues</strong>
+        <small>Fortnite Racing Community</small>
+      </span>
+    </a>
+
+    <button class="menu-button" id="menuButton" aria-label="Open menu">☰</button>
+
+    <nav id="mainNav">
+      <a href="#home">Home</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#leagues">Leagues</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero section" id="home">
+      <div class="hero-copy">
+        <span class="eyebrow">FORTNITE RACING, IN ONE PLACE</span>
+
+        <h1>
+          Every league.<br>
+          <span>One beautiful hub.</span>
+        </h1>
+
+        <p>
+          Check which Fortnite racing leagues are active today, view upcoming
+          events, and find every Discord community from one clean website.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button primary" href="#schedule">View Schedule</a>
+          <a class="button secondary" href="#leagues">Browse Leagues</a>
+        </div>
+      </div>
+
+      <div class="glass-card today-panel">
+        <div class="panel-heading">
+          <span>Racing Today</span>
+          <span id="todayDate"></span>
+        </div>
+
+        <div id="todayEvents"></div>
+      </div>
+    </section>
+
+    <section class="section" id="schedule">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">RACE CALENDAR</span>
+          <h2>Upcoming Schedule</h2>
+        </div>
+
+        <div class="filters">
+          <button class="filter-button active" data-filter="all">All</button>
+          <button class="filter-button" data-filter="today">Today</button>
+          <button class="filter-button" data-filter="week">This Week</button>
+        </div>
+      </div>
+
+      <div id="scheduleList" class="schedule-list"></div>
+      <div id="scheduleEmpty" class="empty-state hidden">
+        No races have been added yet.
+      </div>
+    </section>
+
+    <section class="section" id="leagues">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">COMMUNITY DIRECTORY</span>
+          <h2>League Links</h2>
+        </div>
+
+        <input
+          id="leagueSearch"
+          class="search-box"
+          type="search"
+          placeholder="Search leagues..."
+        />
+      </div>
+
+      <div id="leagueGrid" class="league-grid"></div>
+      <div id="leagueEmpty" class="empty-state hidden">
+        No leagues match your search.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <strong>FN Leagues</strong>
+      <span>Your home for Fortnite racing communities.</span>
+    </div>
+
+    <a href="#home">Back to top ↑</a>
+  </footer>
+
+  <!-- Edit website content inside data.js -->
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
