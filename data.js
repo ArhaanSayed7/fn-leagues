@@ -45,17 +45,17 @@ Example:
 const LEAGUES = [
   // LEAGUE SLOT 1
   {
-    name: "",
-    abbreviation: "",
-    category: "",
-    description: "",
-    discord: "",
+    name: "Formula Elite Series",
+    abbreviation: "FES",
+    category: "A Tier",
+    description: "One of the Biggest and Fastest Growing Leagues, ran by Rivers",
+    discord: "https://discord.gg/bRXT8BPCtv",
 
     // Example: "images/leagues/fes.png"
-    logo: "",
+    logo: "images/leagues/fes.png",
 
     // Change false to true to show this league in Featured Leagues
-    featured: false
+    featured: true
   },
 
   // LEAGUE SLOT 2
