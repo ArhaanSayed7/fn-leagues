@@ -8,6 +8,7 @@ let activeRaceFilter = "all";
 let raceSearchQuery = "";
 let leagueAdminSearchQuery = "";
 let rankingAdminSearchQuery = "";
+let communityDraft = {};
 
 document.addEventListener("DOMContentLoaded", initialize);
 
@@ -56,6 +57,31 @@ document.querySelectorAll("[data-race-filter]").forEach((button) => {
 
 $("rankingForm").addEventListener("submit", saveRanking);
 $("clearRankingButton").addEventListener("click", () => clearRankingForm());
+
+$("saveCommunityDraft").addEventListener("click", saveCommunityDraft);
+$("publishCommunity").addEventListener("click", publishCommunity);
+
+[
+  "announcementEnabled",
+  "announcementTitle",
+  "announcementType",
+  "announcementText",
+  "announcementButtonText",
+  "announcementButtonUrl",
+  "announcementExpiry",
+  "leagueOfWeekSelect",
+  "raceOfWeekSelect",
+  "streamEnabled",
+  "streamTitle",
+  "streamUrl",
+  "streamDescription",
+  "showRecentlyAdded",
+  "recentlyAddedLimit"
+].forEach((id) => {
+  $(id).addEventListener("input", updateCommunityPreview);
+  $(id).addEventListener("change", updateCommunityPreview);
+});
+
 
 document.querySelectorAll(".admin-nav button[data-tab]").forEach((button) => {
   button.addEventListener("click", () => switchTab(button.dataset.tab));
@@ -113,7 +139,8 @@ async function showDashboard(user) {
     loadStats(),
     loadLeagues(),
     loadRaces(),
-    loadRankings()
+    loadRankings(),
+    loadCommunitySettings()
   ]);
 }
 
@@ -183,6 +210,7 @@ async function loadLeagues() {
   renderLeagueList();
   populateLeagueSelect();
   populateRankingLeagueSelect();
+  populateCommunitySelectors();
   $("adminLeagueCount").textContent = leagueCache.length;
 }
 
@@ -200,6 +228,7 @@ async function loadRaces() {
 
   raceCache = data || [];
   renderRaceList();
+  populateCommunitySelectors();
   $("adminRaceCount").textContent = raceCache.length;
   $("adminLiveCount").textContent = raceCache.filter((race) => race.is_live === true).length;
 }
@@ -695,12 +724,14 @@ function switchTab(tab) {
   $("leaguesTab").classList.toggle("hidden", tab !== "leagues");
   $("racesTab").classList.toggle("hidden", tab !== "races");
   $("rankingsTab").classList.toggle("hidden", tab !== "rankings");
+  $("communityTab").classList.toggle("hidden", tab !== "community");
 
   const titles = {
     overview: "Dashboard",
     leagues: "Leagues",
     races: "Races",
-    rankings: "Rankings"
+    rankings: "Rankings",
+    community: "Community"
   };
 
   $("adminTitle").textContent = titles[tab] || "Dashboard";
@@ -797,8 +828,14 @@ function renderRankingList() {
 
   $("adminRankingEmpty").classList.toggle("hidden", filteredRankings.length > 0);
 
-  $("adminRankingList").innerHTML = filteredRankings.map((ranking) => `
-    <article class="admin-list-row ranking-admin-row">
+  $("adminRankingList").innerHTML = filteredRankings.map((ranking, index) => `
+    <article
+      class="admin-list-row ranking-admin-row smart-ranking-row"
+      draggable="true"
+      data-ranking-id="${ranking.id}"
+      data-ranking-index="${index}"
+    >
+      <div class="ranking-drag-handle" title="Drag to reorder">⋮⋮</div>
       <div class="ranking-position-badge">#${ranking.position}</div>
 
       <div class="admin-list-copy">
@@ -810,12 +847,36 @@ function renderRankingList() {
         </span>
       </div>
 
+      <div class="ranking-move-actions">
+        <button
+          class="ranking-arrow"
+          type="button"
+          aria-label="Move up"
+          onclick="moveRanking(${ranking.id}, -1)"
+          ${index === 0 ? "disabled" : ""}
+        >
+          ↑
+        </button>
+
+        <button
+          class="ranking-arrow"
+          type="button"
+          aria-label="Move down"
+          onclick="moveRanking(${ranking.id}, 1)"
+          ${index === filteredRankings.length - 1 ? "disabled" : ""}
+        >
+          ↓
+        </button>
+      </div>
+
       <div class="admin-row-actions">
-        <button class="button secondary" onclick="editRanking(${ranking.id})">Edit</button>
+        <button class="button secondary" onclick="editRanking(${ranking.id})">Edit Tier</button>
         <button class="button danger" onclick="deleteRanking(${ranking.id}, '${escapeJs(ranking.leagues?.name || "ranking")}')">Delete</button>
       </div>
     </article>
   `).join("");
+
+  initializeRankingDragAndDrop();
 }
 
 window.editRanking = function (id) {
@@ -834,12 +895,13 @@ window.editRanking = function (id) {
 };
 
 window.deleteRanking = async function (id, name) {
-  if (!confirm(`Delete the ranking for ${name}?`)) return;
+  if (!confirm(`Delete the ranking for ${name}? Other positions will close the gap automatically.`)) {
+    return;
+  }
 
-  const { error } = await client
-    .from("league_rankings")
-    .delete()
-    .eq("id", id);
+  const { error } = await client.rpc("delete_league_ranking", {
+    p_ranking_id: id
+  });
 
   if (error) {
     alert(error.message);
@@ -848,6 +910,7 @@ window.deleteRanking = async function (id, name) {
 
   clearRankingForm();
   await Promise.all([loadRankings(), loadStats()]);
+  showAdminToast("Ranking deleted and positions updated.");
 };
 
 async function saveRanking(event) {
@@ -855,30 +918,23 @@ async function saveRanking(event) {
   $("rankingMessage").textContent = "Saving…";
 
   try {
-    const id = $("rankingId").value;
     const leagueId = Number($("rankingLeague").value);
+    const requestedPosition = Number($("rankingPosition").value);
+    const tier = $("rankingTier").value;
 
     if (!leagueId) {
       throw new Error("Choose a league.");
     }
 
-    const payload = {
-      league_id: leagueId,
-      position: Number($("rankingPosition").value),
-      tier: $("rankingTier").value,
-      updated_at: new Date().toISOString()
-    };
+    const { error } = await client.rpc("set_league_ranking", {
+      p_league_id: leagueId,
+      p_position: requestedPosition,
+      p_tier: tier
+    });
 
-    const result = id
-      ? await client.from("league_rankings").update(payload).eq("id", id)
-      : await client.from("league_rankings").insert(payload);
+    if (error) throw error;
 
-    if (result.error) throw result.error;
-
-    $("rankingMessage").textContent = id
-      ? "Ranking updated."
-      : "Ranking added.";
-
+    $("rankingMessage").textContent = "Ranking saved and all positions adjusted.";
     clearRankingForm(false);
     await Promise.all([loadRankings(), loadStats()]);
   } catch (error) {
@@ -1083,4 +1139,355 @@ function renderSelectedAssetPreviews() {
     image.alt = file.name;
     preview.appendChild(image);
   });
+}
+
+
+async function loadCommunitySettings() {
+  const { data, error } = await client
+    .from("community_settings")
+    .select("draft, published, updated_at")
+    .eq("id", 1)
+    .maybeSingle();
+
+  if (error) {
+    $("communityMessage").textContent = error.message;
+    return;
+  }
+
+  communityDraft = data?.draft || data?.published || defaultCommunitySettings();
+  fillCommunityForm(communityDraft);
+  updateCommunityPreview();
+
+  $("communitySaveState").textContent = data?.updated_at
+    ? `Last saved ${new Date(data.updated_at).toLocaleString()}`
+    : "New draft";
+}
+
+function defaultCommunitySettings() {
+  return {
+    announcement: {
+      enabled: false,
+      title: "",
+      text: "",
+      type: "info",
+      button_text: "",
+      button_url: "",
+      expires_at: ""
+    },
+    league_of_week_id: "",
+    race_of_week_id: "",
+    featured_stream: {
+      enabled: false,
+      title: "",
+      url: "",
+      description: ""
+    },
+    trending_league_ids: [],
+    show_recently_added: true,
+    recently_added_limit: 6
+  };
+}
+
+function populateCommunitySelectors() {
+  if (!$("leagueOfWeekSelect") || !$("raceOfWeekSelect")) return;
+
+  const currentLeague = $("leagueOfWeekSelect").value;
+  const currentRace = $("raceOfWeekSelect").value;
+
+  $("leagueOfWeekSelect").innerHTML = `
+    <option value="">None</option>
+    ${leagueCache.map((league) => `
+      <option value="${league.id}">${escapeHtml(league.name)}</option>
+    `).join("")}
+  `;
+
+  $("raceOfWeekSelect").innerHTML = `
+    <option value="">None</option>
+    ${raceCache
+      .filter((race) => !race.is_archived)
+      .map((race) => `
+        <option value="${race.id}">
+          ${escapeHtml(race.league_name)} — ${escapeHtml(race.event_name || "Race")}
+        </option>
+      `).join("")}
+  `;
+
+  if (currentLeague) $("leagueOfWeekSelect").value = currentLeague;
+  if (currentRace) $("raceOfWeekSelect").value = currentRace;
+
+  renderTrendingSelector();
+}
+
+function renderTrendingSelector() {
+  if (!$("trendingLeagueSelector")) return;
+
+  const selected = new Set(
+    Array.isArray(communityDraft.trending_league_ids)
+      ? communityDraft.trending_league_ids.map(String)
+      : []
+  );
+
+  $("trendingLeagueSelector").innerHTML = leagueCache.map((league) => `
+    <label class="trending-option">
+      <input
+        type="checkbox"
+        value="${league.id}"
+        ${selected.has(String(league.id)) ? "checked" : ""}
+      >
+      <span class="trending-option-logo">
+        ${
+          league.logo_url
+            ? `<img src="${escapeHtml(league.logo_url)}" alt="">`
+            : escapeHtml(league.abbreviation || league.name.slice(0, 3).toUpperCase())
+        }
+      </span>
+      <strong>${escapeHtml(league.name)}</strong>
+    </label>
+  `).join("");
+
+  $("trendingLeagueSelector")
+    .querySelectorAll("input")
+    .forEach((input) => {
+      input.addEventListener("change", updateCommunityPreview);
+    });
+}
+
+function fillCommunityForm(settings) {
+  const announcement = settings.announcement || {};
+  const stream = settings.featured_stream || {};
+
+  $("announcementEnabled").checked = announcement.enabled === true;
+  $("announcementTitle").value = announcement.title || "";
+  $("announcementType").value = announcement.type || "info";
+  $("announcementText").value = announcement.text || "";
+  $("announcementButtonText").value = announcement.button_text || "";
+  $("announcementButtonUrl").value = announcement.button_url || "";
+  $("announcementExpiry").value = toDateTimeLocal(announcement.expires_at);
+
+  $("leagueOfWeekSelect").value = settings.league_of_week_id || "";
+  $("raceOfWeekSelect").value = settings.race_of_week_id || "";
+
+  $("streamEnabled").checked = stream.enabled === true;
+  $("streamTitle").value = stream.title || "";
+  $("streamUrl").value = stream.url || "";
+  $("streamDescription").value = stream.description || "";
+
+  $("showRecentlyAdded").checked = settings.show_recently_added !== false;
+  $("recentlyAddedLimit").value = settings.recently_added_limit || 6;
+
+  renderTrendingSelector();
+}
+
+function collectCommunityForm() {
+  const trendingIds = [
+    ...$("trendingLeagueSelector").querySelectorAll("input:checked")
+  ].map((input) => Number(input.value));
+
+  return {
+    announcement: {
+      enabled: $("announcementEnabled").checked,
+      title: $("announcementTitle").value.trim(),
+      text: $("announcementText").value.trim(),
+      type: $("announcementType").value,
+      button_text: $("announcementButtonText").value.trim(),
+      button_url: $("announcementButtonUrl").value.trim(),
+      expires_at: $("announcementExpiry").value
+        ? new Date($("announcementExpiry").value).toISOString()
+        : ""
+    },
+    league_of_week_id: $("leagueOfWeekSelect").value
+      ? Number($("leagueOfWeekSelect").value)
+      : "",
+    race_of_week_id: $("raceOfWeekSelect").value
+      ? Number($("raceOfWeekSelect").value)
+      : "",
+    featured_stream: {
+      enabled: $("streamEnabled").checked,
+      title: $("streamTitle").value.trim(),
+      url: $("streamUrl").value.trim(),
+      description: $("streamDescription").value.trim()
+    },
+    trending_league_ids: trendingIds.slice(0, 6),
+    show_recently_added: $("showRecentlyAdded").checked,
+    recently_added_limit: Math.min(
+      12,
+      Math.max(1, Number($("recentlyAddedLimit").value || 6))
+    )
+  };
+}
+
+async function saveCommunityDraft() {
+  const draft = collectCommunityForm();
+  $("communityMessage").textContent = "Saving draft…";
+
+  const { error } = await client
+    .from("community_settings")
+    .upsert({
+      id: 1,
+      draft,
+      updated_at: new Date().toISOString()
+    });
+
+  if (error) {
+    $("communityMessage").textContent = error.message;
+    return;
+  }
+
+  communityDraft = draft;
+  $("communityMessage").textContent = "Draft saved. Visitors cannot see it yet.";
+  $("communitySaveState").textContent = "Draft saved just now";
+  updateCommunityPreview();
+}
+
+async function publishCommunity() {
+  const published = collectCommunityForm();
+  $("communityMessage").textContent = "Publishing…";
+
+  const { error } = await client
+    .from("community_settings")
+    .upsert({
+      id: 1,
+      draft: published,
+      published,
+      published_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    });
+
+  if (error) {
+    $("communityMessage").textContent = error.message;
+    return;
+  }
+
+  communityDraft = published;
+  $("communityMessage").textContent = "Community Hub published successfully.";
+  $("communitySaveState").textContent = "Published just now";
+  showAdminToast("Homepage content published.");
+  updateCommunityPreview();
+}
+
+function updateCommunityPreview() {
+  if (!$("communityDraftPreview")) return;
+
+  const settings = collectCommunityForm();
+  const league = leagueCache.find(
+    (item) => String(item.id) === String(settings.league_of_week_id)
+  );
+  const race = raceCache.find(
+    (item) => String(item.id) === String(settings.race_of_week_id)
+  );
+
+  $("communityDraftPreview").innerHTML = `
+    <div class="draft-preview-item">
+      <span>Announcement</span>
+      <strong>${settings.announcement.enabled ? escapeHtml(settings.announcement.title || "Enabled") : "Hidden"}</strong>
+    </div>
+
+    <div class="draft-preview-item">
+      <span>League of the Week</span>
+      <strong>${escapeHtml(league?.name || "None")}</strong>
+    </div>
+
+    <div class="draft-preview-item">
+      <span>Race of the Week</span>
+      <strong>${escapeHtml(race?.event_name || "None")}</strong>
+    </div>
+
+    <div class="draft-preview-item">
+      <span>Featured Stream</span>
+      <strong>${settings.featured_stream.enabled ? escapeHtml(settings.featured_stream.title || "Enabled") : "Hidden"}</strong>
+    </div>
+
+    <div class="draft-preview-item">
+      <span>Trending</span>
+      <strong>${settings.trending_league_ids.length} leagues</strong>
+    </div>
+
+    <div class="draft-preview-item">
+      <span>Recently Added</span>
+      <strong>${settings.show_recently_added ? `${settings.recently_added_limit} shown` : "Hidden"}</strong>
+    </div>
+  `;
+}
+
+function toDateTimeLocal(value) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  const offset = date.getTimezoneOffset();
+  const local = new Date(date.getTime() - offset * 60000);
+  return local.toISOString().slice(0, 16);
+}
+
+window.moveRanking = async function (rankingId, direction) {
+  const currentIndex = rankingCache.findIndex((item) => item.id === rankingId);
+  const newIndex = currentIndex + direction;
+
+  if (currentIndex < 0 || newIndex < 0 || newIndex >= rankingCache.length) {
+    return;
+  }
+
+  const reordered = [...rankingCache];
+  const [moved] = reordered.splice(currentIndex, 1);
+  reordered.splice(newIndex, 0, moved);
+
+  await saveRankingOrder(reordered.map((item) => item.id));
+};
+
+function initializeRankingDragAndDrop() {
+  let draggedId = null;
+
+  document.querySelectorAll(".smart-ranking-row").forEach((row) => {
+    row.addEventListener("dragstart", () => {
+      draggedId = Number(row.dataset.rankingId);
+      row.classList.add("dragging");
+    });
+
+    row.addEventListener("dragend", () => {
+      draggedId = null;
+      row.classList.remove("dragging");
+      document
+        .querySelectorAll(".smart-ranking-row")
+        .forEach((item) => item.classList.remove("drag-over"));
+    });
+
+    row.addEventListener("dragover", (event) => {
+      event.preventDefault();
+
+      document
+        .querySelectorAll(".smart-ranking-row")
+        .forEach((item) => item.classList.remove("drag-over"));
+
+      row.classList.add("drag-over");
+    });
+
+    row.addEventListener("drop", async (event) => {
+      event.preventDefault();
+
+      const targetId = Number(row.dataset.rankingId);
+
+      if (!draggedId || draggedId === targetId) return;
+
+      const reordered = [...rankingCache];
+      const from = reordered.findIndex((item) => item.id === draggedId);
+      const to = reordered.findIndex((item) => item.id === targetId);
+      const [moved] = reordered.splice(from, 1);
+      reordered.splice(to, 0, moved);
+
+      await saveRankingOrder(reordered.map((item) => item.id));
+    });
+  });
+}
+
+async function saveRankingOrder(rankingIds) {
+  const { error } = await client.rpc("reorder_league_rankings", {
+    p_ranking_ids: rankingIds
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  await loadRankings();
+  showAdminToast("Ranking order updated.");
 }

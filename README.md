@@ -1,34 +1,63 @@
-# FN Leagues 2.0 — Phase 10
+# FN Leagues 2.0 — Phase 11
 
-Phase 10 adds stronger interactions, a full rankings page,
-and admin workflow improvements.
+Phase 11 adds the Community Hub, draft publishing, and smart rankings.
 
-## Public website updates
+## Community Hub
 
-- Homepage rankings now show only the top 10 leagues
-- New `rankings.html` page shows every ranked league
-- Full rankings page supports:
-  - Search
-  - Tier filtering
-  - Animated tier statistics
-  - Links to league pages
-- Featured league cards float, tilt and lift on hover
-- League-directory cards float, tilt and lift on hover
-- League logos gently animate while their card is hovered
-- Reduced-motion accessibility remains supported
+The homepage can now show:
 
-## Admin updates
+- Announcement banner
+- League of the Week
+- Race of the Week
+- Featured livestream
+- Trending leagues
+- Recently added leagues
 
-- Search leagues
-- Search rankings
-- Duplicate a league
-- Drag-and-drop logo uploads
-- Drag-and-drop banner uploads
-- Immediate image previews
+There are no news cards.
 
-## Database changes
+## Admin Community tab
 
-No Supabase SQL update is required.
+Admins can:
+
+- Create and style announcements
+- Add an announcement button and expiry
+- Choose League of the Week
+- Choose Race of the Week
+- Add a YouTube, Twitch or Kick stream
+- Select up to six trending leagues
+- Control recently added leagues
+- Save a private draft
+- Publish all Community Hub changes at once
+
+## Smart rankings
+
+Rankings now automatically adjust when:
+
+- Adding a ranked league
+- Moving a league up
+- Moving a league down
+- Inserting a league into an occupied position
+- Deleting a ranked league
+
+You can also:
+
+- Drag and drop rankings
+- Use up/down arrow buttons
+- Edit a tier without manually fixing every other position
+
+## Required Supabase update
+
+Open:
+
+`phase-11-community-smart-rankings.sql`
+
+Then:
+
+1. Open Supabase.
+2. Open SQL Editor.
+3. Create a new query.
+4. Paste the complete SQL file.
+5. Click Run.
 
 ## Update GitHub
 
@@ -36,8 +65,6 @@ Upload:
 
 - index.html
 - app.js
-- rankings.html
-- rankings.js
 - admin.html
 - admin.js
 - styles.css
@@ -45,4 +72,4 @@ Upload:
 
 Keep your existing `config.js`.
 
-Cloudflare deploys automatically after you commit the files.
+Do not upload the SQL file to GitHub unless you want it stored as documentation.

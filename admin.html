@@ -48,6 +48,7 @@
           <button data-tab="leagues">Leagues</button>
           <button data-tab="races">Races</button>
           <button data-tab="rankings">Rankings</button>
+          <button data-tab="community">Community</button>
         </nav>
 
         <div class="admin-sidebar-actions">
@@ -191,7 +192,13 @@
 
             <div class="glass management-list">
               <div class="form-heading">
-                <div><span class="eyebrow">CURRENT ORDER</span><h3>League Rankings</h3></div>
+                <div>
+                  <span class="eyebrow">SMART ORDER</span>
+                  <h3>League Rankings</h3>
+                  <p class="admin-section-help">
+                    Drag rankings or use the arrow buttons. Positions update automatically.
+                  </p>
+                </div>
               </div>
 
               <div class="admin-toolbar">
@@ -205,6 +212,152 @@
               <div id="adminRankingList"></div>
               <div id="adminRankingEmpty" class="empty-state hidden">No rankings match this view.</div>
             </div>
+          </div>
+        </section>
+
+
+        <section id="communityTab" class="admin-tab hidden">
+          <div class="community-admin-layout">
+            <form id="communityForm" class="glass management-form community-editor">
+              <div class="form-heading">
+                <div>
+                  <span class="eyebrow">COMMUNITY HUB</span>
+                  <h3>Homepage Content</h3>
+                </div>
+
+                <span id="communitySaveState" class="draft-state">No draft loaded</span>
+              </div>
+
+              <div class="community-admin-section">
+                <h4>Announcement Banner</h4>
+
+                <div class="form-grid">
+                  <label class="checkbox-label full-span">
+                    <input id="announcementEnabled" type="checkbox">
+                    Show announcement
+                  </label>
+
+                  <label>
+                    Title
+                    <input id="announcementTitle" placeholder="Important update">
+                  </label>
+
+                  <label>
+                    Style
+                    <select id="announcementType">
+                      <option value="info">Information</option>
+                      <option value="success">Success</option>
+                      <option value="warning">Warning</option>
+                    </select>
+                  </label>
+
+                  <label class="full-span">
+                    Message
+                    <textarea id="announcementText" rows="3"></textarea>
+                  </label>
+
+                  <label>
+                    Button text
+                    <input id="announcementButtonText" placeholder="Learn more">
+                  </label>
+
+                  <label>
+                    Button URL
+                    <input id="announcementButtonUrl" type="url" placeholder="https://...">
+                  </label>
+
+                  <label class="full-span">
+                    Expiry date and time
+                    <input id="announcementExpiry" type="datetime-local">
+                  </label>
+                </div>
+              </div>
+
+              <div class="community-admin-section">
+                <h4>Weekly Spotlights</h4>
+
+                <div class="form-grid">
+                  <label>
+                    League of the Week
+                    <select id="leagueOfWeekSelect">
+                      <option value="">None</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    Race of the Week
+                    <select id="raceOfWeekSelect">
+                      <option value="">None</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+
+              <div class="community-admin-section">
+                <h4>Featured Livestream</h4>
+
+                <div class="form-grid">
+                  <label class="checkbox-label full-span">
+                    <input id="streamEnabled" type="checkbox">
+                    Show featured stream
+                  </label>
+
+                  <label class="full-span">
+                    Stream title
+                    <input id="streamTitle" placeholder="FN Leagues Live">
+                  </label>
+
+                  <label class="full-span">
+                    Stream URL
+                    <input id="streamUrl" type="url" placeholder="YouTube, Twitch or Kick URL">
+                  </label>
+
+                  <label class="full-span">
+                    Description
+                    <textarea id="streamDescription" rows="3"></textarea>
+                  </label>
+                </div>
+              </div>
+
+              <div class="community-admin-section">
+                <h4>Trending & Recent Leagues</h4>
+
+                <label class="full-span">
+                  Trending leagues
+                  <div id="trendingLeagueSelector" class="trending-selector"></div>
+                </label>
+
+                <div class="form-grid">
+                  <label class="checkbox-label">
+                    <input id="showRecentlyAdded" type="checkbox" checked>
+                    Show recently added leagues
+                  </label>
+
+                  <label>
+                    Number shown
+                    <input id="recentlyAddedLimit" type="number" min="1" max="12" value="6">
+                  </label>
+                </div>
+              </div>
+
+              <div class="community-publish-actions">
+                <button id="saveCommunityDraft" type="button" class="button secondary">
+                  Save Draft
+                </button>
+
+                <button id="publishCommunity" type="button" class="button primary">
+                  Publish Changes
+                </button>
+              </div>
+
+              <p id="communityMessage" class="form-message"></p>
+            </form>
+
+            <aside class="glass community-preview-panel">
+              <span class="eyebrow">LIVE PREVIEW</span>
+              <h3>Draft Summary</h3>
+              <div id="communityDraftPreview"></div>
+            </aside>
           </div>
         </section>
 

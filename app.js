@@ -8,6 +8,7 @@ const DateTime = luxon.DateTime;
 let leagues = [];
 let races = [];
 let rankings = [];
+let communitySettings = {};
 let scheduleSearchQuery = "";
 let selectedScheduleLeague = "all";
 
@@ -17,7 +18,7 @@ async function initializeHomepage() {
   try {
     validateConfiguration();
 
-    const [leagueResult, raceResult, rankingResult] = await Promise.all([
+    const [leagueResult, raceResult, rankingResult, communityResult] = await Promise.all([
       supabaseClient
         .from("leagues")
         .select("*")
@@ -32,18 +33,26 @@ async function initializeHomepage() {
       supabaseClient
         .from("league_rankings")
         .select("*, leagues(name, abbreviation, logo_url, banner_url)")
-        .order("position", { ascending: true })
+        .order("position", { ascending: true }),
+
+      supabaseClient
+        .from("community_settings")
+        .select("published")
+        .eq("id", 1)
+        .maybeSingle()
     ]);
 
     throwIfError(leagueResult.error);
     throwIfError(raceResult.error);
     throwIfError(rankingResult.error);
+    throwIfError(communityResult.error);
 
     leagues = leagueResult.data || [];
     races = (raceResult.data || []).filter(
       (race) => race.is_archived !== true
     );
     rankings = rankingResult.data || [];
+    communitySettings = communityResult.data?.published || {};
 
     renderHomepage();
     setupInteractions();
@@ -60,6 +69,7 @@ async function initializeHomepage() {
 }
 
 function renderHomepage() {
+  renderCommunityHub();
   renderStats();
   renderHeroSpotlight();
   renderNextRaceFeature();
@@ -85,6 +95,340 @@ function validateConfiguration() {
 
 function throwIfError(error) {
   if (error) throw error;
+}
+
+
+function renderCommunityHub() {
+  renderAnnouncement();
+  renderWeeklySpotlights();
+  renderFeaturedStream();
+  renderTrendingLeagues();
+  renderRecentlyAdded();
+}
+
+function renderAnnouncement() {
+  const container = document.getElementById("announcementBanner");
+  const announcement = communitySettings.announcement || {};
+
+  const expired =
+    announcement.expires_at &&
+    new Date(announcement.expires_at) < new Date();
+
+  if (!announcement.enabled || !announcement.text || expired) {
+    container.classList.add("hidden");
+    container.innerHTML = "";
+    return;
+  }
+
+  const type = ["info", "success", "warning"].includes(announcement.type)
+    ? announcement.type
+    : "info";
+
+  container.className = `community-announcement announcement-${type}`;
+
+  container.innerHTML = `
+    <div class="announcement-inner">
+      <div>
+        <strong>${escapeHtml(announcement.title || "FN Leagues Announcement")}</strong>
+        <span>${escapeHtml(announcement.text)}</span>
+      </div>
+
+      <div class="announcement-actions">
+        ${
+          announcement.button_url && announcement.button_text
+            ? `
+              <a
+                class="button secondary"
+                href="${safeUrl(announcement.button_url)}"
+                target="_blank"
+                rel="noopener"
+              >
+                ${escapeHtml(announcement.button_text)}
+              </a>
+            `
+            : ""
+        }
+
+        <button
+          class="announcement-close"
+          type="button"
+          aria-label="Dismiss announcement"
+          onclick="this.closest('.community-announcement').classList.add('hidden')"
+        >
+          ×
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function renderWeeklySpotlights() {
+  const section = document.getElementById("communitySpotlights");
+  const league = leagues.find(
+    (item) => String(item.id) === String(communitySettings.league_of_week_id)
+  );
+  const race = races.find(
+    (item) => String(item.id) === String(communitySettings.race_of_week_id)
+  );
+
+  if (!league && !race) {
+    section.classList.add("hidden");
+    return;
+  }
+
+  section.classList.remove("hidden");
+
+  const leagueCard = document.getElementById("leagueOfWeekCard");
+  const raceCard = document.getElementById("raceOfWeekCard");
+
+  if (league) {
+    const ranking = rankings.find((item) => item.league_id === league.id);
+
+    leagueCard.classList.remove("hidden");
+    leagueCard.style.setProperty(
+      "--community-banner",
+      league.banner_url ? `url('${league.banner_url}')` : "none"
+    );
+
+    leagueCard.innerHTML = `
+      <div class="community-feature-overlay"></div>
+
+      <div class="community-feature-content">
+        <span class="community-feature-label">LEAGUE OF THE WEEK</span>
+
+        <div class="community-feature-identity">
+          <div class="community-feature-logo">
+            ${
+              league.logo_url
+                ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name)} logo">`
+                : `<span>${escapeHtml(getLeagueInitials(league))}</span>`
+            }
+          </div>
+
+          <div>
+            <span class="eyebrow">${escapeHtml(league.category || "RACING LEAGUE")}</span>
+            <h3>${escapeHtml(league.name)}</h3>
+          </div>
+        </div>
+
+        <p>${escapeHtml(league.description || "Fortnite racing league community.")}</p>
+
+        <div class="community-feature-meta">
+          ${
+            ranking
+              ? `<span class="tier-badge tier-${String(ranking.tier || "C").toLowerCase()}">${escapeHtml(String(ranking.tier || "C"))} Tier</span>`
+              : ""
+          }
+          ${ranking ? `<span>#${ranking.position} Ranked</span>` : ""}
+        </div>
+
+        <div class="card-actions">
+          <a class="button primary" href="league.html?id=${league.id}">View League</a>
+          ${
+            league.discord_url
+              ? `<a class="button secondary" href="${safeUrl(league.discord_url)}" target="_blank" rel="noopener">Discord</a>`
+              : ""
+          }
+        </div>
+      </div>
+    `;
+  } else {
+    leagueCard.classList.add("hidden");
+  }
+
+  if (race) {
+    const linkedLeague = leagues.find((item) => item.id === race.league_id);
+    const local = getRaceDateTime(race).toLocal();
+
+    raceCard.classList.remove("hidden");
+    raceCard.style.setProperty(
+      "--community-banner",
+      linkedLeague?.banner_url ? `url('${linkedLeague.banner_url}')` : "none"
+    );
+
+    raceCard.innerHTML = `
+      <div class="community-feature-overlay"></div>
+
+      <div class="community-feature-content">
+        <span class="community-feature-label">RACE OF THE WEEK</span>
+
+        <span class="eyebrow">${escapeHtml(race.league_name)}</span>
+        <h3>${escapeHtml(race.event_name || "Race Event")}</h3>
+
+        <p>
+          ${race.circuit ? `${escapeHtml(race.circuit)} · ` : ""}
+          ${local.toFormat("cccc, d LLL · h:mm a")}
+        </p>
+
+        <div
+          class="community-race-countdown"
+          data-race-countdown
+          data-race-date="${escapeHtml(race.race_date)}"
+          data-race-time="${escapeHtml(String(race.race_time || "00:00").slice(0, 5))}"
+          data-race-zone="${escapeHtml(race.timezone || "UTC")}"
+        >
+          <span><strong data-days>0</strong>d</span>
+          <span><strong data-hours>0</strong>h</span>
+          <span><strong data-minutes>0</strong>m</span>
+          <span><strong data-seconds>0</strong>s</span>
+        </div>
+
+        <div class="card-actions">
+          ${
+            race.stream_url
+              ? `<a class="button primary" href="${safeUrl(race.stream_url)}" target="_blank" rel="noopener">Watch</a>`
+              : race.event_url
+                ? `<a class="button primary" href="${safeUrl(race.event_url)}" target="_blank" rel="noopener">Open Event</a>`
+                : ""
+          }
+
+          ${
+            linkedLeague
+              ? `<a class="button secondary" href="league.html?id=${linkedLeague.id}">League Page</a>`
+              : ""
+          }
+        </div>
+      </div>
+    `;
+  } else {
+    raceCard.classList.add("hidden");
+  }
+}
+
+function renderFeaturedStream() {
+  const section = document.getElementById("featuredStreamSection");
+  const container = document.getElementById("featuredStreamCard");
+  const stream = communitySettings.featured_stream || {};
+
+  if (!stream.enabled || !stream.url) {
+    section.classList.add("hidden");
+    return;
+  }
+
+  section.classList.remove("hidden");
+  const embed = getYouTubeEmbed(stream.url);
+
+  container.innerHTML = `
+    <div class="stream-player">
+      ${
+        embed
+          ? `<iframe src="${embed}" title="${escapeHtml(stream.title || "Featured livestream")}" allowfullscreen loading="lazy"></iframe>`
+          : `
+            <div class="stream-placeholder">
+              <span class="live-pill"><span class="live-dot"></span>FEATURED</span>
+              <h3>${escapeHtml(stream.title || "Featured Community Stream")}</h3>
+              <p>${escapeHtml(stream.description || "Open the featured broadcast in a new tab.")}</p>
+              <a class="button primary" href="${safeUrl(stream.url)}" target="_blank" rel="noopener">Open Stream</a>
+            </div>
+          `
+      }
+    </div>
+
+    <div class="stream-copy">
+      <span class="eyebrow">FEATURED LIVESTREAM</span>
+      <h3>${escapeHtml(stream.title || "Community Broadcast")}</h3>
+      <p>${escapeHtml(stream.description || "Watch the latest featured FN Leagues broadcast.")}</p>
+
+      <a class="button secondary" href="${safeUrl(stream.url)}" target="_blank" rel="noopener">
+        Watch Externally
+      </a>
+    </div>
+  `;
+}
+
+function renderTrendingLeagues() {
+  const section = document.getElementById("trending");
+  const ids = Array.isArray(communitySettings.trending_league_ids)
+    ? communitySettings.trending_league_ids
+    : [];
+
+  const selected = ids
+    .map((id) => leagues.find((league) => String(league.id) === String(id)))
+    .filter(Boolean);
+
+  if (!selected.length) {
+    section.classList.add("hidden");
+    return;
+  }
+
+  section.classList.remove("hidden");
+
+  document.getElementById("trendingLeagueGrid").innerHTML = selected
+    .slice(0, 6)
+    .map((league, index) => communityLeagueCard(league, index, "TRENDING"))
+    .join("");
+}
+
+function renderRecentlyAdded() {
+  const section = document.getElementById("recent");
+
+  if (communitySettings.show_recently_added === false || !leagues.length) {
+    section.classList.add("hidden");
+    return;
+  }
+
+  section.classList.remove("hidden");
+
+  const recent = [...leagues]
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, Number(communitySettings.recently_added_limit || 6));
+
+  document.getElementById("recentLeagueGrid").innerHTML = recent
+    .map((league, index) => communityLeagueCard(league, index, "NEW"))
+    .join("");
+}
+
+function communityLeagueCard(league, index, label) {
+  return `
+    <a
+      class="community-mini-card reveal-card"
+      href="league.html?id=${league.id}"
+      style="--community-delay:${index * 60}ms"
+    >
+      <div class="community-mini-logo">
+        ${
+          league.logo_url
+            ? `<img src="${escapeHtml(league.logo_url)}" alt="${escapeHtml(league.name)} logo">`
+            : `<span>${escapeHtml(getLeagueInitials(league))}</span>`
+        }
+      </div>
+
+      <div>
+        <span>${label}</span>
+        <strong>${escapeHtml(league.name)}</strong>
+        <small>${escapeHtml(league.category || "Racing League")}</small>
+      </div>
+    </a>
+  `;
+}
+
+function getYouTubeEmbed(url) {
+  try {
+    const parsed = new URL(url);
+    let id = "";
+
+    if (parsed.hostname.includes("youtu.be")) {
+      id = parsed.pathname.slice(1);
+    } else if (parsed.hostname.includes("youtube.com")) {
+      id = parsed.searchParams.get("v") || "";
+
+      if (!id && parsed.pathname.includes("/embed/")) {
+        id = parsed.pathname.split("/embed/")[1];
+      }
+
+      if (!id && parsed.pathname.includes("/live/")) {
+        id = parsed.pathname.split("/live/")[1];
+      }
+    }
+
+    id = id.split("?")[0].split("&")[0];
+
+    return id
+      ? `https://www.youtube.com/embed/${encodeURIComponent(id)}`
+      : "";
+  } catch {
+    return "";
+  }
 }
 
 function renderStats() {

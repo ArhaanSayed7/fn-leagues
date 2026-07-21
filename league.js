@@ -38,7 +38,7 @@ async function loadLeague() {
 
   const league = leagueResult.data;
   const ranking = rankingResult.data;
-  const races = racesResult.data || [];
+  const races = (racesResult.data || []).filter((race) => race.is_archived !== true);
   const now = DateTime.now();
 
   const liveRaces = races.filter((race) => race.is_live === true);
