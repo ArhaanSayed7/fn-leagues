@@ -96,6 +96,7 @@ function renderHomepage() {
     renderHeroSpotlight();
     renderNextRaceFeature();
     renderLiveRaces();
+    initializeCountdowns();
   }, 10000);
 }
 
@@ -592,6 +593,7 @@ function renderNextRaceFeature() {
       </div>
     `;
     return;
+    initializeCountdowns();
   }
 
   const league = leagues.find((item) => item.id === nextRace.league_id);

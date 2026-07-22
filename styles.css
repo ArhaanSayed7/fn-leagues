@@ -6819,3 +6819,215 @@ button.secondary:hover,
     border-radius: 16px;
   }
 }
+/* =========================================================
+   FDH — FINAL DARK CONTROL / BUTTON PATCH
+   ========================================================= */
+
+:root {
+  --fdh-control-bg: #111114;
+  --fdh-control-hover: #18181d;
+  --fdh-control-border: rgba(255, 255, 255, 0.1);
+  --fdh-control-text: #f5f5f7;
+  --fdh-control-muted: #8d8d97;
+}
+
+/* ---------------------------------------------------------
+   ADMIN FORM CONTROLS
+   --------------------------------------------------------- */
+
+body[class*="admin"] input:not([type="checkbox"]):not([type="radio"]),
+body[class*="admin"] select,
+body[class*="admin"] textarea,
+.admin-shell input:not([type="checkbox"]):not([type="radio"]),
+.admin-shell select,
+.admin-shell textarea,
+.admin-panel input:not([type="checkbox"]):not([type="radio"]),
+.admin-panel select,
+.admin-panel textarea {
+  color: var(--fdh-control-text) !important;
+  background: var(--fdh-control-bg) !important;
+  background-image: none !important;
+  border: 1px solid var(--fdh-control-border) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 8px 24px rgba(0, 0, 0, 0.18) !important;
+}
+
+body[class*="admin"] input::placeholder,
+body[class*="admin"] textarea::placeholder,
+.admin-shell input::placeholder,
+.admin-shell textarea::placeholder {
+  color: var(--fdh-control-muted) !important;
+  opacity: 1;
+}
+
+body[class*="admin"] input:focus,
+body[class*="admin"] select:focus,
+body[class*="admin"] textarea:focus,
+.admin-shell input:focus,
+.admin-shell select:focus,
+.admin-shell textarea:focus {
+  outline: none !important;
+  border-color: rgba(255, 41, 51, 0.55) !important;
+  box-shadow:
+    0 0 0 3px rgba(255, 41, 51, 0.1),
+    0 10px 28px rgba(0, 0, 0, 0.22) !important;
+}
+
+/* Search/filter containers that currently appear grey */
+
+body[class*="admin"] .search-panel,
+body[class*="admin"] .search-controls,
+body[class*="admin"] .filter-controls,
+body[class*="admin"] .admin-search-wrap,
+body[class*="admin"] .admin-filter-wrap,
+.admin-shell .search-panel,
+.admin-shell .search-controls,
+.admin-shell .filter-controls,
+.admin-shell .admin-search-wrap,
+.admin-shell .admin-filter-wrap {
+  color: var(--fdh-control-text) !important;
+  background: rgba(15, 15, 18, 0.98) !important;
+  background-image: none !important;
+  border: 1px solid var(--fdh-control-border) !important;
+  box-shadow: none !important;
+}
+
+/* ---------------------------------------------------------
+   ADMIN SECONDARY BUTTONS
+   --------------------------------------------------------- */
+
+body[class*="admin"] button:not(.primary):not(.danger):not(.active),
+body[class*="admin"] .button.secondary,
+.admin-shell button:not(.primary):not(.danger):not(.active),
+.admin-shell .button.secondary {
+  color: var(--fdh-control-text) !important;
+  background: var(--fdh-control-bg) !important;
+  background-image: none !important;
+  border: 1px solid var(--fdh-control-border) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 7px 18px rgba(0, 0, 0, 0.16) !important;
+}
+
+body[class*="admin"] button:not(.primary):not(.danger):hover,
+body[class*="admin"] .button.secondary:hover,
+.admin-shell button:not(.primary):not(.danger):hover,
+.admin-shell .button.secondary:hover {
+  color: #fff !important;
+  background: var(--fdh-control-hover) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  transform: translateY(-1px);
+}
+
+/* Keep destructive buttons dark red */
+
+body[class*="admin"] .danger,
+body[class*="admin"] .delete-button,
+body[class*="admin"] [class*="delete"],
+.admin-shell .danger,
+.admin-shell .delete-button,
+.admin-shell [class*="delete"] {
+  color: #e0617c !important;
+  background: rgba(103, 20, 42, 0.18) !important;
+  border-color: rgba(224, 64, 103, 0.34) !important;
+}
+
+/* ---------------------------------------------------------
+   TRENDING LEAGUE SELECTION CARDS
+   --------------------------------------------------------- */
+
+body[class*="admin"] .trending-option,
+body[class*="admin"] .trending-league-option,
+body[class*="admin"] .league-check-option,
+body[class*="admin"] .community-league-option,
+.admin-shell .trending-option,
+.admin-shell .trending-league-option,
+.admin-shell .league-check-option,
+.admin-shell .community-league-option {
+  color: var(--fdh-control-text) !important;
+  background: var(--fdh-control-bg) !important;
+  background-image: none !important;
+  border: 1px solid var(--fdh-control-border) !important;
+  box-shadow: none !important;
+}
+
+body[class*="admin"] .trending-option:hover,
+body[class*="admin"] .trending-league-option:hover,
+body[class*="admin"] .league-check-option:hover,
+body[class*="admin"] .community-league-option:hover,
+.admin-shell .trending-option:hover,
+.admin-shell .trending-league-option:hover,
+.admin-shell .league-check-option:hover,
+.admin-shell .community-league-option:hover {
+  background: var(--fdh-control-hover) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Checkboxes */
+
+body[class*="admin"] input[type="checkbox"],
+.admin-shell input[type="checkbox"] {
+  accent-color: #f52332;
+}
+
+/* ---------------------------------------------------------
+   DYNAMIC HERO PILLS
+   --------------------------------------------------------- */
+
+.spotlight-card .spotlight-label,
+.spotlight-card .next-race-status {
+  color: #f1f1f4 !important;
+  background: rgba(14, 14, 18, 0.82) !important;
+  background-image: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 10px 25px rgba(0, 0, 0, 0.2) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.spotlight-card .next-race-status.soon {
+  color: #ffc15a !important;
+  background: rgba(95, 58, 7, 0.32) !important;
+  border-color: rgba(255, 184, 61, 0.28) !important;
+}
+
+.spotlight-card-live .spotlight-label,
+.spotlight-card .next-race-status.live {
+  color: #ff505a !important;
+  background: rgba(99, 11, 20, 0.34) !important;
+  border-color: rgba(255, 58, 70, 0.32) !important;
+}
+
+/* ---------------------------------------------------------
+   LEAGUE SOCIAL BUTTONS — YouTube, Twitch, etc.
+   --------------------------------------------------------- */
+
+.league-socials a,
+.league-social-links a,
+.league-showcase-socials a,
+.league-showcase-actions .button.secondary,
+.social-button,
+.platform-link {
+  color: #f5f5f7 !important;
+  background: var(--fdh-control-bg) !important;
+  background-image: none !important;
+  border: 1px solid var(--fdh-control-border) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 8px 22px rgba(0, 0, 0, 0.18) !important;
+}
+
+.league-socials a:hover,
+.league-social-links a:hover,
+.league-showcase-socials a:hover,
+.league-showcase-actions .button.secondary:hover,
+.social-button:hover,
+.platform-link:hover {
+  color: #fff !important;
+  background: var(--fdh-control-hover) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  transform: translateY(-1px);
+}
