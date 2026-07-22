@@ -7664,3 +7664,119 @@ body.rankings-page-body
   .ranking-league-cell {
   background: #6a6a78 !important;
 }
+/* Compact full schedule */
+
+.homepage-schedule-list.compact-schedule {
+  display: grid;
+  gap: 1rem;
+}
+
+.schedule-day-group {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(14, 14, 18, 0.92);
+}
+
+.schedule-day-heading {
+  padding: 0.9rem 1rem;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.035);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.schedule-day-races {
+  display: grid;
+}
+
+.compact-schedule-row {
+  display: grid;
+  grid-template-columns: 90px 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 72px;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.compact-schedule-row:last-child {
+  border-bottom: 0;
+}
+
+.compact-schedule-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.compact-schedule-time {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.compact-schedule-logo {
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.compact-schedule-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.compact-schedule-logo span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.75rem;
+  font-weight: 850;
+}
+
+.compact-schedule-main {
+  min-width: 0;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.compact-schedule-main strong {
+  overflow: hidden;
+  color: #fff;
+  font-size: 0.95rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compact-schedule-main span {
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 0.8rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compact-schedule-button {
+  min-width: 76px;
+  padding: 0.65rem 0.9rem;
+}
+
+@media (max-width: 700px) {
+  .compact-schedule-row {
+    grid-template-columns: 72px 40px minmax(0, 1fr);
+  }
+
+  .compact-schedule-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
