@@ -7031,3 +7031,636 @@ body[class*="admin"] input[type="checkbox"],
   border-color: rgba(255, 255, 255, 0.18) !important;
   transform: translateY(-1px);
 }
+/* =========================================================
+   FDH v13.6 — FULL RANKINGS VISUAL REDESIGN
+   ========================================================= */
+
+.rankings-page-body .ranking-wrap,
+.ranking-wrap {
+  background: linear-gradient(
+    180deg,
+    rgba(18, 18, 22, 0.98),
+    rgba(10, 10, 13, 0.98)
+  ) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035) !important;
+}
+
+/* Brighter, more separated rows */
+
+.ranking-row {
+  --rank-accent: rgba(255, 41, 51, 0.62);
+
+  position: relative;
+  filter: brightness(1.08);
+  transition:
+    transform 0.22s ease,
+    filter 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.ranking-row td {
+  background-color: rgba(27, 27, 33, 0.98) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.11) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.11) !important;
+}
+
+.ranking-row td:first-child {
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.ranking-row td:last-child {
+  border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.ranking-row:hover {
+  z-index: 2;
+  filter: brightness(1.18);
+  transform: translateY(-3px) scale(1.004);
+}
+
+.ranking-row:hover td {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 14px 34px rgba(0, 0, 0, 0.32);
+}
+
+/* League banner area */
+
+.ranking-league-cell {
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    rgba(41, 41, 49, 0.98),
+    rgba(32, 32, 40, 0.9)
+  ) !important;
+}
+
+.ranking-league-overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(20, 20, 25, 0.3),
+    rgba(20, 20, 25, 0.58)
+  ) !important;
+}
+
+.ranking-league-content {
+  position: relative;
+  z-index: 2;
+  gap: 1rem !important;
+  min-height: 82px;
+}
+
+/* Larger, brighter logos */
+
+.ranking-league-logo {
+  width: 58px !important;
+  height: 58px !important;
+  flex: 0 0 58px !important;
+  border-radius: 15px !important;
+  background: rgba(5, 5, 8, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.ranking-league-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ranking-row:hover .ranking-league-logo {
+  transform: scale(1.07);
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.4),
+    0 0 22px color-mix(in srgb, var(--rank-accent) 28%, transparent);
+}
+
+/* Stronger typography */
+
+.ranking-league-content strong {
+  color: #ffffff !important;
+  font-size: 1.02rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.015em;
+}
+
+.ranking-league-content small {
+  color: rgba(255, 255, 255, 0.58) !important;
+  font-weight: 600;
+  margin-top: 0.18rem;
+}
+
+/* Rank number badge */
+
+.ranking-position-cell {
+  width: 88px;
+  min-width: 88px;
+  text-align: center;
+  background: linear-gradient(
+    180deg,
+    rgba(31, 31, 37, 0.98),
+    rgba(21, 21, 26, 0.98)
+  ) !important;
+}
+
+.ranking-position-cell strong {
+  display: inline-grid;
+  min-width: 52px;
+  min-height: 52px;
+  place-items: center;
+  border-radius: 15px;
+  color: #ffffff !important;
+  font-size: 1.15rem !important;
+  font-weight: 900;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 42, 52, 0.95),
+    rgba(167, 10, 19, 0.95)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 10px 24px rgba(219, 22, 32, 0.23),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.ranking-row:hover .ranking-position-cell strong {
+  transform: scale(1.07);
+}
+
+/* Top three */
+
+.ranking-row:nth-child(1) {
+  --rank-accent: #f5c451;
+}
+
+.ranking-row:nth-child(1) .ranking-position-cell strong {
+  color: #1e1602 !important;
+  background: linear-gradient(145deg, #ffe28a, #c89014);
+  box-shadow:
+    0 12px 30px rgba(240, 186, 54, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.ranking-row:nth-child(2) {
+  --rank-accent: #c9d1dd;
+}
+
+.ranking-row:nth-child(2) .ranking-position-cell strong {
+  color: #15171b !important;
+  background: linear-gradient(145deg, #edf1f6, #8f99a8);
+  box-shadow:
+    0 12px 28px rgba(183, 193, 207, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48);
+}
+
+.ranking-row:nth-child(3) {
+  --rank-accent: #c9804b;
+}
+
+.ranking-row:nth-child(3) .ranking-position-cell strong {
+  color: #1e0d04 !important;
+  background: linear-gradient(145deg, #e7a06c, #8f4824);
+  box-shadow:
+    0 12px 28px rgba(181, 95, 45, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+/* Movement */
+
+.ranking-movement-cell {
+  width: 115px;
+  min-width: 115px;
+  text-align: center;
+  background: rgba(20, 20, 25, 0.98) !important;
+}
+
+.ranking-movement {
+  min-width: 62px;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-weight: 800;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.movement-up {
+  color: #79e2a6 !important;
+  background: rgba(20, 106, 61, 0.23) !important;
+  border-color: rgba(76, 210, 132, 0.28) !important;
+}
+
+.movement-down {
+  color: #ff7a82 !important;
+  background: rgba(130, 23, 34, 0.24) !important;
+  border-color: rgba(255, 74, 86, 0.28) !important;
+}
+
+.movement-same,
+.movement-new {
+  color: rgba(255, 255, 255, 0.68) !important;
+  background: rgba(255, 255, 255, 0.045) !important;
+}
+
+/* Tier area */
+
+.ranking-tier-cell {
+  width: 128px;
+  min-width: 128px;
+  text-align: center;
+  background: linear-gradient(
+    180deg,
+    rgba(28, 16, 19, 0.98),
+    rgba(21, 12, 15, 0.98)
+  ) !important;
+}
+
+.ranking-tier-cell .tier-badge {
+  min-width: 82px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 850;
+  letter-spacing: 0.015em;
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+/* Tier-based row highlights */
+
+.ranking-row.tier-s td {
+  border-color: rgba(255, 45, 56, 0.22) !important;
+}
+
+.ranking-row.tier-a td {
+  border-color: rgba(166, 92, 255, 0.19) !important;
+}
+
+.ranking-row.tier-b td {
+  border-color: rgba(58, 142, 255, 0.17) !important;
+}
+
+.ranking-row.tier-c td {
+  border-color: rgba(64, 200, 127, 0.16) !important;
+}
+
+/* Mobile */
+
+@media (max-width: 760px) {
+  .ranking-position-cell {
+    width: 68px;
+    min-width: 68px;
+  }
+
+  .ranking-position-cell strong {
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 1rem !important;
+    border-radius: 13px;
+  }
+
+  .ranking-league-logo {
+    width: 48px !important;
+    height: 48px !important;
+    flex-basis: 48px !important;
+  }
+
+  .ranking-movement-cell {
+    width: 88px;
+    min-width: 88px;
+  }
+
+  .ranking-tier-cell {
+    width: 100px;
+    min-width: 100px;
+  }
+}
+/* =========================================================
+   FDH — BRIGHTER FULL RANKINGS + NEW TIER GRADIENTS
+   Keep this at the very bottom of styles.css
+   ========================================================= */
+
+/* Brighter overall ranking container */
+
+.rankings-page-body .ranking-wrap,
+.rankings-page .ranking-wrap,
+.ranking-wrap {
+  background: linear-gradient(
+    180deg,
+    rgba(25, 25, 31, 0.98),
+    rgba(16, 16, 21, 0.98)
+  ) !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.13) !important;
+
+  box-shadow:
+    0 26px 70px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Force the rows to be visibly lighter */
+
+.ranking-row td {
+  background: linear-gradient(
+    180deg,
+    rgba(42, 42, 50, 0.98),
+    rgba(31, 31, 38, 0.98)
+  ) !important;
+
+  border-top-color: rgba(255, 255, 255, 0.13) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.13) !important;
+}
+
+/* League area */
+
+.ranking-row .ranking-league-cell {
+  background: linear-gradient(
+    90deg,
+    rgba(59, 59, 69, 0.98),
+    rgba(43, 43, 53, 0.96)
+  ) !important;
+}
+
+/* Reduce the dark banner overlay */
+
+.ranking-row .ranking-league-overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(0, 0, 0, 0.04) 40%,
+    rgba(0, 0, 0, 0.08) 100%
+  ) !important;
+}
+
+/* Position, movement and tier columns */
+
+.ranking-row .ranking-position-cell {
+  background: linear-gradient(
+    180deg,
+    rgba(46, 46, 55, 0.99),
+    rgba(33, 33, 41, 0.99)
+  ) !important;
+}
+
+.ranking-row .ranking-movement-cell {
+  background: linear-gradient(
+    180deg,
+    rgba(38, 38, 46, 0.99),
+    rgba(28, 28, 35, 0.99)
+  ) !important;
+}
+
+.ranking-row .ranking-tier-cell {
+  background: linear-gradient(
+    180deg,
+    rgba(41, 41, 49, 0.99),
+    rgba(29, 29, 36, 0.99)
+  ) !important;
+}
+
+/* Stronger text contrast */
+
+.ranking-league-content strong {
+  color: #ffffff !important;
+}
+
+.ranking-league-content small {
+  color: rgba(255, 255, 255, 0.67) !important;
+}
+
+/* Brighter hover */
+
+.ranking-row:hover td {
+  filter: brightness(1.14);
+}
+
+.ranking-row:hover .ranking-league-cell {
+  background: linear-gradient(
+    90deg,
+    rgba(72, 72, 84, 0.99),
+    rgba(51, 51, 63, 0.98)
+  ) !important;
+}
+
+/* =========================================================
+   NEW TIER BADGE COLORS
+   ========================================================= */
+
+.tier-badge {
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+/* S Tier — Gold / Yellow */
+
+.tier-badge.tier-s,
+.tier-s .tier-badge {
+  color: #241900 !important;
+
+  background: linear-gradient(
+    135deg,
+    #fff19a 0%,
+    #f5c542 48%,
+    #c99210 100%
+  ) !important;
+
+  border-color: rgba(255, 220, 91, 0.6) !important;
+
+  box-shadow:
+    0 10px 24px rgba(230, 177, 34, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+}
+
+/* A Tier — Purple / Pink */
+
+.tier-badge.tier-a,
+.tier-a .tier-badge {
+  color: #fff !important;
+
+  background: linear-gradient(
+    135deg,
+    #8d5cff 0%,
+    #c44cff 48%,
+    #ff5ca8 100%
+  ) !important;
+
+  border-color: rgba(221, 102, 255, 0.5) !important;
+
+  box-shadow:
+    0 10px 24px rgba(177, 66, 234, 0.27),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+/* B Tier — Blue / Teal */
+
+.tier-badge.tier-b,
+.tier-b .tier-badge {
+  color: #fff !important;
+
+  background: linear-gradient(
+    135deg,
+    #3478ff 0%,
+    #1aa7e8 48%,
+    #18d0bd 100%
+  ) !important;
+
+  border-color: rgba(59, 190, 225, 0.5) !important;
+
+  box-shadow:
+    0 10px 24px rgba(31, 142, 212, 0.27),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+/* C Tier — Green / Yellow */
+
+.tier-badge.tier-c,
+.tier-c .tier-badge {
+  color: #132000 !important;
+
+  background: linear-gradient(
+    135deg,
+    #38c96b 0%,
+    #8fdb4d 48%,
+    #e5dc42 100%
+  ) !important;
+
+  border-color: rgba(172, 218, 74, 0.5) !important;
+
+  box-shadow:
+    0 10px 24px rgba(104, 183, 73, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34) !important;
+}
+/* Final brightness fix for full rankings league cells */
+
+.ranking-row .ranking-league-cell {
+  background: linear-gradient(
+    90deg,
+    rgba(70, 70, 82, 0.98),
+    rgba(50, 50, 62, 0.98)
+  ) !important;
+}
+
+.ranking-row .ranking-league-overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.03)
+  ) !important;
+  opacity: 1 !important;
+}
+
+.ranking-row .ranking-league-content {
+  position: relative;
+  z-index: 2;
+}
+
+.ranking-row:hover .ranking-league-cell {
+  background: linear-gradient(
+    90deg,
+    rgba(82, 82, 96, 0.99),
+    rgba(59, 59, 72, 0.99)
+  ) !important;
+}
+/* =========================================================
+   FINAL FULL-RANKINGS BRIGHTNESS FIX
+   ========================================================= */
+
+#fullRankingBody .ranking-row .ranking-league-cell {
+  position: relative !important;
+  isolation: isolate !important;
+
+  background-color: #454550 !important;
+  background-image:
+    linear-gradient(90deg, rgba(82, 82, 94, 0.88), rgba(57, 57, 69, 0.92)),
+    var(--ranking-banner) !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Disable older dark image layers */
+
+#fullRankingBody .ranking-row .ranking-league-cell::before,
+#fullRankingBody .ranking-row .ranking-league-cell::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Keep only a very light overlay */
+
+#fullRankingBody .ranking-row .ranking-league-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+
+  opacity: 1 !important;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.025)
+  ) !important;
+}
+
+/* Keep the logo and text above the overlay */
+
+#fullRankingBody .ranking-row .ranking-league-content {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Brighter hover */
+
+#fullRankingBody .ranking-row:hover .ranking-league-cell {
+  background-color: #555563 !important;
+  background-image:
+    linear-gradient(90deg, rgba(98, 98, 112, 0.83), rgba(67, 67, 81, 0.88)),
+    var(--ranking-banner) !important;
+}
+/* FINAL full rankings brightness override */
+
+body.rankings-page-body #fullRankingBody .ranking-row .ranking-league-cell {
+  background: linear-gradient(90deg, #686874 0%, #50505d 100%) !important;
+  background-image: none !important;
+}
+
+body.rankings-page-body #fullRankingBody .ranking-row .ranking-league-overlay {
+  display: none !important;
+}
+
+body.rankings-page-body
+  #fullRankingBody
+  .ranking-row
+  .ranking-league-cell::before,
+body.rankings-page-body
+  #fullRankingBody
+  .ranking-row
+  .ranking-league-cell::after {
+  display: none !important;
+  content: none !important;
+}
+
+body.rankings-page-body
+  #fullRankingBody
+  .ranking-row:hover
+  .ranking-league-cell {
+  background: #6a6a78 !important;
+}
