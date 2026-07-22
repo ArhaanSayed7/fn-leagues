@@ -93,6 +93,7 @@ function renderHomepage() {
 
   setInterval(() => {
     renderStats();
+    renderHeroSpotlight();
     renderNextRaceFeature();
     renderLiveRaces();
   }, 10000);
@@ -461,9 +462,27 @@ function renderStats() {
 
 function renderHeroSpotlight() {
   const featured = leagues.filter((league) => league.featured === true);
+  const now = DateTime.now();
+
+  const liveRace = races.find((race) => isRaceLiveNow(race, now));
+
+  const nextRace = races
+    .filter((race) => !isRaceLiveNow(race, now) && getRaceDateTime(race) >= now)
+    .sort(
+      (a, b) => getRaceDateTime(a).toMillis() - getRaceDateTime(b).toMillis(),
+    )[0];
 
   const spotlight = featured[0] || leagues[0] || null;
   const container = document.getElementById("heroSpotlight");
+  if (liveRace) {
+    renderHeroLiveRace(container, liveRace);
+    return;
+  }
+
+  if (nextRace) {
+    renderHeroNextRace(container, nextRace);
+    return;
+  }
 
   if (!spotlight) {
     container.innerHTML = `
@@ -1528,6 +1547,169 @@ function isRaceLiveNow(race, now = DateTime.now()) {
   });
 
   return scheduledTime <= now && now < automaticLiveEnd;
+}
+function renderHeroLiveRace(container, race) {
+  const league = leagues.find((item) => item.id === race.league_id);
+
+  const liveLink =
+    race.stream_url ||
+    league?.youtube_url ||
+    league?.twitch_url ||
+    league?.website_url ||
+    league?.discord_url ||
+    "";
+
+  const bannerUrl = league?.banner_url || race.artwork_url || "";
+  const logoUrl = league?.logo_url || "";
+
+  container.innerHTML = `
+    <article
+      class="spotlight-card spotlight-card-live"
+      ${
+        bannerUrl
+          ? `style="--spotlight-banner:url('${escapeHtml(bannerUrl)}')"`
+          : ""
+      }
+    >
+      <div class="spotlight-shade"></div>
+
+      <div class="spotlight-topline">
+        <span class="spotlight-label live-hero-label">
+          <span class="live-dot"></span>
+          LIVE NOW
+        </span>
+      </div>
+
+      <div class="spotlight-race-content">
+        ${
+          logoUrl
+            ? `
+              <div class="spotlight-race-logo">
+                <img
+                  src="${escapeHtml(logoUrl)}"
+                  alt="${escapeHtml(league?.name || "League")} logo"
+                >
+              </div>
+            `
+            : ""
+        }
+
+        <div>
+          <span class="eyebrow">
+            ${escapeHtml(league?.name || race.league_name || "Live racing")}
+          </span>
+
+          <h2>${escapeHtml(race.event_name || "Live Race")}</h2>
+
+          <p>
+            ${escapeHtml(race.circuit || "Live racing event")}
+          </p>
+
+          <div class="spotlight-actions">
+            ${
+              liveLink
+                ? `
+                  <a
+                    class="button primary live-watch-button"
+                    href="${safeUrl(liveLink)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Watch Live
+                  </a>
+                `
+                : ""
+            }
+
+            ${
+              league
+                ? `
+                  <a
+                    class="button secondary"
+                    href="league.html?id=${league.id}"
+                  >
+                    League Page
+                  </a>
+                `
+                : ""
+            }
+          </div>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderHeroNextRace(container, race) {
+  const league = leagues.find((item) => item.id === race.league_id);
+  const countdown = getRaceCountdown(race);
+
+  const bannerUrl = league?.banner_url || race.artwork_url || "";
+  const logoUrl = league?.logo_url || "";
+
+  container.innerHTML = `
+    <article
+      class="spotlight-card spotlight-card-upcoming"
+      ${
+        bannerUrl
+          ? `style="--spotlight-banner:url('${escapeHtml(bannerUrl)}')"`
+          : ""
+      }
+    >
+      <div class="spotlight-shade"></div>
+
+      <div class="spotlight-topline">
+        <span class="spotlight-label">NEXT EVENT</span>
+
+        <span class="next-race-status ${countdown.state}">
+          ${escapeHtml(countdown.label)}
+        </span>
+      </div>
+
+      <div class="spotlight-race-content">
+        ${
+          logoUrl
+            ? `
+              <div class="spotlight-race-logo">
+                <img
+                  src="${escapeHtml(logoUrl)}"
+                  alt="${escapeHtml(league?.name || "League")} logo"
+                >
+              </div>
+            `
+            : ""
+        }
+
+        <div>
+          <span class="eyebrow">
+            ${escapeHtml(league?.name || race.league_name || "Upcoming race")}
+          </span>
+
+          <h2>${escapeHtml(race.event_name || "Upcoming Race")}</h2>
+
+          <p>
+            ${escapeHtml(race.circuit || "Race event")}
+            • ${escapeHtml(formatViewerDateTime(race))}
+          </p>
+
+          <div class="spotlight-actions">
+            ${
+              league
+                ? `
+                  <a
+                    class="button primary"
+                    href="league.html?id=${league.id}"
+                  >
+                    View League
+                  </a>
+                `
+                : ""
+            }
+          </div>
+        </div>
+      </div>
+    </article>
+  `;
 }
 function safeUrl(value) {
   try {

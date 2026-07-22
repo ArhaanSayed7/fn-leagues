@@ -6693,3 +6693,129 @@ button.secondary:hover,
     inset 0 0 0 1px rgba(255, 50, 50, 0.18),
     0 0 40px rgba(255, 50, 50, 0.12);
 }
+/* =========================================================
+   FDH v13.4 — DYNAMIC HOMEPAGE HERO
+   ========================================================= */
+
+.spotlight-card-live,
+.spotlight-card-upcoming {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.spotlight-card-live::before,
+.spotlight-card-upcoming::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(7, 7, 9, 0.96) 0%,
+      rgba(7, 7, 9, 0.72) 52%,
+      rgba(7, 7, 9, 0.24) 100%
+    ),
+    var(--spotlight-banner);
+  background-position: center;
+  background-size: cover;
+}
+
+.spotlight-card-live::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border: 1px solid rgba(255, 45, 54, 0.2);
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 70px rgba(218, 18, 28, 0.08),
+    0 0 36px rgba(218, 18, 28, 0.08);
+}
+
+.spotlight-race-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.spotlight-race-logo {
+  display: grid;
+  flex: 0 0 auto;
+  width: 88px;
+  height: 88px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  background: rgba(5, 5, 7, 0.76);
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.3);
+}
+
+.spotlight-race-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.spotlight-race-content h2 {
+  margin: 0.25rem 0 0.45rem;
+}
+
+.spotlight-race-content p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.spotlight-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1.1rem;
+}
+
+.live-hero-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ff4b53;
+}
+
+.live-hero-label .live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 13px currentColor;
+  animation: dynamicHeroLivePulse 1.4s ease-in-out infinite;
+}
+
+@keyframes dynamicHeroLivePulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: scale(0.72);
+  }
+}
+
+@media (max-width: 700px) {
+  .spotlight-race-content {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .spotlight-race-logo {
+    width: 68px;
+    height: 68px;
+    border-radius: 16px;
+  }
+}
