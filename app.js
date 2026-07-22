@@ -90,6 +90,12 @@ function renderHomepage() {
 
   initializeRevealAnimations();
   initializeCountdowns();
+
+  setInterval(() => {
+    renderStats();
+    renderNextRaceFeature();
+    renderLiveRaces();
+  }, 10000);
 }
 
 function validateConfiguration() {
@@ -439,10 +445,10 @@ function renderStats() {
   const now = DateTime.now();
 
   const upcoming = races.filter(
-    (race) => race.is_live !== true && getRaceDateTime(race) >= now,
+    (race) => !isRaceLiveNow(race, now) && getRaceDateTime(race) >= now,
   );
 
-  const live = races.filter((race) => race.is_live === true);
+  const live = races.filter((race) => isRaceLiveNow(race, now));
 
   animateNumber(document.getElementById("leagueCount"), leagues.length);
 
@@ -556,6 +562,7 @@ function renderNextRaceFeature() {
     .sort(
       (a, b) => getRaceDateTime(a).toMillis() - getRaceDateTime(b).toMillis(),
     )[0];
+  const countdown = nextRace ? getRaceCountdown(nextRace) : null;
 
   const container = document.getElementById("nextRaceFeature");
 
@@ -592,6 +599,10 @@ function renderNextRaceFeature() {
             ${escapeHtml(nextRace.league_name)}
             ${nextRace.circuit ? ` · ${escapeHtml(nextRace.circuit)}` : ""}
           </p>
+          <div class="next-race-status ${countdown.state}">
+  ${countdown.label}
+</div>
+
         </div>
       </div>
 
@@ -647,7 +658,27 @@ function renderNextRaceFeature() {
 }
 
 function renderLiveRaces() {
-  const live = races.filter((race) => race.is_live === true);
+  const now = DateTime.now();
+  const automaticLiveDuration = {
+    hours: 1,
+    minutes: 30,
+  };
+
+  const live = races.filter((race) => {
+    if (race.is_live === true) {
+      return true;
+    }
+
+    const scheduledTime = getRaceDateTime(race);
+
+    if (!scheduledTime.isValid) {
+      return false;
+    }
+
+    const automaticLiveEnd = scheduledTime.plus(automaticLiveDuration);
+
+    return scheduledTime <= now && now < automaticLiveEnd;
+  });
 
   const grid = document.getElementById("liveGrid");
   const empty = document.getElementById("liveEmpty");
@@ -658,9 +689,17 @@ function renderLiveRaces() {
     .map((race, index) => {
       const league = leagues.find((item) => item.id === race.league_id);
 
+      const liveLink =
+        race.stream_url ||
+        league?.youtube_url ||
+        league?.twitch_url ||
+        league?.website_url ||
+        league?.discord_url ||
+        "";
+
       return `
       <article
-        class="homepage-live-card reveal-card"
+        class="homepage-live-card reveal-card is-visible"
         style="--live-delay:${index * 80}ms"
       >
         <div class="homepage-live-visual">
@@ -706,11 +745,11 @@ function renderLiveRaces() {
 
           <div class="card-actions">
             ${
-              race.stream_url
+              liveLink
                 ? `
                   <a
                     class="button primary"
-                    href="${safeUrl(race.stream_url)}"
+                    href="${safeUrl(liveLink)}"
                     target="_blank"
                     rel="noopener"
                   >
@@ -1406,6 +1445,89 @@ function initializeHeaderMotion() {
   });
 
   updateHeader();
+}
+function getRaceCountdown(race) {
+  if (!race?.race_date || !race?.race_time) {
+    return {
+      label: "Time TBA",
+      state: "unknown",
+    };
+  }
+
+  const raceDateTime = DateTime.fromISO(`${race.race_date}T${race.race_time}`, {
+    zone: race.timezone || race.league_timezone || "local",
+  });
+
+  if (!raceDateTime.isValid) {
+    return {
+      label: "Time TBA",
+      state: "unknown",
+    };
+  }
+
+  const now = DateTime.now();
+  const minutesUntil = raceDateTime.diff(now, "minutes").minutes;
+
+  if (race.is_live === true) {
+    return {
+      label: "Live Now",
+      state: "live",
+    };
+  }
+
+  if (minutesUntil <= 0) {
+    return {
+      label: "Scheduled time passed",
+      state: "passed",
+    };
+  }
+
+  if (minutesUntil <= 15) {
+    return {
+      label: "Starting Soon",
+      state: "soon",
+    };
+  }
+
+  if (minutesUntil < 60) {
+    return {
+      label: `Starts in ${Math.ceil(minutesUntil)}m`,
+      state: "upcoming",
+    };
+  }
+
+  const hoursUntil = raceDateTime.diff(now, "hours").hours;
+
+  if (hoursUntil < 24) {
+    return {
+      label: `Starts in ${Math.ceil(hoursUntil)}h`,
+      state: "upcoming",
+    };
+  }
+
+  const daysUntil = raceDateTime.diff(now, "days").days;
+
+  return {
+    label: `Starts in ${Math.ceil(daysUntil)}d`,
+    state: "upcoming",
+  };
+}
+function isRaceLiveNow(race, now = DateTime.now()) {
+  if (race.is_live === true) {
+    return true;
+  }
+
+  const scheduledTime = getRaceDateTime(race);
+
+  if (!scheduledTime.isValid) {
+    return false;
+  }
+
+  const automaticLiveEnd = scheduledTime.plus({
+    hours: 4,
+  });
+
+  return scheduledTime <= now && now < automaticLiveEnd;
 }
 function safeUrl(value) {
   try {
