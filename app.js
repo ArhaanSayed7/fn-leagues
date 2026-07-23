@@ -1148,7 +1148,7 @@ function setupInteractions() {
       selectedScheduleLeague = event.target.value;
       renderSchedule();
     });
-const carousel = document.getElementById("featuredCarousel");
+  const carousel = document.getElementById("featuredCarousel");
 
   document.getElementById("featuredPrevious").addEventListener("click", () => {
     carousel.scrollBy({
@@ -1544,7 +1544,8 @@ function isRaceLiveNow(race, now = DateTime.now()) {
   }
 
   const automaticLiveEnd = scheduledTime.plus({
-    hours: 4,
+    hours: 1,
+    minutes: 30,
   });
 
   return scheduledTime <= now && now < automaticLiveEnd;
