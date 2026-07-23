@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Full Fortnite Driver Hub race schedule." />
+    <title>Race Schedule | FDH</title>
+    <link rel="icon" type="image/png" href="images/fdh-logo.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body class="schedule-page-body">
+    <div class="scroll-progress" id="scrollProgress"></div>
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
+    <div class="orb orb-three"></div>
+
+    <header class="site-header">
+      <a href="index.html" class="brand">
+        <span class="brand-logo">
+          <img src="images/fdh-logo.png" alt="FDH logo" />
+        </span>
+        <span>
+          <strong>FDH</strong>
+          <small>Fortnite Driver Hub</small>
+        </span>
+      </a>
+
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="index.html#live">Live</a>
+        <a href="schedule.html" class="active-section">Schedule</a>
+        <a href="rankings.html">Rankings</a>
+        <a href="index.html#leagues">Leagues</a>
+        <a href="admin.html" class="nav-admin">Admin</a>
+      </nav>
+    </header>
+
+    <main class="schedule-page section">
+      <section class="schedule-page-hero glass hero-reveal">
+        <div>
+          <span class="eyebrow">COMPLETE CALENDAR</span>
+          <h1>Full Race<br /><span>Schedule.</span></h1>
+          <p>
+            Browse every upcoming FDH race in your local timezone. Search by
+            league, event, category, or circuit.
+          </p>
+          <small id="scheduleTimezone">Detecting your timezone…</small>
+        </div>
+
+        <div class="schedule-page-stats">
+          <article>
+            <strong id="upcomingRaceCount">0</strong>
+            <span>Upcoming races</span>
+          </article>
+          <article>
+            <strong id="scheduledLeagueCount">0</strong>
+            <span>Leagues scheduled</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="schedule-browser scroll-scene">
+        <div class="section-heading split">
+          <div>
+            <span class="eyebrow">UPCOMING EVENTS</span>
+            <h2>Race Calendar</h2>
+          </div>
+
+          <div class="schedule-page-toolbar">
+            <input
+              id="fullScheduleSearch"
+              type="search"
+              placeholder="Search races…"
+            />
+
+            <select id="fullScheduleLeagueFilter">
+              <option value="all">All leagues</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="fullScheduleList" class="full-schedule-list"></div>
+
+        <div id="fullScheduleEmpty" class="empty-state hidden">
+          No upcoming races match your filters.
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>
+        <strong>FDH</strong>
+        <span>The home of Fortnite racing leagues.</span>
+      </div>
+      <a href="index.html">Back to Home</a>
+    </footer>
+
+    <a
+      class="back-home-button"
+      href="index.html"
+      aria-label="Return to the Fortnite Driver Hub home page"
+    >
+      <span aria-hidden="true">←</span>
+      Back Home
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+    <script src="config.js"></script>
+    <script src="schedule.js"></script>
+  </body>
+</html>

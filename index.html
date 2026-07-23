@@ -234,15 +234,6 @@
             <span class="eyebrow">UPCOMING SESSIONS</span>
             <h2>Race Schedule</h2>
           </div>
-          <button
-            id="scheduleToggleButton"
-            class="button secondary schedule-toggle-button hidden"
-            type="button"
-            aria-expanded="false"
-          >
-            View Full Schedule
-          </button>
-
           <div class="schedule-toolbar">
             <input
               id="scheduleSearch"
@@ -260,6 +251,17 @@
 
         <div id="scheduleEmpty" class="empty-state hidden">
           No upcoming races have been added.
+        </div>
+
+        <div class="schedule-view-all-wrap">
+          <a
+            id="scheduleToggleButton"
+            class="button secondary schedule-view-all hidden"
+            href="schedule.html"
+          >
+            View Full Schedule
+            <span aria-hidden="true">→</span>
+          </a>
         </div>
       </section>
 

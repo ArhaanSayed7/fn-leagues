@@ -11,7 +11,6 @@ let rankings = [];
 let communitySettings = {};
 let scheduleSearchQuery = "";
 let selectedScheduleLeague = "all";
-let showFullSchedule = false;
 
 document.addEventListener("DOMContentLoaded", initializeHomepage);
 
@@ -903,6 +902,7 @@ function renderSchedule() {
       if (!scheduleSearchQuery) return true;
 
       return [race.league_name, race.event_name, race.category, race.circuit]
+        .filter(Boolean)
         .join(" ")
         .toLowerCase()
         .includes(scheduleSearchQuery);
@@ -910,110 +910,19 @@ function renderSchedule() {
     .sort(
       (a, b) => getRaceDateTime(a).toMillis() - getRaceDateTime(b).toMillis(),
     );
-  const visibleRaces = showFullSchedule ? filtered : filtered.slice(0, 5);
 
-  const toggleButton = document.getElementById("scheduleToggleButton");
-
-  if (toggleButton) {
-    const hasMoreThanFive = filtered.length > 5;
-
-    toggleButton.classList.toggle("hidden", !hasMoreThanFive);
-
-    toggleButton.textContent = showFullSchedule
-      ? "Show Less"
-      : `View Full Schedule (${filtered.length})`;
-
-    toggleButton.setAttribute("aria-expanded", String(showFullSchedule));
-  }
-
+  const visibleRaces = filtered.slice(0, 5);
   const list = document.getElementById("scheduleList");
   const empty = document.getElementById("scheduleEmpty");
+  const fullScheduleLink = document.getElementById("scheduleToggleButton");
 
   empty.classList.toggle("hidden", filtered.length > 0);
+  list.classList.toggle("hidden", filtered.length === 0);
 
-  if (showFullSchedule) {
-    const groupedRaces = filtered.reduce((groups, race) => {
-      const local = getRaceDateTime(race).toLocal();
-      const dayKey = local.toFormat("yyyy-MM-dd");
-
-      if (!groups[dayKey]) {
-        groups[dayKey] = {
-          label: local.toFormat("cccc, dd LLLL"),
-          races: [],
-        };
-      }
-
-      groups[dayKey].races.push(race);
-      return groups;
-    }, {});
-
-    list.classList.add("compact-schedule");
-
-    list.innerHTML = Object.values(groupedRaces)
-      .map(
-        (group) => `
-        <section class="schedule-day-group">
-          <div class="schedule-day-heading">
-            ${escapeHtml(group.label)}
-          </div>
-
-          <div class="schedule-day-races">
-            ${group.races
-              .map((race) => {
-                const local = getRaceDateTime(race).toLocal();
-                const league = leagues.find(
-                  (item) => item.id === race.league_id,
-                );
-
-                return `
-                  <article class="compact-schedule-row">
-                    <div class="compact-schedule-time">
-                      ${local.toFormat("h:mm a")}
-                    </div>
-
-                    <div class="compact-schedule-logo">
-                      ${
-                        league?.logo_url
-                          ? `<img src="${escapeHtml(league.logo_url)}" alt="">`
-                          : `<span>${escapeHtml(
-                              league ? getLeagueInitials(league) : "FDH",
-                            )}</span>`
-                      }
-                    </div>
-
-                    <div class="compact-schedule-main">
-                      <strong>
-                        ${escapeHtml(race.event_name || "Race event")}
-                      </strong>
-
-                      <span>
-                        ${escapeHtml(
-                          race.league_name || league?.name || "Unknown league",
-                        )}
-                        ${race.circuit ? ` · ${escapeHtml(race.circuit)}` : ""}
-                      </span>
-                    </div>
-
-                    <a
-                      class="button secondary compact-schedule-button"
-                      href="league.html?id=${race.league_id}"
-                    >
-                      View
-                    </a>
-                  </article>
-                `;
-              })
-              .join("")}
-          </div>
-        </section>
-      `,
-      )
-      .join("");
-
-    return;
+  if (fullScheduleLink) {
+    fullScheduleLink.classList.toggle("hidden", filtered.length === 0);
   }
 
-  list.classList.remove("compact-schedule");
   list.innerHTML = visibleRaces
     .map((race, index) => {
       const local = getRaceDateTime(race).toLocal();
@@ -1045,7 +954,7 @@ function renderSchedule() {
           <h3>${escapeHtml(race.event_name || "Race event")}</h3>
 
           <p>
-            ${escapeHtml(race.league_name)}
+            ${escapeHtml(race.league_name || league?.name || "Unknown league")}
             ${race.circuit ? ` · ${escapeHtml(race.circuit)}` : ""}
           </p>
 
@@ -1066,20 +975,12 @@ function renderSchedule() {
           <span><strong data-minutes>0</strong>m</span>
         </div>
 
-        ${
-          race.event_url
-            ? `
-              <a
-                class="button secondary"
-                href="${safeUrl(race.event_url)}"
-                target="_blank"
-                rel="noopener"
-              >
-                Open
-              </a>
-            `
-            : ""
-        }
+        <a
+          class="button secondary"
+          href="league.html?id=${encodeURIComponent(race.league_id)}"
+        >
+          View League
+        </a>
       </article>
     `;
     })
@@ -1247,13 +1148,7 @@ function setupInteractions() {
       selectedScheduleLeague = event.target.value;
       renderSchedule();
     });
-  document
-    .getElementById("scheduleToggleButton")
-    ?.addEventListener("click", () => {
-      showFullSchedule = !showFullSchedule;
-      renderSchedule();
-    });
-  const carousel = document.getElementById("featuredCarousel");
+const carousel = document.getElementById("featuredCarousel");
 
   document.getElementById("featuredPrevious").addEventListener("click", () => {
     carousel.scrollBy({
