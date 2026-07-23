@@ -629,7 +629,6 @@ window.editRace = function (id) {
   $("raceEventName").value = race.event_name || "";
   $("raceCategory").value = race.category || "";
   $("raceCircuit").value = race.circuit || "";
-  $("raceTimezone").value = normalizeSavedZone(race.timezone);
   $("raceDate").value = race.race_date || "";
   $("raceTime").value = String(race.race_time || "").slice(0, 5);
   $("raceEventUrl").value = race.event_url || "";
@@ -728,7 +727,6 @@ window.duplicateRace = function (id) {
   $("raceEventName").value = `${race.event_name || "Race event"} Copy`;
   $("raceCategory").value = race.category || "";
   $("raceCircuit").value = race.circuit || "";
-  $("raceTimezone").value = normalizeSavedZone(race.timezone);
   $("raceDate").value = race.race_date || "";
   $("raceTime").value = String(race.race_time || "").slice(0, 5);
   $("raceEventUrl").value = race.event_url || "";
@@ -799,7 +797,7 @@ async function saveRace(event) {
       circuit: $("raceCircuit").value.trim() || null,
       race_date: $("raceDate").value,
       race_time: $("raceTime").value,
-      timezone: $("raceTimezone").value || "Asia/Dubai",
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
       event_url: $("raceEventUrl").value.trim() || null,
       stream_url: $("raceStreamUrl").value.trim() || null,
       banner_url: bannerUrl,
@@ -831,7 +829,6 @@ async function saveRace(event) {
 function clearRaceForm(clearMessage = true) {
   $("raceForm").reset();
   $("raceId").value = "";
-  $("raceTimezone").value = "Asia/Dubai";
   $("raceIsArchived").checked = false;
   $("raceBanner").value = "";
   $("raceBannerPreview").innerHTML = "";

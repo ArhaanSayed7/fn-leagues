@@ -1,592 +1,836 @@
-<!DOCTYPE html>
-  <div class="scroll-progress" id="scrollProgress"></div>
+<!doctype html>
+<div class="scroll-progress" id="scrollProgress"></div>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FDH Admin</title>
-  <link rel="icon" type="image/png" href="images/fdh-logo.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body class="admin-body">
-  <div class="orb orb-one"></div>
-  <div class="orb orb-two"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FDH Admin</title>
+    <link rel="icon" type="image/png" href="images/fdh-logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="admin-body">
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
 
-  <main class="admin-shell">
-    <section id="loginView" class="login-card glass">
-      <a href="index.html" class="brand admin-brand">
-        <span class="brand-logo"><img src="images/fdh-logo.png" alt="FDH logo"></span>
-        <span><strong>FDH</strong><small>Admin Dashboard</small></span>
-      </a>
-
-      <div class="login-copy">
-        <span class="eyebrow">PRIVATE ACCESS</span>
-        <h1>Welcome back.</h1>
-        <p>Sign in with your Supabase admin account.</p>
-      </div>
-
-      <form id="loginForm" class="admin-form">
-        <label>Email<input id="email" type="email" required autocomplete="email"></label>
-        <label>Password<input id="password" type="password" required autocomplete="current-password"></label>
-        <button class="button primary full">Sign In</button>
-      </form>
-
-      <p id="loginMessage" class="form-message"></p>
-    </section>
-
-    <section id="dashboardView" class="dashboard hidden">
-      <aside class="admin-sidebar glass">
-        <a href="index.html" class="brand">
-          <span class="brand-logo"><img src="images/fdh-logo.png" alt="FDH logo"></span>
+    <main class="admin-shell">
+      <section id="loginView" class="login-card glass">
+        <a href="index.html" class="brand admin-brand">
+          <span class="brand-logo"
+            ><img src="images/fdh-logo.png" alt="FDH logo"
+          /></span>
           <span><strong>FDH</strong><small>Admin Dashboard</small></span>
         </a>
 
-        <nav class="admin-nav">
-          <button data-tab="overview" class="active">Overview</button>
-          <button data-tab="leagues">Leagues</button>
-          <button data-tab="races">Races</button>
-          <button data-tab="rankings">Rankings</button>
-          <button data-tab="community">Community</button>
-          <button data-tab="gallery">Gallery</button>
-        </nav>
-
-        <div class="admin-sidebar-actions">
-          <a href="index.html" class="button secondary full">← Back to Home</a>
-          <button id="logoutButton" class="button secondary full">Sign Out</button>
-        </div>
-      </aside>
-
-      <div class="admin-main">
-        <div class="admin-topbar">
-          <div>
-            <span class="eyebrow">CONTENT MANAGEMENT</span>
-            <h2 id="adminTitle">Dashboard</h2>
-          </div>
-          <span id="adminEmail" class="admin-email"></span>
+        <div class="login-copy">
+          <span class="eyebrow">PRIVATE ACCESS</span>
+          <h1>Welcome back.</h1>
+          <p>Sign in with your Supabase admin account.</p>
         </div>
 
-        <section id="overviewTab" class="admin-tab">
-          <div class="dashboard-stats phase-eight-stats">
-            <article class="glass"><strong id="adminLeagueCount">—</strong><span>Leagues</span></article>
-            <article class="glass"><strong id="adminRaceCount">—</strong><span>Total races</span></article>
-            <article class="glass"><strong id="adminUpcomingCount">—</strong><span>Upcoming</span></article>
-            <article class="glass"><strong id="adminLiveCount">—</strong><span>Live races</span></article>
-            <article class="glass"><strong id="adminCompletedCount">—</strong><span>Completed</span></article>
-            <article class="glass"><strong id="adminArchivedCount">—</strong><span>Archived</span></article>
-            <article class="glass"><strong id="adminRankingCount">—</strong><span>Ranked leagues</span></article>
-            <article class="glass"><strong id="adminFeaturedCount">—</strong><span>Featured leagues</span></article>
+        <form id="loginForm" class="admin-form">
+          <label
+            >Email<input id="email" type="email" required autocomplete="email"
+          /></label>
+          <label
+            >Password<input
+              id="password"
+              type="password"
+              required
+              autocomplete="current-password"
+          /></label>
+          <button class="button primary full">Sign In</button>
+        </form>
+
+        <p id="loginMessage" class="form-message"></p>
+      </section>
+
+      <section id="dashboardView" class="dashboard hidden">
+        <aside class="admin-sidebar glass">
+          <a href="index.html" class="brand">
+            <span class="brand-logo"
+              ><img src="images/fdh-logo.png" alt="FDH logo"
+            /></span>
+            <span><strong>FDH</strong><small>Admin Dashboard</small></span>
+          </a>
+
+          <nav class="admin-nav">
+            <button data-tab="overview" class="active">Overview</button>
+            <button data-tab="leagues">Leagues</button>
+            <button data-tab="races">Races</button>
+            <button data-tab="rankings">Rankings</button>
+            <button data-tab="community">Community</button>
+            <button data-tab="gallery">Gallery</button>
+          </nav>
+
+          <div class="admin-sidebar-actions">
+            <a href="index.html" class="button secondary full"
+              >← Back to Home</a
+            >
+            <button id="logoutButton" class="button secondary full">
+              Sign Out
+            </button>
+          </div>
+        </aside>
+
+        <div class="admin-main">
+          <div class="admin-topbar">
+            <div>
+              <span class="eyebrow">CONTENT MANAGEMENT</span>
+              <h2 id="adminTitle">Dashboard</h2>
+            </div>
+            <span id="adminEmail" class="admin-email"></span>
           </div>
 
-          <section class="glass dashboard-panel">
-            <span class="eyebrow">PHASE 3</span>
-            <h3>Race management is ready.</h3>
-            <p>
-              You can now schedule races, edit them, remove them, add stream links,
-              and switch live status on or off.
-            </p>
+          <section id="overviewTab" class="admin-tab">
+            <div class="dashboard-stats phase-eight-stats">
+              <article class="glass">
+                <strong id="adminLeagueCount">—</strong><span>Leagues</span>
+              </article>
+              <article class="glass">
+                <strong id="adminRaceCount">—</strong><span>Total races</span>
+              </article>
+              <article class="glass">
+                <strong id="adminUpcomingCount">—</strong><span>Upcoming</span>
+              </article>
+              <article class="glass">
+                <strong id="adminLiveCount">—</strong><span>Live races</span>
+              </article>
+              <article class="glass">
+                <strong id="adminCompletedCount">—</strong
+                ><span>Completed</span>
+              </article>
+              <article class="glass">
+                <strong id="adminArchivedCount">—</strong><span>Archived</span>
+              </article>
+              <article class="glass">
+                <strong id="adminRankingCount">—</strong
+                ><span>Ranked leagues</span>
+              </article>
+              <article class="glass">
+                <strong id="adminFeaturedCount">—</strong
+                ><span>Featured leagues</span>
+              </article>
+            </div>
+
+            <section class="glass dashboard-panel">
+              <span class="eyebrow">PHASE 3</span>
+              <h3>Race management is ready.</h3>
+              <p>
+                You can now schedule races, edit them, remove them, add stream
+                links, and switch live status on or off.
+              </p>
+            </section>
           </section>
-        </section>
 
-        <section id="leaguesTab" class="admin-tab hidden">
-          <div class="management-layout">
-            <form id="leagueForm" class="glass management-form">
-              <input id="leagueId" type="hidden">
+          <section id="leaguesTab" class="admin-tab hidden">
+            <div class="management-layout">
+              <form id="leagueForm" class="glass management-form">
+                <input id="leagueId" type="hidden" />
 
-              <div class="form-heading">
-                <div><span class="eyebrow">LEAGUE EDITOR</span><h3 id="formTitle">Add League</h3></div>
-                <button id="clearFormButton" type="button" class="button secondary">Clear</button>
+                <div class="form-heading">
+                  <div>
+                    <span class="eyebrow">LEAGUE EDITOR</span>
+                    <h3 id="formTitle">Add League</h3>
+                  </div>
+                  <button
+                    id="clearFormButton"
+                    type="button"
+                    class="button secondary"
+                  >
+                    Clear
+                  </button>
+                </div>
+
+                <div class="form-grid">
+                  <label
+                    >League name<input id="leagueName" required maxlength="100"
+                  /></label>
+                  <label
+                    >Abbreviation<input id="leagueAbbreviation" maxlength="10"
+                  /></label>
+                  <label
+                    >Category<input
+                      id="leagueCategory"
+                      placeholder="Formula Racing"
+                  /></label>
+                  <label
+                    >Discord URL<input
+                      id="leagueDiscord"
+                      type="url"
+                      placeholder="https://discord.gg/..."
+                  /></label>
+                  <label class="full-span"
+                    >Website URL<input
+                      id="leagueWebsite"
+                      type="url"
+                      placeholder="https://..."
+                  /></label>
+
+                  <label
+                    >Instagram URL<input
+                      id="leagueInstagram"
+                      type="url"
+                      placeholder="https://instagram.com/..."
+                  /></label>
+                  <label
+                    >YouTube URL<input
+                      id="leagueYoutube"
+                      type="url"
+                      placeholder="https://youtube.com/..."
+                  /></label>
+
+                  <label class="full-span"
+                    >Twitch URL<input
+                      id="leagueTwitch"
+                      type="url"
+                      placeholder="https://twitch.tv/..."
+                  /></label>
+
+                  <label class="full-span"
+                    >Description<textarea
+                      id="leagueDescription"
+                      rows="4"
+                    ></textarea>
+                  </label>
+
+                  <label>
+                    Theme
+                    <select id="leagueTheme">
+                      <option value="aurora">Aurora</option>
+                      <option value="velocity">Velocity</option>
+                      <option value="inferno">Inferno</option>
+                      <option value="nebula">Nebula</option>
+                      <option value="monochrome">Monochrome</option>
+                      <option value="neon">Neon</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    Accent colour
+                    <input
+                      id="leagueAccentColor"
+                      type="color"
+                      value="#9c7ddd"
+                    />
+                  </label>
+
+                  <label>
+                    Badge
+                    <select id="leagueBadge">
+                      <option value="">None</option>
+                      <option value="verified">Verified</option>
+                      <option value="featured">Featured</option>
+                      <option value="partner">Official Partner</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    Owner name
+                    <input id="leagueOwner" placeholder="League owner" />
+                  </label>
+
+                  <label class="full-span">
+                    Staff members
+                    <textarea
+                      id="leagueStaff"
+                      rows="3"
+                      placeholder="One staff member per line"
+                    ></textarea>
+                  </label>
+
+                  <label class="full-span">
+                    Contact URL
+                    <input
+                      id="leagueContactUrl"
+                      type="url"
+                      placeholder="https://..."
+                    />
+                  </label>
+                  <label class="upload-zone" id="logoUploadZone">
+                    <span>Logo image</span>
+                    <strong>Drop logo here or click to browse</strong>
+                    <small>PNG, JPG, WebP or GIF · Max 5 MB</small>
+                    <input
+                      id="leagueLogo"
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/gif"
+                    />
+                  </label>
+
+                  <label class="upload-zone" id="bannerUploadZone">
+                    <span>Banner image</span>
+                    <strong>Drop banner here or click to browse</strong>
+                    <small>Wide images work best · Max 5 MB</small>
+                    <input
+                      id="leagueBanner"
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/gif"
+                    />
+                  </label>
+                  <label class="checkbox-label full-span"
+                    ><input id="leagueFeatured" type="checkbox" /> Show as a
+                    featured league</label
+                  >
+                </div>
+
+                <div id="assetPreview" class="asset-preview"></div>
+                <button class="button primary full" type="submit">
+                  Save League
+                </button>
+                <p id="leagueMessage" class="form-message"></p>
+              </form>
+
+              <div class="glass management-list">
+                <div class="form-heading">
+                  <div>
+                    <span class="eyebrow">CURRENT CONTENT</span>
+                    <h3>Leagues</h3>
+                  </div>
+                </div>
+
+                <div class="admin-toolbar">
+                  <input
+                    id="leagueAdminSearch"
+                    type="search"
+                    placeholder="Search leagues…"
+                  />
+                </div>
+
+                <div id="adminLeagueList"></div>
+                <div id="adminLeagueEmpty" class="empty-state hidden">
+                  No leagues match this view.
+                </div>
               </div>
-
-              <div class="form-grid">
-                <label>League name<input id="leagueName" required maxlength="100"></label>
-                <label>Abbreviation<input id="leagueAbbreviation" maxlength="10"></label>
-                <label>Category<input id="leagueCategory" placeholder="Formula Racing"></label>
-                <label>Discord URL<input id="leagueDiscord" type="url" placeholder="https://discord.gg/..."></label>
-                <label class="full-span">Website URL<input id="leagueWebsite" type="url" placeholder="https://..."></label>
-
-                <label>Instagram URL<input id="leagueInstagram" type="url" placeholder="https://instagram.com/..."></label>
-                <label>YouTube URL<input id="leagueYoutube" type="url" placeholder="https://youtube.com/..."></label>
-
-                <label class="full-span">Twitch URL<input id="leagueTwitch" type="url" placeholder="https://twitch.tv/..."></label>
-
-                <label class="full-span">Description<textarea id="leagueDescription" rows="4"></textarea></label>
-
-                <label>
-                  Theme
-                  <select id="leagueTheme">
-                    <option value="aurora">Aurora</option>
-                    <option value="velocity">Velocity</option>
-                    <option value="inferno">Inferno</option>
-                    <option value="nebula">Nebula</option>
-                    <option value="monochrome">Monochrome</option>
-                    <option value="neon">Neon</option>
-                  </select>
-                </label>
-
-                <label>
-                  Accent colour
-                  <input id="leagueAccentColor" type="color" value="#9c7ddd">
-                </label>
-
-                <label>
-                  Badge
-                  <select id="leagueBadge">
-                    <option value="">None</option>
-                    <option value="verified">Verified</option>
-                    <option value="featured">Featured</option>
-                    <option value="partner">Official Partner</option>
-                  </select>
-                </label>
-
-                <label>
-                  Owner name
-                  <input id="leagueOwner" placeholder="League owner">
-                </label>
-
-                <label class="full-span">
-                  Staff members
-                  <textarea id="leagueStaff" rows="3" placeholder="One staff member per line"></textarea>
-                </label>
-
-                <label class="full-span">
-                  Contact URL
-                  <input id="leagueContactUrl" type="url" placeholder="https://...">
-                </label>
-                <label class="upload-zone" id="logoUploadZone">
-                  <span>Logo image</span>
-                  <strong>Drop logo here or click to browse</strong>
-                  <small>PNG, JPG, WebP or GIF · Max 5 MB</small>
-                  <input id="leagueLogo" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
-                </label>
-
-                <label class="upload-zone" id="bannerUploadZone">
-                  <span>Banner image</span>
-                  <strong>Drop banner here or click to browse</strong>
-                  <small>Wide images work best · Max 5 MB</small>
-                  <input id="leagueBanner" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
-                </label>
-                <label class="checkbox-label full-span"><input id="leagueFeatured" type="checkbox"> Show as a featured league</label>
-              </div>
-
-              <div id="assetPreview" class="asset-preview"></div>
-              <button class="button primary full" type="submit">Save League</button>
-              <p id="leagueMessage" class="form-message"></p>
-            </form>
-
-            <div class="glass management-list">
-              <div class="form-heading">
-                <div><span class="eyebrow">CURRENT CONTENT</span><h3>Leagues</h3></div>
-              </div>
-
-              <div class="admin-toolbar">
-                <input
-                  id="leagueAdminSearch"
-                  type="search"
-                  placeholder="Search leagues…"
-                >
-              </div>
-
-              <div id="adminLeagueList"></div>
-              <div id="adminLeagueEmpty" class="empty-state hidden">No leagues match this view.</div>
             </div>
-          </div>
-        </section>
+          </section>
 
+          <section id="rankingsTab" class="admin-tab hidden">
+            <div class="management-layout">
+              <form id="rankingForm" class="glass management-form">
+                <input id="rankingId" type="hidden" />
 
-        <section id="rankingsTab" class="admin-tab hidden">
-          <div class="management-layout">
-            <form id="rankingForm" class="glass management-form">
-              <input id="rankingId" type="hidden">
+                <div class="form-heading">
+                  <div>
+                    <span class="eyebrow">RANKING EDITOR</span>
+                    <h3 id="rankingFormTitle">Add Ranking</h3>
+                  </div>
+                  <button
+                    id="clearRankingButton"
+                    type="button"
+                    class="button secondary"
+                  >
+                    Clear
+                  </button>
+                </div>
 
-              <div class="form-heading">
-                <div><span class="eyebrow">RANKING EDITOR</span><h3 id="rankingFormTitle">Add Ranking</h3></div>
-                <button id="clearRankingButton" type="button" class="button secondary">Clear</button>
+                <div class="form-grid">
+                  <label class="full-span">
+                    League
+                    <select id="rankingLeague" required>
+                      <option value="">Choose a league</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    Position
+                    <input
+                      id="rankingPosition"
+                      type="number"
+                      min="1"
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    Tier
+                    <select id="rankingTier" required>
+                      <option value="S">S Tier</option>
+                      <option value="A">A Tier</option>
+                      <option value="B">B Tier</option>
+                      <option value="C">C Tier</option>
+                    </select>
+                  </label>
+                </div>
+
+                <button class="button primary full" type="submit">
+                  Save Ranking
+                </button>
+                <p id="rankingMessage" class="form-message"></p>
+              </form>
+
+              <div class="glass management-list">
+                <div class="form-heading">
+                  <div>
+                    <span class="eyebrow">SMART ORDER</span>
+                    <h3>League Rankings</h3>
+                    <p class="admin-section-help">
+                      Drag rankings or use the arrow buttons. Positions update
+                      automatically.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="admin-toolbar">
+                  <input
+                    id="rankingAdminSearch"
+                    type="search"
+                    placeholder="Search rankings…"
+                  />
+                </div>
+
+                <div id="adminRankingList"></div>
+                <div id="adminRankingEmpty" class="empty-state hidden">
+                  No rankings match this view.
+                </div>
               </div>
+            </div>
+          </section>
 
-              <div class="form-grid">
-                <label class="full-span">
-                  League
-                  <select id="rankingLeague" required>
-                    <option value="">Choose a league</option>
+          <section id="communityTab" class="admin-tab hidden">
+            <div class="community-admin-layout">
+              <form
+                id="communityForm"
+                class="glass management-form community-editor"
+              >
+                <div class="form-heading">
+                  <div>
+                    <span class="eyebrow">COMMUNITY HUB</span>
+                    <h3>Homepage Content</h3>
+                  </div>
+
+                  <span id="communitySaveState" class="draft-state"
+                    >No draft loaded</span
+                  >
+                </div>
+
+                <div class="community-admin-section">
+                  <h4>Announcement Banner</h4>
+
+                  <div class="form-grid">
+                    <label class="checkbox-label full-span">
+                      <input id="announcementEnabled" type="checkbox" />
+                      Show announcement
+                    </label>
+
+                    <label>
+                      Title
+                      <input
+                        id="announcementTitle"
+                        placeholder="Important update"
+                      />
+                    </label>
+
+                    <label>
+                      Style
+                      <select id="announcementType">
+                        <option value="info">Information</option>
+                        <option value="success">Success</option>
+                        <option value="warning">Warning</option>
+                      </select>
+                    </label>
+
+                    <label class="full-span">
+                      Message
+                      <textarea id="announcementText" rows="3"></textarea>
+                    </label>
+
+                    <label>
+                      Button text
+                      <input
+                        id="announcementButtonText"
+                        placeholder="Learn more"
+                      />
+                    </label>
+
+                    <label>
+                      Button URL
+                      <input
+                        id="announcementButtonUrl"
+                        type="url"
+                        placeholder="https://..."
+                      />
+                    </label>
+
+                    <label class="full-span">
+                      Expiry date and time
+                      <input id="announcementExpiry" type="datetime-local" />
+                    </label>
+                  </div>
+                </div>
+
+                <div class="community-admin-section">
+                  <h4>Weekly Spotlights</h4>
+
+                  <div class="form-grid">
+                    <label>
+                      League of the Week
+                      <select id="leagueOfWeekSelect">
+                        <option value="">None</option>
+                      </select>
+                    </label>
+
+                    <label>
+                      Race of the Week
+                      <select id="raceOfWeekSelect">
+                        <option value="">None</option>
+                      </select>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="community-admin-section">
+                  <h4>Featured Livestream</h4>
+
+                  <div class="form-grid">
+                    <label class="checkbox-label full-span">
+                      <input id="streamEnabled" type="checkbox" />
+                      Show featured stream
+                    </label>
+
+                    <label class="full-span">
+                      Stream title
+                      <input id="streamTitle" placeholder="FDH Live" />
+                    </label>
+
+                    <label class="full-span">
+                      Stream URL
+                      <input
+                        id="streamUrl"
+                        type="url"
+                        placeholder="YouTube, Twitch or Kick URL"
+                      />
+                    </label>
+
+                    <label class="full-span">
+                      Description
+                      <textarea id="streamDescription" rows="3"></textarea>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="community-admin-section">
+                  <h4>Trending & Recent Leagues</h4>
+
+                  <label class="full-span">
+                    Trending leagues
+                    <div
+                      id="trendingLeagueSelector"
+                      class="trending-selector"
+                    ></div>
+                  </label>
+
+                  <div class="form-grid">
+                    <label class="checkbox-label">
+                      <input id="showRecentlyAdded" type="checkbox" checked />
+                      Show recently added leagues
+                    </label>
+
+                    <label>
+                      Number shown
+                      <input
+                        id="recentlyAddedLimit"
+                        type="number"
+                        min="1"
+                        max="12"
+                        value="6"
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div class="community-publish-actions">
+                  <button
+                    id="saveCommunityDraft"
+                    type="button"
+                    class="button secondary"
+                  >
+                    Save Draft
+                  </button>
+
+                  <button
+                    id="publishCommunity"
+                    type="button"
+                    class="button primary"
+                  >
+                    Publish Changes
+                  </button>
+                </div>
+
+                <p id="communityMessage" class="form-message"></p>
+              </form>
+
+              <aside class="glass community-preview-panel">
+                <span class="eyebrow">LIVE PREVIEW</span>
+                <h3>Draft Summary</h3>
+                <div id="communityDraftPreview"></div>
+              </aside>
+            </div>
+          </section>
+
+          <section id="galleryTab" class="admin-tab hidden">
+            <div class="management-layout">
+              <form id="galleryForm" class="glass management-form">
+                <div class="form-heading">
+                  <div>
+                    <span class="eyebrow">MEDIA UPLOAD</span>
+                    <h3>Add Gallery Image</h3>
+                  </div>
+                </div>
+
+                <div class="form-grid">
+                  <label class="full-span">
+                    League
+                    <select id="galleryLeague" required>
+                      <option value="">Choose a league</option>
+                    </select>
+                  </label>
+
+                  <label class="full-span upload-zone" id="galleryUploadZone">
+                    <span>Gallery image</span>
+                    <strong>Drop image here or click to browse</strong>
+                    <small>PNG, JPG or WebP · Max 8 MB</small>
+                    <input
+                      id="galleryImage"
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      required
+                    />
+                  </label>
+
+                  <label class="full-span">
+                    Caption
+                    <input
+                      id="galleryCaption"
+                      maxlength="180"
+                      placeholder="Optional image caption"
+                    />
+                  </label>
+
+                  <label class="checkbox-label full-span">
+                    <input id="galleryFeatured" type="checkbox" />
+                    Use as featured gallery image
+                  </label>
+                </div>
+
+                <div id="galleryPreview" class="asset-preview"></div>
+
+                <button class="button primary full" type="submit">
+                  Upload Image
+                </button>
+
+                <p id="galleryMessage" class="form-message"></p>
+              </form>
+
+              <div class="glass management-list">
+                <div class="form-heading">
+                  <div>
+                    <span class="eyebrow">LEAGUE MEDIA</span>
+                    <h3>Gallery Images</h3>
+                  </div>
+                </div>
+
+                <div class="admin-toolbar">
+                  <select id="galleryLeagueFilter">
+                    <option value="all">All leagues</option>
                   </select>
-                </label>
+                </div>
 
-                <label>
-                  Position
-                  <input id="rankingPosition" type="number" min="1" required>
-                </label>
-
-                <label>
-                  Tier
-                  <select id="rankingTier" required>
-                    <option value="S">S Tier</option>
-                    <option value="A">A Tier</option>
-                    <option value="B">B Tier</option>
-                    <option value="C">C Tier</option>
-                  </select>
-                </label>
+                <div id="adminGalleryList" class="admin-gallery-grid"></div>
+                <div id="adminGalleryEmpty" class="empty-state hidden">
+                  No gallery images match this view.
+                </div>
               </div>
+            </div>
+          </section>
 
-              <button class="button primary full" type="submit">Save Ranking</button>
-              <p id="rankingMessage" class="form-message"></p>
-            </form>
+          <section id="racesTab" class="admin-tab hidden">
+            <div class="management-layout">
+              <form id="raceForm" class="glass management-form">
+                <input id="raceId" type="hidden" />
 
-            <div class="glass management-list">
-              <div class="form-heading">
-                <div>
-                  <span class="eyebrow">SMART ORDER</span>
-                  <h3>League Rankings</h3>
-                  <p class="admin-section-help">
-                    Drag rankings or use the arrow buttons. Positions update automatically.
+                <div class="form-heading">
+                  <div>
+                    <span class="eyebrow">RACE EDITOR</span>
+                    <h3 id="raceFormTitle">Add Race</h3>
+                  </div>
+                  <button
+                    id="clearRaceButton"
+                    type="button"
+                    class="button secondary"
+                  >
+                    Clear
+                  </button>
+                </div>
+
+                <div class="form-grid">
+                  <label class="full-span">
+                    League
+                    <select id="raceLeague" required>
+                      <option value="">Choose a league</option>
+                    </select>
+                  </label>
+
+                  <label
+                    >Event name<input
+                      id="raceEventName"
+                      required
+                      placeholder="Round 1"
+                  /></label>
+                  <label
+                    >Category<input
+                      id="raceCategory"
+                      placeholder="Formula Racing"
+                  /></label>
+
+                  <label
+                    >Circuit<input id="raceCircuit" placeholder="Monaco"
+                  /></label>
+
+                  <label
+                    >Date<input id="raceDate" type="date" required
+                  /></label>
+                  <label
+                    >Time<input id="raceTime" type="time" required
+                  /></label>
+
+                  <p class="form-help full-span">
+                    Enter the race date and time in your current device time zone.
+                    Visitors will automatically see it converted to their own local time.
                   </p>
-                </div>
-              </div>
 
-              <div class="admin-toolbar">
-                <input
-                  id="rankingAdminSearch"
-                  type="search"
-                  placeholder="Search rankings…"
-                >
-              </div>
+                  <label class="full-span"
+                    >Event URL<input
+                      id="raceEventUrl"
+                      type="url"
+                      placeholder="https://discord.gg/..."
+                  /></label>
+                  <label class="full-span"
+                    >Stream URL<input
+                      id="raceStreamUrl"
+                      type="url"
+                      placeholder="https://youtube.com/..."
+                  /></label>
 
-              <div id="adminRankingList"></div>
-              <div id="adminRankingEmpty" class="empty-state hidden">No rankings match this view.</div>
-            </div>
-          </div>
-        </section>
+                  <label
+                    class="full-span upload-zone"
+                    id="raceBannerUploadZone"
+                  >
+                    <span>Race artwork</span>
+                    <strong>Drop a race or circuit banner here</strong>
+                    <small>Optional · PNG, JPG or WebP · Max 8 MB</small>
+                    <input
+                      id="raceBanner"
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                    />
+                  </label>
 
+                  <div
+                    id="raceBannerPreview"
+                    class="asset-preview full-span"
+                  ></div>
 
-        <section id="communityTab" class="admin-tab hidden">
-          <div class="community-admin-layout">
-            <form id="communityForm" class="glass management-form community-editor">
-              <div class="form-heading">
-                <div>
-                  <span class="eyebrow">COMMUNITY HUB</span>
-                  <h3>Homepage Content</h3>
-                </div>
-
-                <span id="communitySaveState" class="draft-state">No draft loaded</span>
-              </div>
-
-              <div class="community-admin-section">
-                <h4>Announcement Banner</h4>
-
-                <div class="form-grid">
                   <label class="checkbox-label full-span">
-                    <input id="announcementEnabled" type="checkbox">
-                    Show announcement
+                    <input id="raceIsLive" type="checkbox" />
+                    Mark this race as live
                   </label>
 
-                  <label>
-                    Title
-                    <input id="announcementTitle" placeholder="Important update">
-                  </label>
-
-                  <label>
-                    Style
-                    <select id="announcementType">
-                      <option value="info">Information</option>
-                      <option value="success">Success</option>
-                      <option value="warning">Warning</option>
-                    </select>
-                  </label>
-
-                  <label class="full-span">
-                    Message
-                    <textarea id="announcementText" rows="3"></textarea>
-                  </label>
-
-                  <label>
-                    Button text
-                    <input id="announcementButtonText" placeholder="Learn more">
-                  </label>
-
-                  <label>
-                    Button URL
-                    <input id="announcementButtonUrl" type="url" placeholder="https://...">
-                  </label>
-
-                  <label class="full-span">
-                    Expiry date and time
-                    <input id="announcementExpiry" type="datetime-local">
-                  </label>
-                </div>
-              </div>
-
-              <div class="community-admin-section">
-                <h4>Weekly Spotlights</h4>
-
-                <div class="form-grid">
-                  <label>
-                    League of the Week
-                    <select id="leagueOfWeekSelect">
-                      <option value="">None</option>
-                    </select>
-                  </label>
-
-                  <label>
-                    Race of the Week
-                    <select id="raceOfWeekSelect">
-                      <option value="">None</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-
-              <div class="community-admin-section">
-                <h4>Featured Livestream</h4>
-
-                <div class="form-grid">
                   <label class="checkbox-label full-span">
-                    <input id="streamEnabled" type="checkbox">
-                    Show featured stream
-                  </label>
-
-                  <label class="full-span">
-                    Stream title
-                    <input id="streamTitle" placeholder="FDH Live">
-                  </label>
-
-                  <label class="full-span">
-                    Stream URL
-                    <input id="streamUrl" type="url" placeholder="YouTube, Twitch or Kick URL">
-                  </label>
-
-                  <label class="full-span">
-                    Description
-                    <textarea id="streamDescription" rows="3"></textarea>
+                    <input id="raceIsArchived" type="checkbox" />
+                    Archive this race and hide it from public pages
                   </label>
                 </div>
-              </div>
 
-              <div class="community-admin-section">
-                <h4>Trending & Recent Leagues</h4>
-
-                <label class="full-span">
-                  Trending leagues
-                  <div id="trendingLeagueSelector" class="trending-selector"></div>
-                </label>
-
-                <div class="form-grid">
-                  <label class="checkbox-label">
-                    <input id="showRecentlyAdded" type="checkbox" checked>
-                    Show recently added leagues
-                  </label>
-
-                  <label>
-                    Number shown
-                    <input id="recentlyAddedLimit" type="number" min="1" max="12" value="6">
-                  </label>
-                </div>
-              </div>
-
-              <div class="community-publish-actions">
-                <button id="saveCommunityDraft" type="button" class="button secondary">
-                  Save Draft
+                <button class="button primary full" type="submit">
+                  Save Race
                 </button>
+                <p id="raceMessage" class="form-message"></p>
+              </form>
 
-                <button id="publishCommunity" type="button" class="button primary">
-                  Publish Changes
-                </button>
-              </div>
-
-              <p id="communityMessage" class="form-message"></p>
-            </form>
-
-            <aside class="glass community-preview-panel">
-              <span class="eyebrow">LIVE PREVIEW</span>
-              <h3>Draft Summary</h3>
-              <div id="communityDraftPreview"></div>
-            </aside>
-          </div>
-        </section>
-
-
-        <section id="galleryTab" class="admin-tab hidden">
-          <div class="management-layout">
-            <form id="galleryForm" class="glass management-form">
-              <div class="form-heading">
-                <div>
-                  <span class="eyebrow">MEDIA UPLOAD</span>
-                  <h3>Add Gallery Image</h3>
+              <div class="glass management-list">
+                <div class="form-heading race-management-heading">
+                  <div>
+                    <span class="eyebrow">CURRENT CONTENT</span>
+                    <h3>Races</h3>
+                  </div>
                 </div>
-              </div>
 
-              <div class="form-grid">
-                <label class="full-span">
-                  League
-                  <select id="galleryLeague" required>
-                    <option value="">Choose a league</option>
-                  </select>
-                </label>
-
-                <label class="full-span upload-zone" id="galleryUploadZone">
-                  <span>Gallery image</span>
-                  <strong>Drop image here or click to browse</strong>
-                  <small>PNG, JPG or WebP · Max 8 MB</small>
+                <div class="admin-toolbar">
                   <input
-                    id="galleryImage"
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp"
-                    required
-                  >
-                </label>
+                    id="raceSearch"
+                    type="search"
+                    placeholder="Search races or leagues…"
+                  />
 
-                <label class="full-span">
-                  Caption
-                  <input
-                    id="galleryCaption"
-                    maxlength="180"
-                    placeholder="Optional image caption"
-                  >
-                </label>
-
-                <label class="checkbox-label full-span">
-                  <input id="galleryFeatured" type="checkbox">
-                  Use as featured gallery image
-                </label>
-              </div>
-
-              <div id="galleryPreview" class="asset-preview"></div>
-
-              <button class="button primary full" type="submit">
-                Upload Image
-              </button>
-
-              <p id="galleryMessage" class="form-message"></p>
-            </form>
-
-            <div class="glass management-list">
-              <div class="form-heading">
-                <div>
-                  <span class="eyebrow">LEAGUE MEDIA</span>
-                  <h3>Gallery Images</h3>
+                  <div class="admin-filter-group" id="raceFilters">
+                    <button
+                      type="button"
+                      class="admin-filter-button active"
+                      data-race-filter="all"
+                    >
+                      All
+                    </button>
+                    <button
+                      type="button"
+                      class="admin-filter-button"
+                      data-race-filter="upcoming"
+                    >
+                      Upcoming
+                    </button>
+                    <button
+                      type="button"
+                      class="admin-filter-button"
+                      data-race-filter="live"
+                    >
+                      Live
+                    </button>
+                    <button
+                      type="button"
+                      class="admin-filter-button"
+                      data-race-filter="completed"
+                    >
+                      Completed
+                    </button>
+                    <button
+                      type="button"
+                      class="admin-filter-button"
+                      data-race-filter="archived"
+                    >
+                      Archived
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div class="admin-toolbar">
-                <select id="galleryLeagueFilter">
-                  <option value="all">All leagues</option>
-                </select>
-              </div>
-
-              <div id="adminGalleryList" class="admin-gallery-grid"></div>
-              <div id="adminGalleryEmpty" class="empty-state hidden">
-                No gallery images match this view.
+                <div id="adminRaceList"></div>
+                <div id="adminRaceEmpty" class="empty-state hidden">
+                  No races match this view.
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
+      </section>
+    </main>
 
-        <section id="racesTab" class="admin-tab hidden">
-          <div class="management-layout">
-            <form id="raceForm" class="glass management-form">
-              <input id="raceId" type="hidden">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+    <script src="config.js"></script>
+    <script src="admin.js"></script>
+  
+    <a
+      class="back-home-button"
+      href="index.html"
+      aria-label="Return to the Fortnite Driver Hub home page"
+    >
+      <span aria-hidden="true">←</span>
+      Back Home
+    </a>
 
-              <div class="form-heading">
-                <div><span class="eyebrow">RACE EDITOR</span><h3 id="raceFormTitle">Add Race</h3></div>
-                <button id="clearRaceButton" type="button" class="button secondary">Clear</button>
-              </div>
-
-              <div class="form-grid">
-                <label class="full-span">
-                  League
-                  <select id="raceLeague" required>
-                    <option value="">Choose a league</option>
-                  </select>
-                </label>
-
-                <label>Event name<input id="raceEventName" required placeholder="Round 1"></label>
-                <label>Category<input id="raceCategory" placeholder="Formula Racing"></label>
-
-                <label>Circuit<input id="raceCircuit" placeholder="Monaco"></label>
-                <label>
-                  League timezone
-                  <select id="raceTimezone">
-                    <option value="Asia/Dubai">Dubai — Asia/Dubai</option>
-                    <option value="Europe/London">United Kingdom — Europe/London</option>
-                    <option value="Europe/Paris">Central Europe — Europe/Paris</option>
-                    <option value="America/Toronto">Toronto — America/Toronto</option>
-                    <option value="America/New_York">New York — America/New_York</option>
-                    <option value="America/Chicago">Chicago — America/Chicago</option>
-                    <option value="America/Los_Angeles">Los Angeles — America/Los_Angeles</option>
-                    <option value="Asia/Tokyo">Tokyo — Asia/Tokyo</option>
-                    <option value="Australia/Sydney">Sydney — Australia/Sydney</option>
-                    <option value="UTC">UTC</option>
-                  </select>
-                </label>
-
-                <label>Date<input id="raceDate" type="date" required></label>
-                <label>Time<input id="raceTime" type="time" required></label>
-
-                <label class="full-span">Event URL<input id="raceEventUrl" type="url" placeholder="https://discord.gg/..."></label>
-                <label class="full-span">Stream URL<input id="raceStreamUrl" type="url" placeholder="https://youtube.com/..."></label>
-
-                
-                <label class="full-span upload-zone" id="raceBannerUploadZone">
-                  <span>Race artwork</span>
-                  <strong>Drop a race or circuit banner here</strong>
-                  <small>Optional · PNG, JPG or WebP · Max 8 MB</small>
-                  <input
-                    id="raceBanner"
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp"
-                  >
-                </label>
-
-                <div id="raceBannerPreview" class="asset-preview full-span"></div>
-
-                <label class="checkbox-label full-span">
-                  <input id="raceIsLive" type="checkbox">
-                  Mark this race as live
-                </label>
-
-                <label class="checkbox-label full-span">
-                  <input id="raceIsArchived" type="checkbox">
-                  Archive this race and hide it from public pages
-                </label>
-              </div>
-
-              <button class="button primary full" type="submit">Save Race</button>
-              <p id="raceMessage" class="form-message"></p>
-            </form>
-
-            <div class="glass management-list">
-              <div class="form-heading race-management-heading">
-                <div>
-                  <span class="eyebrow">CURRENT CONTENT</span>
-                  <h3>Races</h3>
-                </div>
-              </div>
-
-              <div class="admin-toolbar">
-                <input id="raceSearch" type="search" placeholder="Search races or leagues…">
-
-                <div class="admin-filter-group" id="raceFilters">
-                  <button type="button" class="admin-filter-button active" data-race-filter="all">All</button>
-                  <button type="button" class="admin-filter-button" data-race-filter="upcoming">Upcoming</button>
-                  <button type="button" class="admin-filter-button" data-race-filter="live">Live</button>
-                  <button type="button" class="admin-filter-button" data-race-filter="completed">Completed</button>
-                  <button type="button" class="admin-filter-button" data-race-filter="archived">Archived</button>
-                </div>
-              </div>
-
-              <div id="adminRaceList"></div>
-              <div id="adminRaceEmpty" class="empty-state hidden">No races match this view.</div>
-            </div>
-          </div>
-        </section>
-      </div>
-    </section>
-  </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
-  <script src="config.js"></script>
-  <script src="admin.js"></script>
-</body>
+  </body>
 </html>
