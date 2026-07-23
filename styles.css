@@ -8303,3 +8303,151 @@ body.rankings-page-body
 .schedule-browser {
   margin-top: 1.25rem !important;
 }
+
+/* =========================================================
+   FDH v13.8.2 REBASED — Admin race + ranking list fixes
+   ========================================================= */
+
+/* Race list: keep badges, copy and controls inside the scroll panel. */
+.admin-body #adminRaceList {
+  padding-right: 0.7rem !important;
+}
+
+.admin-body #adminRaceList > .race-admin-row {
+  display: grid !important;
+  grid-template-columns: 62px minmax(86px, 1fr) minmax(176px, auto) !important;
+  align-items: center !important;
+  column-gap: 0.55rem !important;
+  overflow: hidden !important;
+}
+
+.admin-body #adminRaceList .race-date-badge,
+.admin-body #adminRaceList .admin-list-copy,
+.admin-body #adminRaceList .race-row-actions {
+  min-width: 0 !important;
+}
+
+.admin-body #adminRaceList .race-date-badge {
+  width: 62px !important;
+  box-sizing: border-box !important;
+}
+
+.admin-body #adminRaceList .race-row-actions {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.3rem !important;
+  width: 100% !important;
+  max-width: 224px !important;
+  justify-self: end !important;
+}
+
+.admin-body #adminRaceList .race-row-actions .button {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 31px !important;
+  padding: 0.34rem 0.36rem !important;
+  line-height: 1.05 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+.admin-body #adminRaceList .race-status-label,
+.admin-body #adminRaceList .live-pill {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Rankings: logo replaces number; abbreviation replaces full name. */
+.admin-body #adminRankingList > .ranking-admin-row {
+  grid-template-columns: 18px 44px minmax(54px, 1fr) auto minmax(116px, auto) !important;
+  align-items: center !important;
+  overflow: hidden !important;
+}
+
+.admin-body .admin-ranking-logo {
+  width: 42px !important;
+  height: 42px !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+  border-radius: 11px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+.admin-body .admin-ranking-logo img {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: contain !important;
+}
+
+.admin-body .admin-ranking-logo span {
+  color: rgba(255, 255, 255, 0.78) !important;
+  font-size: 0.67rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.03em !important;
+}
+
+.admin-body .ranking-admin-copy strong {
+  max-width: 100% !important;
+  font-size: 0.82rem !important;
+  letter-spacing: 0.035em !important;
+  text-transform: uppercase !important;
+}
+
+.admin-body #adminRankingList .ranking-move-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, 30px) !important;
+  gap: 0.28rem !important;
+}
+
+.admin-body #adminRankingList .admin-row-actions {
+  display: grid !important;
+  grid-template-columns: minmax(68px, 1fr) minmax(50px, auto) !important;
+  gap: 0.3rem !important;
+  min-width: 116px !important;
+}
+
+.admin-body #adminRankingList .admin-row-actions .button {
+  min-width: 0 !important;
+  width: 100% !important;
+  padding-inline: 0.42rem !important;
+}
+
+@media (max-width: 1180px) {
+  .admin-body #adminRaceList > .race-admin-row {
+    grid-template-columns: 58px minmax(0, 1fr) !important;
+  }
+
+  .admin-body #adminRaceList .race-row-actions {
+    grid-column: 1 / -1 !important;
+    max-width: none !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+
+  .admin-body #adminRankingList > .ranking-admin-row {
+    grid-template-columns: 18px 42px minmax(0, 1fr) auto !important;
+  }
+
+  .admin-body #adminRankingList .admin-row-actions {
+    grid-column: 2 / -1 !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-body #adminRaceList .race-row-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .admin-body #adminRankingList > .ranking-admin-row {
+    grid-template-columns: 16px 40px minmax(0, 1fr) !important;
+  }
+
+  .admin-body #adminRankingList .ranking-move-actions,
+  .admin-body #adminRankingList .admin-row-actions {
+    grid-column: 2 / -1 !important;
+  }
+}

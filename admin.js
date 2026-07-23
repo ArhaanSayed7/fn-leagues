@@ -946,11 +946,18 @@ function populateRankingLeagueSelect() {
 }
 
 function renderRankingList() {
-  const filteredRankings = rankingCache.filter((ranking) =>
-    String(ranking.leagues?.name || "")
-      .toLowerCase()
-      .includes(rankingAdminSearchQuery),
-  );
+  const filteredRankings = rankingCache.filter((ranking) => {
+    const searchable = [
+      ranking.leagues?.name,
+      ranking.leagues?.abbreviation,
+      ranking.tier,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return searchable.includes(rankingAdminSearchQuery);
+  });
 
   $("adminRankingEmpty").classList.toggle(
     "hidden",
@@ -967,10 +974,36 @@ function renderRankingList() {
       data-ranking-index="${index}"
     >
       <div class="ranking-drag-handle" title="Drag to reorder">⋮⋮</div>
-      <div class="ranking-position-badge">#${ranking.position}</div>
 
-      <div class="admin-list-copy">
-        <strong>${escapeHtml(ranking.leagues?.name || "Unknown league")}</strong>
+      <div
+        class="admin-ranking-logo"
+        title="${escapeHtml(ranking.leagues?.name || "Unknown league")}"
+      >
+        ${
+          ranking.leagues?.logo_url
+            ? `<img src="${escapeHtml(ranking.leagues.logo_url)}" alt="${escapeHtml(ranking.leagues?.name || "League")} logo" loading="lazy">`
+            : `<span>${escapeHtml(
+                String(
+                  ranking.leagues?.abbreviation ||
+                    ranking.leagues?.name ||
+                    "LG",
+                )
+                  .slice(0, 3)
+                  .toUpperCase(),
+              )}</span>`
+        }
+      </div>
+
+      <div class="admin-list-copy ranking-admin-copy">
+        <strong title="${escapeHtml(ranking.leagues?.name || "Unknown league")}">
+          ${escapeHtml(
+            String(
+              ranking.leagues?.abbreviation ||
+                ranking.leagues?.name ||
+                "LG",
+            ).toUpperCase(),
+          )}
+        </strong>
         <span>
           <span class="tier-badge tier-${String(ranking.tier || "C").toLowerCase()}">
             ${escapeHtml(String(ranking.tier || "C").toUpperCase())} Tier
