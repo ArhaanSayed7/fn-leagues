@@ -7781,7 +7781,6 @@ body.rankings-page-body
   }
 }
 
-
 /* =========================================================
    FDH v1.0.1 — COMPACT ADMIN LISTS + FIXED BACK HOME
    ========================================================= */
@@ -7815,7 +7814,9 @@ body.rankings-page-body
 
 .admin-body #adminLeagueList::-webkit-scrollbar,
 .admin-body #adminRaceList::-webkit-scrollbar,
-.admin-body #adminRankingList::-webkit-scrollbar { width: 7px; }
+.admin-body #adminRankingList::-webkit-scrollbar {
+  width: 7px;
+}
 
 .admin-body #adminLeagueList::-webkit-scrollbar-track,
 .admin-body #adminRaceList::-webkit-scrollbar-track,
@@ -7861,7 +7862,9 @@ body.rankings-page-body
   border-radius: 10px !important;
 }
 
-.admin-body .admin-list-copy { min-width: 0; }
+.admin-body .admin-list-copy {
+  min-width: 0;
+}
 .admin-body .admin-list-copy strong {
   overflow: hidden;
   color: #fff !important;
@@ -7895,8 +7898,12 @@ body.rankings-page-body
   padding: 0.42rem 0.45rem !important;
   border-radius: 9px !important;
 }
-.admin-body .race-date-badge strong { font-size: 0.75rem !important; }
-.admin-body .race-date-badge span { font-size: 0.62rem !important; }
+.admin-body .race-date-badge strong {
+  font-size: 0.75rem !important;
+}
+.admin-body .race-date-badge span {
+  font-size: 0.62rem !important;
+}
 .admin-body .ranking-position-badge {
   min-width: 46px !important;
   min-height: 34px !important;
@@ -7923,17 +7930,30 @@ body.rankings-page-body
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 13px;
   background: linear-gradient(135deg, #f42d38, #970811) !important;
-  box-shadow: 0 15px 38px rgba(0, 0, 0, 0.45), 0 7px 24px rgba(220, 22, 34, 0.28);
-  transition: transform 0.2s ease, filter 0.2s ease;
+  box-shadow:
+    0 15px 38px rgba(0, 0, 0, 0.45),
+    0 7px 24px rgba(220, 22, 34, 0.28);
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
 }
-.back-home-button:hover { transform: translateY(-3px); filter: brightness(1.12); }
-.back-home-button:active { transform: translateY(-1px); }
+.back-home-button:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.12);
+}
+.back-home-button:active {
+  transform: translateY(-1px);
+}
 
 @media (max-width: 900px) {
-  .admin-body .management-list { position: static; }
+  .admin-body .management-list {
+    position: static;
+  }
   .admin-body #adminLeagueList,
   .admin-body #adminRaceList,
-  .admin-body #adminRankingList { max-height: 380px !important; }
+  .admin-body #adminRankingList {
+    max-height: 380px !important;
+  }
 }
 
 @media (max-width: 680px) {
@@ -8086,7 +8106,11 @@ body.rankings-page-body
   gap: 1rem;
   padding: 1rem 1.15rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  background: linear-gradient(90deg, rgba(239, 37, 48, 0.09), rgba(255, 255, 255, 0.025));
+  background: linear-gradient(
+    90deg,
+    rgba(239, 37, 48, 0.09),
+    rgba(255, 255, 255, 0.025)
+  );
 }
 
 .full-schedule-day-heading h3 {
@@ -8136,7 +8160,9 @@ body.rankings-page-body
   min-height: 84px;
   padding: 0.8rem 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
 .full-schedule-race-row:last-child {
@@ -8257,4 +8283,23 @@ body.rankings-page-body
     width: 40px;
     height: 40px;
   }
+}
+/* v13.8.1 — Fix full schedule vertical spacing */
+
+.schedule-page {
+  padding-top: 6.5rem !important;
+  padding-bottom: 3rem !important;
+}
+
+.schedule-page-hero {
+  padding: 1.5rem 2rem !important;
+}
+
+.schedule-page-hero h1 {
+  margin: 0.45rem 0 0.7rem !important;
+  font-size: clamp(2.8rem, 6vw, 5rem) !important;
+}
+
+.schedule-browser {
+  margin-top: 1.25rem !important;
 }
