@@ -8451,3 +8451,6 @@ body.rankings-page-body
     grid-column: 2 / -1 !important;
   }
 }
+.fdh-race-times {
+  grid-template-columns: 1fr !important;
+}

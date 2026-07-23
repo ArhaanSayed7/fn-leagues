@@ -536,11 +536,7 @@ function renderNextRace(race, league) {
         }
 
         <div class="fdh-race-times">
-          <div>
-            <span>League time</span>
-            <strong>${original.toFormat("ccc, d LLL yyyy · h:mm a")}</strong>
-            <small>${escapeHtml(race.timezone || "UTC")}</small>
-          </div>
+          
 
           <div>
             <span>Your local time</span>
