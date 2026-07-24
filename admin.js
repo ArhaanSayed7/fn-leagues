@@ -425,6 +425,7 @@ window.editLeague = function (id) {
   $("leagueInstagram").value = league.instagram_url || "";
   $("leagueYoutube").value = league.youtube_url || "";
   $("leagueTwitch").value = league.twitch_url || "";
+  $("leagueTikTok").value = league.tiktok_url || "";
   $("leagueDescription").value = league.description || "";
   $("leagueTheme").value = league.theme_key || "aurora";
   $("leagueAccentColor").value = league.accent_color || "#9c7ddd";
@@ -461,6 +462,7 @@ window.duplicateLeague = function (id) {
   $("leagueInstagram").value = league.instagram_url || "";
   $("leagueYoutube").value = league.youtube_url || "";
   $("leagueTwitch").value = league.twitch_url || "";
+  $("leagueTikTok").value = league.tiktok_url || "";
   $("leagueDescription").value = league.description || "";
   $("leagueTheme").value = league.theme_key || "aurora";
   $("leagueAccentColor").value = league.accent_color || "#9c7ddd";
@@ -589,6 +591,7 @@ async function saveLeague(event) {
       instagram_url: $("leagueInstagram").value.trim() || null,
       youtube_url: $("leagueYoutube").value.trim() || null,
       twitch_url: $("leagueTwitch").value.trim() || null,
+      tiktok_url: $("leagueTikTok").value.trim() || null,
       theme_key: $("leagueTheme").value || "aurora",
       accent_color: $("leagueAccentColor").value || "#9c7ddd",
       badge_type: $("leagueBadge").value || null,

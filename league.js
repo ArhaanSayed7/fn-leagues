@@ -368,23 +368,66 @@ function renderBadgeText(type) {
   return labels[type] || "Standard";
 }
 
+function getSocialIcon(platform) {
+  const icons = {
+    instagram: `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+        <circle cx="12" cy="12" r="4"></circle>
+        <circle cx="17.5" cy="6.5" r="1"></circle>
+      </svg>
+    `,
+    youtube: `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M21 8.1a3 3 0 0 0-2.1-2.1C17 5.5 12 5.5 12 5.5s-5 0-6.9.5A3 3 0 0 0 3 8.1 31 31 0 0 0 2.5 12 31 31 0 0 0 3 15.9 3 3 0 0 0 5.1 18c1.9.5 6.9.5 6.9.5s5 0 6.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-3.9 31 31 0 0 0-.5-3.9Z"></path>
+        <path class="social-icon-cutout" d="m10 9 5 3-5 3Z"></path>
+      </svg>
+    `,
+    twitch: `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 3h16v11l-5 5h-4l-3 3v-3H5V3Zm2 2v12h4v2l2-2h3l3-3V5H7Z"></path>
+        <path class="social-icon-cutout" d="M11 8h2v5h-2zm4 0h2v5h-2z"></path>
+      </svg>
+    `,
+    tiktok: `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M14 3h3a5 5 0 0 0 4 4v3a8 8 0 0 1-4-1.1V15a6 6 0 1 1-6-6c.4 0 .7 0 1 .1v3.1a3 3 0 1 0 2 2.8V3Z"></path>
+      </svg>
+    `,
+  };
+
+  return icons[platform] || "";
+}
+
 function renderSocialLinks(league) {
   const links = [
-    { label: "Instagram", url: league.instagram_url, icon: "IG" },
-    { label: "YouTube", url: league.youtube_url, icon: "YT" },
-    { label: "Twitch", url: league.twitch_url, icon: "TW" },
+    {
+      platform: "instagram",
+      label: "Instagram",
+      url: league.instagram_url,
+    },
+    { platform: "youtube", label: "YouTube", url: league.youtube_url },
+    { platform: "twitch", label: "Twitch", url: league.twitch_url },
+    { platform: "tiktok", label: "TikTok", url: league.tiktok_url },
   ].filter((item) => item.url);
 
   if (!links.length) return "";
 
   return `
-    <div class="league-social-links">
+    <div class="league-social-links" aria-label="League social media">
       ${links
         .map(
           (link) => `
-        <a href="${safeUrl(link.url)}" target="_blank" rel="noopener">
-          <span>${link.icon}</span>
-          ${escapeHtml(link.label)}
+        <a
+          class="league-social-link social-${link.platform}"
+          href="${safeUrl(link.url)}"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open ${escapeHtml(link.label)}"
+          title="${escapeHtml(link.label)}"
+        >
+          ${getSocialIcon(link.platform)}
+          <span class="sr-only">${escapeHtml(link.label)}</span>
         </a>
       `,
         )
