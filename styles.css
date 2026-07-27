@@ -8789,3 +8789,72 @@ body.rankings-page-body
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   FDH v14.1.1 — Compact Discord activity pill
+   ============================================================ */
+.league-showcase-actions {
+  align-items: center;
+}
+
+.discord-activity-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.38rem;
+  min-height: 42px;
+  padding: 0.55rem 0.72rem;
+  border: 1px solid rgba(116, 92, 255, 0.3);
+  border-radius: 13px;
+  color: rgba(255, 255, 255, 0.84);
+  background: linear-gradient(145deg, rgba(29, 27, 42, 0.96), rgba(18, 17, 25, 0.96));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 9px 24px rgba(0, 0, 0, 0.22);
+  white-space: nowrap;
+}
+
+.discord-activity-icon {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  color: #8b79ff;
+}
+
+.discord-activity-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.discord-activity-pill strong {
+  color: #fff;
+  font: 800 0.78rem/1 Inter, sans-serif;
+}
+
+.discord-activity-separator {
+  color: rgba(255, 255, 255, 0.26);
+}
+
+.discord-online-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #36d576;
+  box-shadow: 0 0 9px rgba(54, 213, 118, 0.68);
+}
+
+.discord-activity-pill.is-unavailable {
+  opacity: 0.5;
+}
+
+.discord-activity-pill.is-unavailable .discord-online-dot {
+  background: #777780;
+  box-shadow: none;
+}
+
+@media (max-width: 620px) {
+  .discord-activity-pill {
+    min-height: 40px;
+    padding: 0.5rem 0.65rem;
+  }
+}

@@ -124,7 +124,25 @@ async function loadLeague() {
           <div class="league-showcase-actions">
             ${
               league.discord_url
-                ? `<a class="button primary" href="${safeUrl(league.discord_url)}" target="_blank" rel="noopener">Join Discord</a>`
+                ? `
+                  <a class="button primary" href="${safeUrl(league.discord_url)}" target="_blank" rel="noopener">Join Discord</a>
+                  <span
+                    id="leagueDiscordStats"
+                    class="discord-activity-pill"
+                    aria-label="Loading Discord activity"
+                    title="Loading Discord activity"
+                  >
+                    <span class="discord-activity-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" focusable="false">
+                        <path d="M16.5 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-9 0a3 3 0 1 0 0-6 3 3 0 0 0 0 0 6Zm0 1.5C4.46 15 2 16.57 2 18.5V20h11v-1.5C13 16.57 10.54 15 7.5 15Zm9 0c-.38 0-.75.03-1.1.08 1.55.88 2.6 2.08 2.6 3.42V20h4v-1.5c0-1.93-2.46-3.5-5.5-3.5Z"/>
+                      </svg>
+                    </span>
+                    <strong data-discord-members>—</strong>
+                    <span class="discord-activity-separator">·</span>
+                    <span class="discord-online-dot" aria-hidden="true"></span>
+                    <strong data-discord-online>—</strong>
+                  </span>
+                `
                 : ""
             }
 
@@ -234,28 +252,6 @@ async function loadLeague() {
         }
       </article>
 
-      <article class="glass league-discord-stats-card reveal-card" id="leagueDiscordStats">
-        <span class="eyebrow">DISCORD COMMUNITY</span>
-        <h2>Server Activity</h2>
-        <div class="discord-stats-grid">
-          <div>
-            <span>Total members</span>
-            <strong data-discord-members>—</strong>
-          </div>
-          <div>
-            <span>Online now</span>
-            <strong data-discord-online>—</strong>
-          </div>
-        </div>
-        <p class="discord-stats-status" data-discord-status>
-          ${league.discord_url ? "Loading Discord activity…" : "No Discord server is linked to this league."}
-        </p>
-        ${
-          league.discord_url
-            ? `<a class="button secondary discord-stats-join" href="${safeUrl(league.discord_url)}" target="_blank" rel="noopener">Join Discord</a>`
-            : ""
-        }
-      </article>
     </section>
 
     <section class="league-gallery-section scroll-scene">
@@ -385,13 +381,12 @@ async function loadLeagueDiscordStats(league) {
 
   const members = card.querySelector("[data-discord-members]");
   const online = card.querySelector("[data-discord-online]");
-  const status = card.querySelector("[data-discord-status]");
   const inviteCode = extractDiscordInviteCode(league.discord_url);
 
   if (!inviteCode) {
-    status.textContent = league.discord_url
-      ? "This Discord link is not a supported invite URL."
-      : "No Discord server is linked to this league.";
+    card.classList.add("is-unavailable");
+    card.setAttribute("aria-label", "Discord activity unavailable");
+    card.title = "Discord activity unavailable";
     return;
   }
 
@@ -413,10 +408,17 @@ async function loadLeagueDiscordStats(league) {
     online.textContent = Number.isFinite(onlineCount)
       ? onlineCount.toLocaleString()
       : "—";
-    status.textContent = "Live approximate Discord statistics.";
+    card.classList.remove("is-loading", "is-unavailable");
+    card.setAttribute(
+      "aria-label",
+      `${members.textContent} Discord members, ${online.textContent} online`,
+    );
+    card.title = `${members.textContent} members · ${online.textContent} online`;
   } catch (error) {
     console.warn("Unable to load Discord statistics", error);
-    status.textContent = "Discord statistics are temporarily unavailable.";
+    card.classList.add("is-unavailable");
+    card.setAttribute("aria-label", "Discord statistics temporarily unavailable");
+    card.title = "Discord statistics temporarily unavailable";
   }
 }
 
