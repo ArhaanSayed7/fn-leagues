@@ -1369,9 +1369,22 @@ function populateCommunitySelectors() {
   const currentLeague = $("leagueOfWeekSelect").value;
   const currentRace = $("raceOfWeekSelect").value;
 
+  const now = new Date();
+  const upcomingRaces = raceCache.filter(
+    (race) =>
+      !race.is_archived &&
+      race.is_live !== true &&
+      getAdminRaceDate(race) >= now,
+  );
+  const upcomingLeagueIds = new Set(
+    upcomingRaces.map((race) => String(race.league_id)),
+  );
+
+  // League of the Week only lists leagues that currently have an upcoming race.
   $("leagueOfWeekSelect").innerHTML = `
     <option value="">None</option>
     ${leagueCache
+      .filter((league) => upcomingLeagueIds.has(String(league.id)))
       .map(
         (league) => `
       <option value="${league.id}">${escapeHtml(league.name)}</option>
@@ -1380,10 +1393,10 @@ function populateCommunitySelectors() {
       .join("")}
   `;
 
+  // Race of the Week only lists upcoming races.
   $("raceOfWeekSelect").innerHTML = `
     <option value="">None</option>
-    ${raceCache
-      .filter((race) => !race.is_archived)
+    ${upcomingRaces
       .map(
         (race) => `
         <option value="${race.id}">

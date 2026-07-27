@@ -140,14 +140,6 @@ async function loadLeague() {
                 : ""
             }
 
-            <a
-              class="button secondary fdh-drivers-link"
-              href="https://fp-league.github.io/FDHSITE/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              FDH Drivers Website <span aria-hidden="true">↗</span>
-            </a>
           </div>
 
           ${renderSocialLinks(league)}
@@ -239,6 +231,29 @@ async function loadLeague() {
               </div>
             `
             : `<div class="empty-state compact-empty">No staff members have been listed.</div>`
+        }
+      </article>
+
+      <article class="glass league-discord-stats-card reveal-card" id="leagueDiscordStats">
+        <span class="eyebrow">DISCORD COMMUNITY</span>
+        <h2>Server Activity</h2>
+        <div class="discord-stats-grid">
+          <div>
+            <span>Total members</span>
+            <strong data-discord-members>—</strong>
+          </div>
+          <div>
+            <span>Online now</span>
+            <strong data-discord-online>—</strong>
+          </div>
+        </div>
+        <p class="discord-stats-status" data-discord-status>
+          ${league.discord_url ? "Loading Discord activity…" : "No Discord server is linked to this league."}
+        </p>
+        ${
+          league.discord_url
+            ? `<a class="button secondary discord-stats-join" href="${safeUrl(league.discord_url)}" target="_blank" rel="noopener">Join Discord</a>`
+            : ""
         }
       </article>
     </section>
@@ -337,11 +352,72 @@ async function loadLeague() {
     </section>
   `;
 
+  loadLeagueDiscordStats(league);
   initializeGalleryLightbox(gallery);
   initializeCountdowns();
   initializeCalendarControls(nextRace, league);
   initializeAnimations();
   initializeScrollExperience();
+}
+
+function extractDiscordInviteCode(url) {
+  if (!url) return "";
+
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace(/^www\./, "").toLowerCase();
+
+    if (!["discord.gg", "discord.com", "discordapp.com"].includes(host)) {
+      return "";
+    }
+
+    const parts = parsed.pathname.split("/").filter(Boolean);
+    const inviteIndex = parts.findIndex((part) => part.toLowerCase() === "invite");
+    return inviteIndex >= 0 ? parts[inviteIndex + 1] || "" : parts[0] || "";
+  } catch {
+    return "";
+  }
+}
+
+async function loadLeagueDiscordStats(league) {
+  const card = document.getElementById("leagueDiscordStats");
+  if (!card) return;
+
+  const members = card.querySelector("[data-discord-members]");
+  const online = card.querySelector("[data-discord-online]");
+  const status = card.querySelector("[data-discord-status]");
+  const inviteCode = extractDiscordInviteCode(league.discord_url);
+
+  if (!inviteCode) {
+    status.textContent = league.discord_url
+      ? "This Discord link is not a supported invite URL."
+      : "No Discord server is linked to this league.";
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `https://discord.com/api/v10/invites/${encodeURIComponent(inviteCode)}?with_counts=true`,
+      { headers: { Accept: "application/json" } },
+    );
+
+    if (!response.ok) throw new Error(`Discord returned ${response.status}`);
+
+    const data = await response.json();
+    const memberCount = Number(data.approximate_member_count);
+    const onlineCount = Number(data.approximate_presence_count);
+
+    members.textContent = Number.isFinite(memberCount)
+      ? memberCount.toLocaleString()
+      : "—";
+    online.textContent = Number.isFinite(onlineCount)
+      ? onlineCount.toLocaleString()
+      : "—";
+    status.textContent = "Live approximate Discord statistics.";
+  } catch (error) {
+    console.warn("Unable to load Discord statistics", error);
+    status.textContent = "Discord statistics are temporarily unavailable.";
+  }
 }
 
 function getTheme(themeKey) {
