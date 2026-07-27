@@ -1,3 +1,8 @@
+## v14.0 — League Experience Update
+- Added automatic completed race archives to league pages.
+- Added FDH Drivers Website links.
+- Restyled featured and weekly highlight badges for the dark FDH theme.
+
 # FDH Changelog
 
 All notable changes to the FDH website are documented here.

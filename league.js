@@ -59,6 +59,18 @@ async function loadLeague() {
       (a, b) => getRaceDateTime(a).toMillis() - getRaceDateTime(b).toMillis(),
     );
 
+  // A scheduled race moves into Completed 90 minutes after its start time.
+  // Manually live races stay out of Completed until the admin ends them.
+  const completedRaces = races
+    .filter(
+      (race) =>
+        race.is_live !== true &&
+        getRaceDateTime(race).plus({ hours: 1, minutes: 30 }) <= now,
+    )
+    .sort(
+      (a, b) => getRaceDateTime(b).toMillis() - getRaceDateTime(a).toMillis(),
+    );
+
   const nextRace = upcomingRaces[0] || null;
   const theme = getTheme(league.theme_key);
   const accent = league.accent_color || theme.accent;
@@ -127,6 +139,15 @@ async function loadLeague() {
                 ? `<a class="button secondary" href="${safeUrl(league.contact_url)}" target="_blank" rel="noopener">Contact</a>`
                 : ""
             }
+
+            <a
+              class="button secondary fdh-drivers-link"
+              href="https://fp-league.github.io/FDHSITE/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              FDH Drivers Website <span aria-hidden="true">↗</span>
+            </a>
           </div>
 
           ${renderSocialLinks(league)}
@@ -292,6 +313,28 @@ async function loadLeague() {
         `
         : ""
     }
+
+    <section class="league-completed-section scroll-scene">
+      <div class="section-heading split">
+        <div>
+          <span class="eyebrow">RACE ARCHIVE</span>
+          <h2>Completed Races</h2>
+        </div>
+        ${
+          completedRaces.length
+            ? `<span class="section-note">${completedRaces.length} completed</span>`
+            : ""
+        }
+      </div>
+
+      ${
+        completedRaces.length
+          ? `<div class="league-completed-grid">${completedRaces
+              .map((race) => renderCompletedRace(race, league))
+              .join("")}</div>`
+          : `<div class="empty-state">No completed races yet.</div>`
+      }
+    </section>
   `;
 
   initializeGalleryLightbox(gallery);
@@ -654,6 +697,52 @@ function renderLiveRace(race) {
         ${
           race.event_url
             ? `<a class="button secondary" href="${safeUrl(race.event_url)}" target="_blank" rel="noopener">Event Link</a>`
+            : ""
+        }
+      </div>
+    </article>
+  `;
+}
+
+function renderCompletedRace(race, league) {
+  const local = getRaceDateTime(race).toLocal();
+  const artwork = race.banner_url || league.banner_url || "";
+
+  return `
+    <article class="completed-race-card reveal-card">
+      <div class="completed-race-visual">
+        ${
+          artwork
+            ? `<img src="${escapeHtml(artwork)}" alt="${escapeHtml(race.event_name || "Completed race")}" loading="lazy">`
+            : `<div class="completed-race-fallback"><img src="images/fdh-logo.png" alt="FDH"></div>`
+        }
+        <div class="completed-race-shade"></div>
+        <span class="completed-race-pill">COMPLETED</span>
+      </div>
+
+      <div class="completed-race-content">
+        <span class="eyebrow">${escapeHtml(race.category || "RACE EVENT")}</span>
+        <h3>${escapeHtml(race.event_name || "Race Event")}</h3>
+        <p>${escapeHtml(race.circuit || "Circuit not listed")}</p>
+        <div class="completed-race-meta">
+          <span>${local.toFormat("ccc, d LLL yyyy")}</span>
+          <span>${local.toFormat("h:mm a")}</span>
+        </div>
+
+        ${
+          race.event_url || race.stream_url
+            ? `<div class="completed-race-actions">
+                ${
+                  race.event_url
+                    ? `<a class="button secondary" href="${safeUrl(race.event_url)}" target="_blank" rel="noopener">Event Page</a>`
+                    : ""
+                }
+                ${
+                  race.stream_url
+                    ? `<a class="button secondary" href="${safeUrl(race.stream_url)}" target="_blank" rel="noopener">Watch Replay</a>`
+                    : ""
+                }
+              </div>`
             : ""
         }
       </div>
