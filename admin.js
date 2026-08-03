@@ -427,8 +427,6 @@ window.editLeague = function (id) {
   $("leagueTwitch").value = league.twitch_url || "";
   $("leagueTikTok").value = league.tiktok_url || "";
   $("leagueDescription").value = league.description || "";
-  $("leagueTheme").value = league.theme_key || "aurora";
-  $("leagueAccentColor").value = league.accent_color || "#9c7ddd";
   $("leagueBadge").value = league.badge_type || "";
   $("leagueOwner").value = league.owner_name || "";
   $("leagueStaff").value = Array.isArray(league.staff_members)
@@ -464,8 +462,6 @@ window.duplicateLeague = function (id) {
   $("leagueTwitch").value = league.twitch_url || "";
   $("leagueTikTok").value = league.tiktok_url || "";
   $("leagueDescription").value = league.description || "";
-  $("leagueTheme").value = league.theme_key || "aurora";
-  $("leagueAccentColor").value = league.accent_color || "#9c7ddd";
   $("leagueBadge").value = league.badge_type || "";
   $("leagueOwner").value = league.owner_name || "";
   $("leagueStaff").value = Array.isArray(league.staff_members)
@@ -544,8 +540,6 @@ function clearLeagueForm(clearMessage = true) {
   $("leagueForm").reset();
 
   $("leagueId").value = "";
-  $("leagueTheme").value = "aurora";
-  $("leagueAccentColor").value = "#9c7ddd";
   $("leagueBadge").value = "";
   $("leagueFeatured").checked = false;
 
@@ -592,8 +586,6 @@ async function saveLeague(event) {
       youtube_url: $("leagueYoutube").value.trim() || null,
       twitch_url: $("leagueTwitch").value.trim() || null,
       tiktok_url: $("leagueTikTok").value.trim() || null,
-      theme_key: $("leagueTheme").value || "aurora",
-      accent_color: $("leagueAccentColor").value || "#9c7ddd",
       badge_type: $("leagueBadge").value || null,
       owner_name: $("leagueOwner").value.trim() || null,
       staff_members: $("leagueStaff")

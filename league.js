@@ -71,6 +71,8 @@ async function loadLeague() {
       (a, b) => getRaceDateTime(b).toMillis() - getRaceDateTime(a).toMillis(),
     );
 
+  const recentCompletedRaces = completedRaces.slice(0, 3);
+
   const nextRace = upcomingRaces[0] || null;
   const theme = getTheme(league.theme_key);
   const accent = league.accent_color || theme.accent;
@@ -182,11 +184,6 @@ async function loadLeague() {
         <article>
           <span>Owner</span>
           <strong>${escapeHtml(league.owner_name || "—")}</strong>
-        </article>
-
-        <article>
-          <span>Theme</span>
-          <strong>${escapeHtml(theme.label)}</strong>
         </article>
       </div>
     </section>
@@ -328,21 +325,42 @@ async function loadLeague() {
     <section class="league-completed-section scroll-scene">
       <div class="section-heading split">
         <div>
-          <span class="eyebrow">RACE ARCHIVE</span>
+          <span class="eyebrow">RECENT RESULTS</span>
           <h2>Completed Races</h2>
         </div>
         ${
           completedRaces.length
-            ? `<span class="section-note">${completedRaces.length} completed</span>`
+            ? `<span class="section-note">Showing ${recentCompletedRaces.length} of ${completedRaces.length}</span>`
             : ""
         }
       </div>
 
       ${
-        completedRaces.length
-          ? `<div class="league-completed-grid">${completedRaces
+        recentCompletedRaces.length
+          ? `<div class="league-completed-grid">${recentCompletedRaces
               .map((race) => renderCompletedRace(race, league))
-              .join("")}</div>`
+              .join("")}</div>
+             ${
+               completedRaces.length > 3
+                 ? `<div class="league-archive-controls">
+                      <button
+                        id="leagueArchiveToggle"
+                        class="button secondary league-archive-toggle"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls="leagueRaceArchive"
+                        data-archive-count="${completedRaces.length}"
+                      >
+                        View Full Archive (${completedRaces.length}) <span aria-hidden="true">→</span>
+                      </button>
+                    </div>
+                    <div id="leagueRaceArchive" class="league-race-archive hidden">
+                      ${completedRaces
+                        .map((race) => renderCompactArchivedRace(race, league))
+                        .join("")}
+                    </div>`
+                 : ""
+             }`
           : `<div class="empty-state">No completed races yet.</div>`
       }
     </section>
@@ -352,6 +370,7 @@ async function loadLeague() {
   initializeGalleryLightbox(gallery);
   initializeCountdowns();
   initializeCalendarControls(nextRace, league);
+  initializeLeagueArchive();
   initializeAnimations();
   initializeScrollExperience();
 }
@@ -391,29 +410,58 @@ async function loadLeagueDiscordStats(league) {
   }
 
   try {
-    const response = await fetch(
-      `https://discord.com/api/v10/invites/${encodeURIComponent(inviteCode)}?with_counts=true`,
-      { headers: { Accept: "application/json" } },
+    const inviteResponse = await fetch(
+      `https://discord.com/api/v10/invites/${encodeURIComponent(inviteCode)}?with_counts=true&with_expiration=true`,
+      {
+        cache: "no-store",
+        headers: { Accept: "application/json" },
+      },
     );
 
-    if (!response.ok) throw new Error(`Discord returned ${response.status}`);
+    if (!inviteResponse.ok) {
+      throw new Error(`Discord returned ${inviteResponse.status}`);
+    }
 
-    const data = await response.json();
-    const memberCount = Number(data.approximate_member_count);
-    const onlineCount = Number(data.approximate_presence_count);
+    const inviteData = await inviteResponse.json();
+    const memberCount = Number(inviteData.approximate_member_count);
+    let onlineCount = Number(inviteData.approximate_presence_count);
 
-    members.textContent = Number.isFinite(memberCount)
-      ? memberCount.toLocaleString()
-      : "—";
-    online.textContent = Number.isFinite(onlineCount)
-      ? onlineCount.toLocaleString()
-      : "—";
+    // Discord's public invite count can be cached or approximate. When the
+    // server widget is enabled, its presence count is usually fresher.
+    const guildId = inviteData.guild?.id;
+    if (guildId) {
+      try {
+        const widgetResponse = await fetch(
+          `https://discord.com/api/guilds/${encodeURIComponent(guildId)}/widget.json`,
+          { cache: "no-store", headers: { Accept: "application/json" } },
+        );
+
+        if (widgetResponse.ok) {
+          const widgetData = await widgetResponse.json();
+          const widgetOnline = Number(widgetData.presence_count);
+          if (Number.isFinite(widgetOnline)) onlineCount = widgetOnline;
+        }
+      } catch (widgetError) {
+        console.debug("Discord widget count unavailable", widgetError);
+      }
+    }
+
+    const safeMembers = Number.isFinite(memberCount)
+      ? Math.max(0, memberCount)
+      : null;
+    const safeOnline = Number.isFinite(onlineCount)
+      ? Math.max(0, safeMembers == null ? onlineCount : Math.min(onlineCount, safeMembers))
+      : null;
+
+    members.textContent = safeMembers == null ? "—" : safeMembers.toLocaleString();
+    online.textContent = safeOnline == null ? "—" : safeOnline.toLocaleString();
+
     card.classList.remove("is-loading", "is-unavailable");
     card.setAttribute(
       "aria-label",
       `${members.textContent} Discord members, ${online.textContent} online`,
     );
-    card.title = `${members.textContent} members · ${online.textContent} online`;
+    card.title = `${members.textContent} members · ${online.textContent} online now`;
   } catch (error) {
     console.warn("Unable to load Discord statistics", error);
     card.classList.add("is-unavailable");
@@ -826,6 +874,65 @@ function renderCompletedRace(race, league) {
       </div>
     </article>
   `;
+}
+
+function renderCompactArchivedRace(race, league) {
+  const local = getRaceDateTime(race).toLocal();
+  const artwork = race.banner_url || league.banner_url || "";
+
+  return `
+    <article class="league-archive-row">
+      <div class="league-archive-thumb">
+        ${
+          artwork
+            ? `<img src="${escapeHtml(artwork)}" alt="" loading="lazy">`
+            : `<img src="images/fdh-logo.png" alt="" loading="lazy">`
+        }
+      </div>
+
+      <div class="league-archive-date">
+        <strong>${local.toFormat("dd")}</strong>
+        <span>${local.toFormat("LLL yyyy")}</span>
+      </div>
+
+      <div class="league-archive-main">
+        <span>${escapeHtml(race.category || "RACE EVENT")}</span>
+        <strong>${escapeHtml(race.event_name || "Race Event")}</strong>
+        <small>${escapeHtml(race.circuit || "Circuit not listed")} · ${local.toFormat("h:mm a")}</small>
+      </div>
+
+      ${
+        race.stream_url || race.event_url
+          ? `<a
+               class="button secondary league-archive-link"
+               href="${safeUrl(race.stream_url || race.event_url)}"
+               target="_blank"
+               rel="noopener"
+             >${race.stream_url ? "Replay" : "Event"}</a>`
+          : ""
+      }
+    </article>
+  `;
+}
+
+function initializeLeagueArchive() {
+  const toggle = document.getElementById("leagueArchiveToggle");
+  const archive = document.getElementById("leagueRaceArchive");
+  if (!toggle || !archive) return;
+
+  toggle.addEventListener("click", () => {
+    const isOpen = !archive.classList.contains("hidden");
+    archive.classList.toggle("hidden", isOpen);
+    toggle.setAttribute("aria-expanded", String(!isOpen));
+    const archiveCount = toggle.dataset.archiveCount || "";
+    toggle.innerHTML = isOpen
+      ? `View Full Archive${archiveCount ? ` (${archiveCount})` : ""} <span aria-hidden="true">→</span>`
+      : `Hide Full Archive <span aria-hidden="true">↑</span>`;
+
+    if (!isOpen) {
+      archive.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  });
 }
 
 function initializeCalendarControls(race, league) {

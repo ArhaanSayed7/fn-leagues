@@ -8858,3 +8858,212 @@ body.rankings-page-body
     padding: 0.5rem 0.65rem;
   }
 }
+
+
+/* ============================================================
+   FDH v14.2 — League archive, artwork consistency and cleanup
+   ============================================================ */
+
+/* All completed-race artwork uses the same landscape frame.
+   Uploaded images are cropped cleanly to fill it. */
+.completed-race-visual {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 0 !important;
+}
+
+.completed-race-visual > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0 !important;
+  object-fit: cover;
+  object-position: center;
+}
+
+.completed-race-fallback {
+  position: absolute;
+  inset: 0;
+  min-height: 0 !important;
+}
+
+.completed-race-fallback img {
+  position: static;
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+}
+
+.league-archive-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.25rem;
+}
+
+.league-archive-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.league-archive-toggle span {
+  transition: transform 0.2s ease;
+}
+
+.league-archive-toggle:hover span {
+  transform: translateX(4px);
+}
+
+.league-race-archive {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  background: rgba(10, 10, 13, 0.78);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.24);
+}
+
+.league-race-archive.hidden {
+  display: none !important;
+}
+
+.league-archive-row {
+  display: grid;
+  grid-template-columns: 76px 70px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 76px;
+  padding: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.065);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.025);
+  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.league-archive-row:hover {
+  transform: translateY(-2px);
+  border-color: rgba(238, 37, 49, 0.24);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.league-archive-thumb {
+  width: 76px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #09090c;
+}
+
+.league-archive-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.league-archive-date {
+  display: grid;
+  gap: 0.08rem;
+  text-align: center;
+}
+
+.league-archive-date strong {
+  color: #fff;
+  font: 800 1.12rem/1 "Outfit", sans-serif;
+}
+
+.league-archive-date span {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.league-archive-main {
+  min-width: 0;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.league-archive-main > span {
+  color: #ee2531;
+  font-size: 0.64rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.league-archive-main strong,
+.league-archive-main small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.league-archive-main strong {
+  color: #fff;
+  font-size: 0.92rem;
+}
+
+.league-archive-main small {
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 0.74rem;
+}
+
+.league-archive-link {
+  min-width: 82px;
+  min-height: 38px;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.74rem;
+}
+
+/* With the Theme card removed, the remaining league summary cards
+   share the available width evenly. */
+.league-showcase-meta {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+/* Clearer labels for the compact Discord activity values. */
+.discord-activity-pill [data-discord-members]::after {
+  content: " members";
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.62rem;
+  font-weight: 650;
+}
+
+.discord-activity-pill [data-discord-online]::after {
+  content: " online";
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.62rem;
+  font-weight: 650;
+}
+
+@media (max-width: 760px) {
+  .league-showcase-meta {
+    grid-template-columns: 1fr !important;
+  }
+
+  .league-archive-row {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .league-archive-thumb {
+    width: 64px;
+  }
+
+  .league-archive-date {
+    display: none;
+  }
+
+  .league-archive-link {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .discord-activity-pill [data-discord-members]::after,
+  .discord-activity-pill [data-discord-online]::after {
+    content: "";
+  }
+}
